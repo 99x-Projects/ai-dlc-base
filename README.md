@@ -35,7 +35,7 @@ This repo is the **base template** — the source of truth that gets copied into
 | `ai-dlc/ops/inception/elaborations/_template.md` | Template for logging a mob elaboration session |
 | `ai-dlc/ops/build/units/_template.md` | Template for an atomic unit of work |
 | `ai-dlc/ops/build/bolts/_template.md` | Template for a planned batch of units |
-| `ai-dlc/ops/build/backlog.md` | Starter backlog file |
+| `ai-dlc/ops/build/backlog.md` | Starter backlog file with Reference Link Registry — all unit/bolt links use reference-style Markdown so compact-docs only updates the registry, never the table rows |
 | `ai-dlc/ops/operate/retros/_template.md` | Template for a bolt retrospective (includes Post-Retro Improvement Workflow — AI-driven, runs immediately after every retro) |
 | `ai-dlc/ops/operate/incidents/_template.md` | Template for a production incident |
 | `ai-dlc/ops/operate/improvements/_template.md` | Template for a process improvement triggered by a retro or incident |

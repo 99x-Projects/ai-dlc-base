@@ -59,11 +59,21 @@ Before generating code for this unit, the agent must run these checks:
 
 ---
 
+## Breaking Changes Register
+
+> **Complete this section only for Migration or Remediation Bolts that change contract boundaries. Leave blank (write "N/A — not a contract-change Bolt") for all other Bolts. This section must be completed and approved before any code is generated.**
+
+| # | Contract boundary changed | Reason it must change | Approved by | Date |
+|---|---|---|---|---|
+| 1 | [API endpoint / data schema / inter-module interface] | [why the change is necessary] | [engineer name] | YYYY-MM-DD |
+
+---
+
 ## Definition of Done
 
 - [ ] All ACs implemented and traceable to code
 - [ ] Unit tests written for each AC
-- [ ] Integration tests for affected module pass without modification
+- [ ] Integration tests for affected module pass without modification *(or: all breaking changes listed in the Breaking Changes Register have updated tests and are approved)*
 - [ ] No secrets or hardcoded environment values
 - [ ] Auth checked on every new endpoint
 - [ ] Reviewed against `ai-dlc/skills/review-checklist.md`

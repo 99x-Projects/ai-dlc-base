@@ -187,11 +187,19 @@ Every change introduced by AI-DLC into an existing module must be wrapped in a f
 
 #### M3.3 — Default Acceptance Criterion for Existing-Code Bolts
 
-Every Bolt that affects existing code must carry the following AC by default — it is non-negotiable and cannot be removed during elaboration:
+Every Bolt that affects existing code must carry the following AC by default. It has two forms depending on Bolt classification:
 
+**Standard form** (Enhancement Bolts and all Bolts not classified as Migration or Remediation):
 > **"All integration tests for [affected module] pass without modification."**
 
-Add this rule to the master rule file Section 6 (AI-DLC Workflow) and to `ai-dlc/rules/code-standards.md` so it is enforced automatically.
+This AC is non-negotiable and cannot be removed during elaboration.
+
+**Contract-change form** (Migration Bolts and Remediation Bolts that explicitly change contract boundaries — e.g. API shapes, data schemas, inter-module interfaces):
+> **"All integration tests for [affected module] pass without modification, except for tests that cover the contract boundaries listed as breaking changes below. Each breaking change must be detailed and approved in the elaboration session before any code is generated."**
+
+When the contract-change form applies, the elaboration session must produce a **Breaking Changes Register** — a table attached to the unit file listing every changed contract boundary, the reason it must change, and the name of the engineer who approved it. No unit using the contract-change form may be executed without a completed and approved Breaking Changes Register.
+
+Add both forms to the master rule file Section 6 (AI-DLC Workflow) and to `ai-dlc/rules/code-standards.md` so the correct form is enforced automatically based on Bolt classification.
 
 ---
 

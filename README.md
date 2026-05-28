@@ -1,4 +1,4 @@
-# ai-dlc-base
+# AI-DLC Onboarding Agent
 
 The canonical source of the AI-DLC framework at 99x. This repository contains everything needed to onboard any project — new or existing — to the AI-DLC process using Claude Code, Cursor, or GitHub Copilot.
 
@@ -29,16 +29,17 @@ This repo is the **base template** — the source of truth that gets copied into
 |---|---|
 | `ai-dlc/setup-guide.md` | The complete framework specification. Describes every file, rule, and ceremony. |
 | `ai-dlc/onboard.md` | The bootstrap trigger. Drop this into a target repo and follow the instructions to start onboarding. |
-| `ai-dlc/ops/inception/intents/_template.md` | Template for writing a feature intent |
+| `ai-dlc/skills/compact-docs.md` | Engineer-triggered skill to archive operational documents older than the project's configured threshold. |
+| `ai-dlc/ops/inception/intents/_template.md` | Template for writing a feature intent (includes Implementation Summary section, written when all units under the intent are delivered) |
 | `ai-dlc/ops/inception/elaborations/_template.md` | Template for logging a mob elaboration session |
 | `ai-dlc/ops/build/units/_template.md` | Template for an atomic unit of work |
 | `ai-dlc/ops/build/bolts/_template.md` | Template for a planned batch of units |
 | `ai-dlc/ops/build/backlog.md` | Starter backlog file |
-| `ai-dlc/ops/operate/retros/_template.md` | Template for a bolt retrospective |
+| `ai-dlc/ops/operate/retros/_template.md` | Template for a bolt retrospective (includes Post-Retro Improvement Workflow — AI-driven, runs immediately after every retro) |
 | `ai-dlc/ops/operate/incidents/_template.md` | Template for a production incident |
 | `ai-dlc/ops/operate/improvements/_template.md` | Template for a process improvement triggered by a retro or incident |
 
-The remaining files (`rules/`, `skills/`, `guidelines/`, and the master rule file) are **generated per project** by the AI agent during onboarding — they cannot be shared across projects because they encode each project's specific stack, domain, and conventions.
+The remaining files (`rules/`, `guidelines/`, and the master rule file) are **generated per project** by the AI agent during onboarding — they cannot be shared across projects because they encode each project's specific stack, domain, and conventions.
 
 ---
 
@@ -53,7 +54,7 @@ The remaining files (`rules/`, `skills/`, `guidelines/`, and the master rule fil
 3. **Say:**
    > "Read `ai-dlc/onboard.md` and follow the instructions inside it."
 
-4. The agent will ask you two questions (which AI tool, fresh or mature project) and then run the onboarding process end to end — creating all framework files, populating the master rule file, and delivering a completion report.
+4. The agent will ask you which AI tool you're using and whether the project is fresh or mature, then run the onboarding process end to end — including a nine-question interview (fresh projects) or a phased codebase archaeology (mature projects) — creating all framework files, populating the master rule file, and delivering a completion report.
 
 5. **Review the completion report.** Fill in any sections the agent flagged as requiring engineer input before the first Bolt runs.
 
@@ -75,6 +76,7 @@ After onboarding, your target repo will contain:
     skills/
       mob-elab-prompts.md
       review-checklist.md
+      compact-docs.md
     guidelines/
       domain-glossary.md
       edge-cases.md

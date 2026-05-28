@@ -274,6 +274,7 @@ ai-dlc/
     code-standards.md        ← language/framework conventions and anti-patterns
     security.md              ← never/always security rules
     architecture.md          ← ADRs — decisions and their rationale
+    engagement.md            ← engineer engagement monitoring signals and intervention protocol
   skills/
     mob-elab-prompts.md      ← interactive protocol and prompts for elaboration sessions
     review-checklist.md      ← structured lens for reviewing AI output
@@ -338,128 +339,90 @@ State what the system is and its technology stack. Be specific — the AI needs 
 
 ### Section 2 — Prompt Quality Gate
 
-This section tells the AI to enforce the four-component check before every code response. Copy this block verbatim and add a link to `ai-dlc/rules/prompt-quality-gate.md`:
+A two-line routing entry. Do not embed the gate definition — it lives in `rules/prompt-quality-gate.md`.
 
 ```markdown
-## 2. Prompt Quality Gate — Run This Before Every Code Response
+## 2. Prompt Quality Gate
 
-Before writing, generating, or modifying any code, check that the request contains all four components:
-
-| Component | What it requires |
-|---|---|
-| **Context** | Who is asking, what system or feature this touches |
-| **Constraints** | What must not be done; which rules apply |
-| **Acceptance Criteria** | A testable pass/fail condition (Given/When/Then) |
-| **Output Format** | What the response should look like |
-
-**If any component is missing:** do not generate code. Ask one question at a time in this order: Acceptance Criteria → Context → Constraints → Output Format.
-
-**When all four are present:** generate the output and open the response with:
-**Context:** <one line>
-**Constraints:** <one line>
-**Acceptance Criteria:** <one line>
-**Output Format:** <one line>
-
-Full gate definition: [ai-dlc/rules/prompt-quality-gate.md](ai-dlc/rules/prompt-quality-gate.md)
-
-> **GitHub Copilot users:** replace `ai-dlc/` with `../ai-dlc/` in all links above.
+Before every code response: read and enforce `ai-dlc/rules/prompt-quality-gate.md`.
+If any of the four components (Context · Constraints · Acceptance Criteria · Output Format) is missing, stop and ask for it. Do not generate code.
 ```
 
 ### Section 3 — Code Rules
 
-Three subsections:
+Three to five **hard-stop prohibitions** that the AI must have in working memory (no file lookup tolerated) — these are the rules where a single violation causes immediate, serious harm. Then a mandatory-read routing line for everything else.
 
-**Never do these** — absolute prohibitions for your stack. Common examples:
-- Commit secrets, API keys, or connection strings
-- Trust client-supplied IDs without server-side ownership verification
-- Expose internal stack traces to the client
-- Use raw SQL string concatenation
-- *(Add stack-specific rules — e.g. no `.Result`/`.Wait()` in async .NET, no `any` in TypeScript)*
+```markdown
+## 3. Code Rules
 
-**Always do these** — mandatory patterns for your stack. Common examples:
-- Validate and sanitize all input at the API boundary
-- Authenticate every endpoint — explicitly mark public routes
-- *(Add domain-specific rules — e.g. how prices are stored, how dates are handled)*
+**Hard stops — memorise, never look up:**
+- Never commit secrets, API keys, or connection strings
+- Never trust client-supplied IDs without server-side ownership verification
+- Never expose internal stack traces to the client
+- [1–2 stack-specific absolute prohibitions from the project interview]
 
-**Naming conventions** — per language/framework. Be explicit about file naming, type naming, variable naming, and database naming.
+**Full rules (read before writing any code):**
+- Conventions and patterns: `ai-dlc/rules/code-standards.md`
+- Security rules: `ai-dlc/rules/security.md`
+- Architecture decisions: `ai-dlc/rules/architecture.md`
+```
 
-Link to `ai-dlc/rules/code-standards.md`, `ai-dlc/rules/security.md`, and `ai-dlc/rules/architecture.md` (GitHub Copilot: use `../ai-dlc/` prefix).
+Keep the hard-stop list to five items maximum. Anything beyond five belongs in `code-standards.md`, not here.
 
 ### Section 4 — Domain Language
 
-List every business term the team uses with its exact definition. This is the most important section for preventing logic errors — if the AI uses "Order" when your domain uses "Booking," the output will be subtly wrong throughout.
+A mandatory-read instruction plus the two or three terms most likely to cause logic errors if misused. The full glossary lives in `guidelines/domain-glossary.md` — do not reproduce it here.
 
 ```markdown
-| Term | Meaning |
-|---|---|
-| **<Term>** | <precise definition> |
+## 4. Domain Language
+
+Read `ai-dlc/guidelines/domain-glossary.md` before every elaboration session and before generating any business logic. Use only the terms defined there — do not substitute synonyms.
+
+**Critical terms (load immediately):**
+- **[Term]:** [one-line definition]
+- **[Term]:** [one-line definition]
 ```
 
-Link to `ai-dlc/guidelines/domain-glossary.md` for the full glossary (GitHub Copilot: use `../ai-dlc/` prefix).
+Limit inline terms to three. If the project has more critical terms, add them to the glossary file, not to this section.
 
 ### Section 5 — Known Edge Cases
 
-Table of known failure modes the AI must check before generating code. Start with the ones relevant to your domain. Format:
+A single mandatory-read routing line. No inline table — edge cases are added continuously via the retro loop and must stay in their dedicated file to remain current.
 
 ```markdown
-| ID | Scenario | Required behavior |
-|---|---|---|
-| EC-001 | <scenario> | <what the code must do> |
-```
+## 5. Known Edge Cases
 
-Add edge cases here as they are discovered in retros and incidents. Link to `ai-dlc/guidelines/edge-cases.md` (GitHub Copilot: use `../ai-dlc/` prefix).
+Read `ai-dlc/guidelines/edge-cases.md` before generating code for any unit. Do not skip this step — new edge cases are added after every retro.
+```
 
 ### Section 6 — AI-DLC Workflow
 
-This section tells the AI the artifact hierarchy and the mob elaboration protocol. Copy the mob elaboration turn structure verbatim — it is what prevents the AI from dumping all units at once instead of running a proper conversation:
+The turn structure is short enough to hold in working memory — keep it inline. Everything else routes to files.
 
 ```markdown
-**Turn structure — strictly one unit per turn:**
-1. Propose a single candidate unit (name + one-sentence purpose only). Stop and wait.
-2. Once confirmed, propose ACs as a numbered list. Stop and wait.
-3. Once ACs are agreed, surface edge cases and open questions. Stop and wait.
+## 6. AI-DLC Workflow
+
+**Elaboration turn structure (strictly one unit per turn):**
+1. Propose one unit — name and one-sentence purpose only. Stop.
+2. Propose ACs as a numbered list. Stop.
+3. Surface edge cases and open questions. Stop.
 4. Move to next unit. Repeat.
-5. After all units agreed, present summary table and ask for final sign-off before writing any files.
-```
+5. After all units agreed, present summary table and ask for sign-off before writing any files.
 
-Include the artifact table (what lives where) and the "never do these during elaboration" rules.
-
-Also include the following **Engineer Engagement Monitoring** rule verbatim in this section:
-
-```markdown
-### Engineer Engagement Monitoring
-
-The quality of every artifact produced by AI-DLC depends on active, substantive engagement from the engineer. The AI must monitor for signs of disengagement throughout all ceremonies (elaboration, review, retro) and intervene when they appear.
-
-**Signals of disengagement — flag when three or more occur across consecutive turns:**
-- Responses are a single word or a formulaic phrase ("yes", "ok", "looks good", "sounds right", "continue", "go ahead") with no elaboration
-- A proposed acceptance criterion, unit, or design decision is approved immediately without any challenge, modification, or question
-- An open-ended question about domain context, constraints, or edge cases receives a vague or off-topic answer
-- The engineer defers a decision without a reason ("you decide", "whatever you think is best") on a matter that requires domain knowledge only they have
-- The same short approval pattern repeats across three or more consecutive turns
-
-**How to intervene:**
-
-Do not continue the workflow. Pause and say:
-
-> "I want to flag something before we continue. In the last few turns you've accepted everything I've proposed without adding context, challenging any of it, or raising concerns. That's a signal worth paying attention to — the value of this process comes from your domain knowledge shaping the output. If I'm just proposing things and you're just approving them, the artifacts won't reflect the real constraints of this project.
->
-> Before we move on: [ask one specific, substantive question that requires a real answer — e.g. 'Is there any reason this AC might fail in production that we haven't captured?', or 'Does this unit name match how your team actually talks about this feature?']"
-
-Do not resume the workflow until the engineer gives a substantive response. If they continue to give minimal responses after the intervention, note it explicitly and ask whether they want to pause and return to this ceremony later.
+**Full elaboration protocol:** read `ai-dlc/skills/mob-elab-prompts.md` before every elaboration session.
+**Compact-docs skill:** read `ai-dlc/skills/compact-docs.md` when the engineer invokes it.
+**Engagement monitoring:** read and apply `ai-dlc/rules/engagement.md` throughout all ceremonies.
 ```
 
 ### Section 7 — Review Behavior
 
-A short checklist the AI runs before presenting any output. Minimum items:
-- Every AC is traceable to the code
-- No hallucinated APIs or library methods
-- Known edge cases checked
-- No secrets or hardcoded environment values
-- Auth checked on every new endpoint
-- Tests exist for each AC
+A single routing line. The checklist lives in its file.
 
-Link to `ai-dlc/skills/review-checklist.md` for the full checklist (GitHub Copilot: use `../ai-dlc/` prefix).
+```markdown
+## 7. Review Behavior
+
+Before presenting any output, run every item in `ai-dlc/skills/review-checklist.md`. Do not present output that has not passed this checklist.
+```
 
 ### Section 8 — Reference Map
 
@@ -522,6 +485,10 @@ One ADR per significant decision. Format:
 ```
 
 Add an ADR whenever a new cross-cutting decision is made — especially ones where the AI might make a different choice if not told (e.g. symmetric vs asymmetric JWT signing, SSR vs SPA, monorepo vs polyrepo).
+
+### `rules/engagement.md`
+
+Copy this file verbatim from the base repo (`ai-dlc/rules/engagement.md`). It defines the signals of engineer disengagement, when to intervene, what to say, and how to handle continued non-engagement. The master rule file Section 6 routes to it with a single mandatory-read line — do not inline its contents.
 
 ---
 

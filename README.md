@@ -30,6 +30,7 @@ This repo is the **base template** — the source of truth that gets copied into
 | `ai-dlc/setup-guide.md` | The complete framework specification. Describes every file, rule, and ceremony. |
 | `ai-dlc/onboard.md` | The bootstrap trigger. Drop this into a target repo and follow the instructions to start onboarding. |
 | `ai-dlc/skills/compact-docs.md` | Engineer-triggered skill to archive operational documents older than the project's configured threshold. |
+| `ai-dlc/rules/engagement.md` | Engineer engagement monitoring — signals of disengagement, intervention script, and escalation protocol. Copied verbatim into every project. |
 | `ai-dlc/ops/inception/intents/_template.md` | Template for writing a feature intent (includes Implementation Summary section, written when all units under the intent are delivered) |
 | `ai-dlc/ops/inception/elaborations/_template.md` | Template for logging a mob elaboration session |
 | `ai-dlc/ops/build/units/_template.md` | Template for an atomic unit of work |
@@ -39,7 +40,7 @@ This repo is the **base template** — the source of truth that gets copied into
 | `ai-dlc/ops/operate/incidents/_template.md` | Template for a production incident |
 | `ai-dlc/ops/operate/improvements/_template.md` | Template for a process improvement triggered by a retro or incident |
 
-The remaining files (`rules/`, `guidelines/`, and the master rule file) are **generated per project** by the AI agent during onboarding — they cannot be shared across projects because they encode each project's specific stack, domain, and conventions.
+The remaining files (most of `rules/`, all of `guidelines/`, and the master rule file) are **generated per project** by the AI agent during onboarding — they cannot be shared across projects because they encode each project's specific stack, domain, and conventions.
 
 ---
 
@@ -73,6 +74,7 @@ After onboarding, your target repo will contain:
       code-standards.md
       security.md
       architecture.md
+      engagement.md
     skills/
       mob-elab-prompts.md
       review-checklist.md

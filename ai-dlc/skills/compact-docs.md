@@ -80,9 +80,24 @@ The digest must contain enough information for a future engineer to know whether
 
 ## Step 5 — Update the Backlog
 
-For any archived unit or bolt that is referenced in `ai-dlc/ops/build/backlog.md`:
-- Update the link to point to the new path inside `archive/`
-- Add `(archived)` after the link so it is visually distinct
+`backlog.md` uses Markdown reference-style links defined in a **Reference Link Registry** section at the bottom of the file. All unit and bolt links in the table body are written as `[Unit-name][unit-name-ref]` rather than inline URLs. This means updating an archived item requires changing exactly one line in the registry — the path update — without touching the table matrix at all.
+
+For each archived unit or bolt:
+
+1. Locate its entry in the Reference Link Registry at the bottom of `backlog.md`. It will look like:
+   ```
+   [unit-name-ref]: ai-dlc/ops/build/units/filename.md
+   ```
+2. Update the path to point into `archive/`:
+   ```
+   [unit-name-ref]: ai-dlc/ops/build/units/archive/filename.md
+   ```
+3. Append ` <!-- archived -->` as an inline comment on the same line so archived entries are scannable without following the link:
+   ```
+   [unit-name-ref]: ai-dlc/ops/build/units/archive/filename.md <!-- archived -->
+   ```
+
+Do not touch the table rows. Do not rewrite inline links. If a backlog entry does not use a reference-style link (i.e., it was added manually with an inline URL), flag it to the engineer rather than attempting to rewrite it — inconsistent link styles should be corrected by the engineer, not silently patched by this skill.
 
 ---
 

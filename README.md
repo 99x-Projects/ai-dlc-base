@@ -1,12 +1,12 @@
-# AI-DLC Onboarding & Diagnostics Agents
+# AI-DLC Agent Suite
 
-The canonical source of the AI-DLC framework at 99x. This repository contains everything needed to onboard any project — new or existing — to the AI-DLC process using Claude Code, Cursor, or GitHub Copilot.
+The canonical source of the AI-DLC framework at 99x. This repository contains everything needed to onboard, operate, and audit any software project using AI assistance — with Claude Code, Cursor, or GitHub Copilot.
 
 ---
 
 ## What Is AI-DLC?
 
-AI-DLC is a structured operating system for building software with AI assistance. It is not a tool — it is a set of files, conventions, and ceremonies that govern how a team and its AI work together. The output of onboarding is a repository where:
+AI-DLC is a structured operating system for building software with AI assistance. It is not a tool — it is a set of files, conventions, and ceremonies that govern how a team and its AI work together. The output is a repository where:
 
 - Every feature starts with a written intent and testable acceptance criteria
 - Every AI interaction is gated by a quality check and logged for audit
@@ -18,6 +18,77 @@ The process runs in three phases that form a continuous loop:
 ```
 Inception → Build → Operate → Improvements → (back to Inception)
 ```
+
+---
+
+## Three Agentic Capabilities
+
+This repository delivers three distinct AI agent behaviours. Each serves a different stage of a project's relationship with AI-DLC.
+
+---
+
+### 1. Onboarding Agent
+
+**What it does:** Installs the AI-DLC framework into a project that does not yet have it.
+
+**Mode:** Push — the agent drives the entire setup process and delivers a ready-to-use governance layer.
+
+**When to use:** When a project is starting fresh or when an existing project wants to adopt AI-DLC for the first time.
+
+**How it works:**
+- For **fresh projects**: runs a nine-question structured interview to extract the project's identity, stack, domain language, and constraints, then generates all framework files from those answers.
+- For **mature projects**: performs a phased codebase archaeology (architecture mapping, pattern extraction, due diligence audit, debt classification) before generating the framework, ensuring the AI inherits the existing project's conventions rather than overwriting them.
+
+The output is a fully configured `ai-dlc/` folder with a master rule file, rules, skills, guidelines, ops templates, and a completion report flagging anything that still needs engineer input.
+
+**Entry point:** `ai-dlc/onboard.md`
+
+---
+
+### 2. Experience Agent
+
+**What it does:** Governs how the AI behaves inside a project on a day-to-day basis once AI-DLC is installed.
+
+**Mode:** Ambient — the agent is always active. It is not invoked separately; it is what the AI *becomes* once the master rule file and framework files are loaded at the start of every session.
+
+**When to use:** Every session in an onboarded project. The experience agent is the normal working mode.
+
+**How it works:** The master rule file (generated during onboarding) is a routing table that loads the agent's behaviour from the framework files:
+- Enforces the **Prompt Quality Gate** before any code is generated
+- Runs **mob elaboration** turn by turn — one unit at a time, ACs confirmed before edge cases, sign-off before file creation
+- Monitors **engineer engagement** and intervenes when disengagement signals are detected
+- Executes the **Post-Retro Improvement Workflow** automatically after every retro — synthesising findings into improvement proposals, applying approved changes to rules and skills files
+- Writes an **Implementation Summary** when all units under an intent are delivered
+- Suggests running **Root Cause Analysis** when an incident is resolved
+- Responds to engineer-triggered skills: `compact-docs` to archive old operational documents, `root-cause-analysis` to analyse patterns across incidents and improvements
+
+The experience agent compounds in quality over time — every retro tightens the rules, every RCA surfaces deeper gaps, and every improvement makes the next bolt safer.
+
+**Entry point:** The master rule file at the repo root (`CLAUDE.md`, `.cursorrules`, or `.github/copilot-instructions.md`)
+
+---
+
+### 3. Diagnostics Agent
+
+**What it does:** Audits a project that is already running AI-DLC and identifies gaps between its current practice and AI-DLC principles.
+
+**Mode:** Pull — the agent requests artifacts from the engineer, scores them against structured rubrics, and delivers a prioritised review report.
+
+**When to use:** Periodically on any active AI-DLC project — after the first few bolts to validate early practice, or whenever the team suspects the process has drifted.
+
+**How it works:** The agent adopts the role of an AI-DLC Process Reviewer and runs through six review domains:
+1. **Foundation** — is the master rule file a routing table or a wall of text? Are sections complete and accurate?
+2. **Inception** — are intent files written from the user's perspective? Do elaboration sessions follow the turn structure?
+3. **Build** — are ACs testable? Is scope bounded? Are pre-generation checks being run?
+4. **Operate** — are retros closing the feedback loop? Are improvements actually applied to the target files?
+5. **Process Adherence** — assessed through conversation, not files: is the quality gate enforced? Are ACs challenged or passively accepted?
+6. **Organization & Structure** — based on where the engineer retrieves artifacts from, are like artifacts colocated, consistently named, cross-linked, and discoverable?
+
+The agent never asks for files by specific path — the engineer shares whatever they have from wherever they keep it. The agent evaluates content quality and organizational structure independently.
+
+The output is a scored Review Report with Critical, Important, and Advisory findings, a single "First Action" recommendation, and an Organization Assessment.
+
+**Entry point:** `ai-dlc-reviewer/role-play.md`
 
 ---
 

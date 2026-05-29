@@ -26,6 +26,7 @@ You are about to onboard this repository to the AI-DLC framework. Read and follo
    - `ai-dlc/ops/` and all files inside it
    - `ai-dlc/rules/engagement.md`
    - `ai-dlc/skills/compact-docs.md`
+   - `ai-dlc/skills/root-cause-analysis.md`
    - `ai-dlc/setup-guide.md`
    - `ai-dlc/onboard.md`
 

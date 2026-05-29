@@ -30,6 +30,7 @@ This repo is the **base template** — the source of truth that gets copied into
 | `ai-dlc/setup-guide.md` | The complete framework specification. Describes every file, rule, and ceremony. |
 | `ai-dlc/onboard.md` | The bootstrap trigger. Drop this into a target repo and follow the instructions to start onboarding. |
 | `ai-dlc/skills/compact-docs.md` | Engineer-triggered skill to archive operational documents older than the project's configured threshold. |
+| `ai-dlc/skills/root-cause-analysis.md` | Skill to run 5-Whys analysis on incidents and improvements, classify root causes (Solution Design / Technology / Process), surface cross-cutting patterns, and produce linked intent or improvement artifacts. |
 | `ai-dlc/rules/engagement.md` | Engineer engagement monitoring — signals of disengagement, intervention script, and escalation protocol. Copied verbatim into every project. |
 | `ai-dlc/ops/inception/intents/_template.md` | Template for writing a feature intent (includes Implementation Summary section, written when all units under the intent are delivered) |
 | `ai-dlc/ops/inception/elaborations/_template.md` | Template for logging a mob elaboration session |
@@ -79,6 +80,7 @@ After onboarding, your target repo will contain:
       mob-elab-prompts.md
       review-checklist.md
       compact-docs.md
+      root-cause-analysis.md
     guidelines/
       domain-glossary.md
       edge-cases.md

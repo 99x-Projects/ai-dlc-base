@@ -288,6 +288,7 @@ ai-dlc/
     review-checklist.md      ← structured lens for reviewing AI output
     unit-template.md         ← how to write a unit (reference doc)
     compact-docs.md          ← engineer-triggered skill to archive old operational documents
+    root-cause-analysis.md   ← skill to analyse incidents and improvements for design, technology, and process gaps
   guidelines/
     domain-glossary.md       ← canonical business terms used in code and prompts
     edge-cases.md            ← known failure modes to check before generating code
@@ -419,6 +420,7 @@ The turn structure is short enough to hold in working memory — keep it inline.
 
 **Full elaboration protocol:** read `ai-dlc/skills/mob-elab-prompts.md` before every elaboration session.
 **Compact-docs skill:** read `ai-dlc/skills/compact-docs.md` when the engineer invokes it.
+**Root-cause-analysis skill:** read `ai-dlc/skills/root-cause-analysis.md` when the engineer invokes it, or when an incident is marked Resolved and no RCA has been run on it.
 **Engagement monitoring:** read and apply `ai-dlc/rules/engagement.md` throughout all ceremonies.
 ```
 
@@ -534,6 +536,14 @@ Key items that must be present:
 The compact-docs skill is engineer-triggered and must never run automatically. It archives operational documents older than the project's configured threshold to keep the active workspace manageable without losing institutional memory.
 
 Copy this file verbatim from the base repo (`ai-dlc/skills/compact-docs.md`). No customisation is needed — the archive threshold is read from the master rule file Process Configuration section at runtime.
+
+### `skills/root-cause-analysis.md`
+
+The root-cause-analysis skill applies structured 5-Whys analysis to resolved incidents and filed improvements to find deeper root causes beyond the immediate fix. It classifies findings into three categories — Solution Design, Technology Selection, and Process — and produces recommendations that map directly to new intent files, ADRs, or improvement files.
+
+Can operate on a single file or across a batch to surface cross-cutting patterns and recurring vulnerabilities.
+
+Copy this file verbatim from the base repo (`ai-dlc/skills/root-cause-analysis.md`). No customisation is needed.
 
 ---
 

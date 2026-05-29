@@ -49,3 +49,13 @@
 | # | Improvement file | Target rule/guideline |
 |---|---|---|
 | 1 | [ops/operate/improvements/YYYY-MM-DD-[slug].md](../improvements/YYYY-MM-DD-[slug].md) | [ai-dlc/rules/...] |
+
+---
+
+## Root Cause Analysis
+
+**RCA status:** Not run | In progress | Complete
+
+**RCA report:** — *(link here once run)*
+
+> When this incident is marked Resolved, the AI will suggest running the root-cause-analysis skill to surface deeper design, technology, or process gaps beyond the immediate fix. Run it by saying: "run root-cause-analysis on this incident."

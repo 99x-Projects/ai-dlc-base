@@ -1,4 +1,4 @@
-# AI-DLC Onboarding Agent
+# AI-DLC Onboarding & Diagnostics Agents
 
 The canonical source of the AI-DLC framework at 99x. This repository contains everything needed to onboard any project — new or existing — to the AI-DLC process using Claude Code, Cursor, or GitHub Copilot.
 
@@ -105,7 +105,7 @@ After onboarding, your target repo will contain:
 
 ---
 
-## AI-DLC Reviewer
+## AI-DLC Reviewer (Diagnostics)
 
 For teams already running AI-DLC, the `ai-dlc-reviewer/` folder provides a complementary **pull** mode — a structured role-playing audit session that validates an existing project's artifacts and practice against AI-DLC principles.
 

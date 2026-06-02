@@ -1,4 +1,4 @@
-# AI-DLC Agent Suite
+# AI-DLC Agent Suite for IDEs
 
 The canonical source of the AI-DLC framework at 99x. This repository contains everything needed to onboard, operate, and audit any software project using AI assistance — with Claude Code, Cursor, or GitHub Copilot.
 
@@ -18,6 +18,20 @@ The process runs in three phases that form a continuous loop:
 ```
 Inception → Build → Operate → Improvements → (back to Inception)
 ```
+
+---
+
+## Supported AI Tools
+
+AI-DLC works with any of the three AI coding assistants below. The framework content is identical across all three — only the master rule file name and location differ.
+
+| AI Tool | Master rule file | Location in project repo |
+|---|---|---|
+| **Claude Code** | `CLAUDE.md` | Repo root |
+| **Cursor** | `.cursorrules` | Repo root |
+| **GitHub Copilot** | `copilot-instructions.md` | `.github/` folder |
+
+Each tool loads its master rule file automatically at the start of every session. The onboarding agent asks which tool the team uses and creates the correct file. Mirror files for additional tools can be created at any time — see the setup guide for instructions.
 
 ---
 
@@ -86,7 +100,7 @@ The experience agent compounds in quality over time — every retro tightens the
 
 The agent never asks for files by specific path — the engineer shares whatever they have from wherever they keep it. The agent evaluates content quality and organizational structure independently.
 
-The output is a scored Review Report with Critical, Important, and Advisory findings, a single "First Action" recommendation, and an Organization Assessment.
+The output is a comprehensive Review Report containing: a domain-by-domain scorecard, findings by severity, an Organization Assessment, a Gap Analysis mapping each finding to the specific AI-DLC principle violated, a Remediation Plan (Immediate / Short-term / Long-term actions, produced only when Critical or Important findings exist), a single "First Action" recommendation, and a Patterns section flagging process drift signals.
 
 **Entry point:** `ai-dlc-reviewer/role-play.md`
 
@@ -190,7 +204,7 @@ For teams already running AI-DLC, the `ai-dlc-reviewer/` folder provides a compl
 1. Copy the `ai-dlc-reviewer/` folder into the root of the project repo being audited.
 2. Open your AI assistant inside that repo.
 3. Say: `"Read ai-dlc-reviewer/role-play.md and follow the instructions inside it."`
-4. The AI adopts the reviewer persona and runs through the five review domains — Foundation, Inception, Build, Operate, and Process Adherence — requesting artifacts, scoring them against rubrics, and delivering a structured report with prioritised recommendations.
+4. The AI adopts the reviewer persona and runs through six review domains — Foundation, Inception, Build, Operate, Process Adherence, and Organization & Structure — requesting artifacts, scoring them against rubrics, and delivering a comprehensive report with gap analysis and a prioritised remediation plan.
 
 The reviewer never generates code or creates files unprompted. It is a diagnostic tool, not an onboarding tool.
 

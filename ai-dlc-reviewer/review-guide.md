@@ -75,7 +75,7 @@ Every finding must be classified before it goes into the report.
 | **Workflow (Section 6)** | Compact turn structure; routes to skills files; includes engagement monitoring reference | Turn structure present but long; no routing | Missing or not enforced |
 | **Review Behavior (Section 7)** | Routes to `skills/review-checklist.md` with a mandatory-run instruction | Checklist embedded inline | Missing |
 | **Reference Map (Section 8)** | Complete routing table covering all common needs | Partial | Missing |
-| **Process Configuration (Section 9)** | Archive threshold set | Present but value not set | Missing section |
+| **Process Configuration (Section 9)** | Archive threshold set; `Next dependency audit` date populated | Section present but one or both values not set | Missing section |
 
 **Common findings:**
 - Master rule file is a wall of text rather than a routing table — AI loads it but cannot act on it efficiently
@@ -103,6 +103,7 @@ Note the location each file comes from in the Artifact Log. Review the intent fi
 | **Success Looks Like** | Observable, non-technical outcome | Technical metric used | Missing |
 | **Assumptions and Open Questions** | Specific and relevant | Generic or templated | Missing or empty |
 | **Out of Scope** | Explicit list of excluded items | Vague | Missing |
+| **UAT Sign-off** | Status recorded (Passed / Passed with findings / Failed / Deferred / Not required) before intent marked Implemented | Status is still Pending on an Implemented intent | Missing entirely on an Implemented intent |
 | **Implementation Summary** | Completed for Implemented intents; not filled in for open intents | Partially filled | Missing on Implemented intents, or filled prematurely |
 | **Extracted Units** | Units listed with links | Present but unlinked | Missing |
 
@@ -121,6 +122,8 @@ Note the location each file comes from in the Artifact Log. Review the intent fi
 - ACs say "should" instead of "then" — "the system should X" is not a testable criterion
 - Unhappy paths are missing — every unit needs at least one failure-case AC
 - Elaboration session has no turn structure evidence — the AI proposed all units at once
+- UAT Sign-off is missing or still Pending on intents marked Implemented — the acceptance loop was not closed
+- `ops/inception/dependency-map.md` was never updated after elaboration sign-off — cross-intent dependencies are invisible to bolt planning
 
 ---
 
@@ -140,7 +143,7 @@ Note the location each file comes from in the Artifact Log. Review the planning 
 | **Goal is bounded** | One clear outcome; maps to one intent | Multiple intents mixed | Vague or missing goal |
 | **Units table** | All units listed with status and links | Present but incomplete | Missing |
 | **Execution order** | Dependencies between units are documented | Implied but not stated | Missing — units executed in arbitrary order |
-| **Risks and assumptions** | Specific risks listed; assumptions that could invalidate the bolt are named | Generic | Missing |
+| **Risk Assessment** | Blast radius table present; rollback assessment and feature flag decision recorded (mandatory for mature projects) | "Risks and Assumptions" present but no blast radius or rollback analysis | Missing entirely |
 | **Retrospective link** | Links to completed retro for Done bolts | Missing on Done bolts | — |
 
 ### Unit File Rubric
@@ -151,6 +154,7 @@ Note the location each file comes from in the Artifact Log. Review the planning 
 | **ACs** | Testable Given/When/Then; at least one unhappy path; no compound ACs | Partially testable | Vague or missing |
 | **Scope** | Explicit in-scope and out-of-scope lists | Only one of the two | Missing |
 | **Pre-generation Checks** | Grep patterns listed; forbidden zones checked | Partial | Missing |
+| **Observability** | Success signal, failure signal, and alert threshold defined; "Not applicable" explicitly stated if none | One or two fields present but incomplete | Missing entirely |
 | **Breaking Changes Register** | Present and approved for Migration/Remediation bolts; "N/A" for others | Present but not approved | Missing on contract-change units |
 | **Definition of Done** | All items checked off; prompt log linked | Partially checked | Not completed |
 | **Integration test AC** | Standard or contract-change form present | Missing | Missing |
@@ -158,8 +162,10 @@ Note the location each file comes from in the Artifact Log. Review the planning 
 **Common findings:**
 - Units have no out-of-scope section — AI scope-creeps silently
 - Pre-generation checks are empty — duplication goes undetected
+- Observability section is missing — no success or failure signal defined, so production behavior is invisible
 - Definition of Done not completed after execution — no evidence the unit was properly closed
 - Breaking Changes Register missing on Remediation units that changed API contracts
+- Bolt has no Risk Assessment — blast radius and rollback options were never analyzed before execution began
 
 ---
 
@@ -191,6 +197,7 @@ Note the location each file comes from in the Artifact Log.
 | **Reason traces to the retro** | Explicit link and explanation | Link present, no explanation | Missing |
 | **Validation criteria set** | Observable signal defined | Generic | Missing |
 | **Status is Applied** | Change is applied; date recorded | Open for more than one bolt | Rejected without reason |
+| **Knowledge Promotion** | Classified as Promoted, Project-specific, or Declined (with reason); not left as Pending | Pending on an Applied improvement older than one bolt | Field missing entirely |
 
 ### Incident File Rubric (if applicable)
 
@@ -205,6 +212,7 @@ Note the location each file comes from in the Artifact Log.
 **Common findings:**
 - Retros produce observations but not improvements — the feedback loop is not closing
 - Improvement files are created but never applied — the target files are unchanged
+- Knowledge Promotion field is missing or still Pending on Applied improvements — generic improvements never reach the base repository
 - "What Didn't Go Well" is left blank or says "nothing" — this is a signal the retro was not run seriously
 - Incidents have no AI-DLC contributing factor assessment — the framework cannot learn from production failures
 
@@ -241,6 +249,14 @@ Ask the following questions one at a time. Wait for each answer before continuin
 
    *Looking for:* awareness of systemic gaps; use of root-cause-analysis skill.
 
+7. > "When a feature is finished and all units are done, what happens before you mark the intent as Implemented? Is there a testing or acceptance step with the actual user or stakeholder?"
+
+   *Looking for:* UAT is conducted using the uat.md skill; sign-off status is recorded in the intent file before it is closed; intent is not marked Implemented solely because tests pass.
+
+8. > "Does your project have a scheduled dependency audit? When did you last check your package manifests for outdated or vulnerable dependencies?"
+
+   *Looking for:* `Next dependency audit` date set in Section 9 of the master rule file; dependency-audit.md skill has been run at least once; remediation bolts were created for high/critical findings.
+
 **Scoring:**
 
 | Score | Signal |
@@ -254,6 +270,8 @@ Ask the following questions one at a time. Wait for each answer before continuin
 - AC review is passive — the engineer accepts whatever the AI proposes
 - Improvements are filed but the target files are never actually updated
 - The retro is run but the Post-Retro Improvement Workflow is not — the loop does not close
+- Intents are marked Implemented without UAT — tests passing is treated as sufficient, but the user outcome was never verified
+- No dependency audit has been run and no date is set — the project's security posture is unknown
 
 ---
 

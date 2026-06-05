@@ -77,6 +77,44 @@ Record the engineer's answers. Use them to define **analysis segments** — name
 
 Only proceed to M1.1 once at least one segment is agreed.
 
+#### M1.0-P — Parallel Archaeology (Optional)
+
+After segments are agreed, offer the parallel option:
+
+> "You have [N] segments to analyze. I can work through them one by one in this session, or — if other engineers are available — each person can run the analysis for their segment independently on their own machine and share a structured report back to you. Running segments in parallel has two advantages:
+>
+> 1. **Speed** — all segments are analyzed simultaneously rather than sequentially.
+> 2. **Accuracy** — engineers who work in a specific module every day will surface patterns and risks that a cold analysis might miss. Independent findings that match across sessions have higher confidence than single-session findings.
+>
+> Would you like to run this archaeology in parallel? If yes, I'll give you a segment assignment brief for each engineer to copy to their own session."
+
+If the engineer says **yes**:
+
+1. Produce a **Segment Assignment Brief** for each segment — a short block the engineer can paste into another AI session to kick off a parallel analysis. Format:
+
+   ```
+   Segment Assignment: [Segment name]
+   ─────────────────────────────────────────────────
+   You are running a codebase archaeology analysis for one segment of a larger project.
+   Your scope is limited to: [folders/modules]
+   Do not read outside this boundary.
+
+   Run phases M1.1, M1.2, M1.3, and M1.4 from ai-dlc/setup-guide.md for this segment only.
+   When complete, produce a Segment Report using the format defined in Phase M1.5 of the setup guide.
+   The engineer will copy your Segment Report back to the main session for synthesis.
+   ─────────────────────────────────────────────────
+   ```
+
+2. Assign each segment to an engineer. If the number of engineers is fewer than the number of segments, assign multiple segments to one engineer — they run them sequentially in their session.
+
+3. Tell the main engineer:
+
+   > "Share each brief with the assigned engineer. When each parallel session is complete, paste its Segment Report back here. I'll run Phase M1.5 to synthesize all reports into the final archaeology output."
+
+4. Pause the main session's M1.1–M1.4 analysis — do not begin reading code in the main session. The main session resumes at Phase M1.5 once all Segment Reports are received.
+
+If the engineer says **no**, proceed directly to M1.1 in the current session.
+
 ---
 
 #### M1.1 — Architecture Mapping
@@ -127,6 +165,119 @@ Classify all identified work — including findings from M1.3 — into three Bol
 | **Migration Bolt** | Architectural changes that enable future work |
 
 **Prioritisation order:** Remediation of blocking defects found in M1.3 first → Enhancement (shows value) → Remediation of non-blocking debt → Migration last.
+
+---
+
+#### M1.5 — Parallel Synthesis (Only runs if M1.0-P parallel mode was chosen)
+
+This phase runs in the **main session** once all parallel engineers have returned their Segment Reports. Do not start synthesis until every assigned segment has a report.
+
+##### Segment Report Format
+
+Each parallel session must produce a report in this exact structure so the main session can parse and synthesize it consistently:
+
+```markdown
+# Segment Report: [Segment name]
+
+**Analyst:** [Engineer name]
+**AI tool:** [Claude Code / Cursor / GitHub Copilot]
+**Date:** YYYY-MM-DD
+**Scope:** [folders and modules covered]
+**Confidence:** High / Medium / Low
+(High = engineer is very familiar with this module;
+ Medium = some familiarity;
+ Low = cold analysis only, no domain knowledge applied)
+
+---
+
+## M1.1 — Architecture
+
+[Business-language description of each module in scope. What it does, not how.]
+
+**Service boundaries identified:**
+- [boundary description]
+
+**Integration points:**
+- [integration description]
+
+**Data flows:**
+- [flow description]
+
+---
+
+## M1.2 — Patterns Extracted
+
+| Pattern type | Observed convention | Example location |
+|---|---|---|
+| Naming | [convention] | [file/module] |
+| Error handling | [convention] | [file/module] |
+| API response shape | [convention] | [file/module] |
+| Auth pattern | [convention] | [file/module] |
+| Test pattern | [convention] | [file/module] |
+| ORM / DB access | [convention] | [file/module] |
+
+---
+
+## M1.3 — Due Diligence Findings
+
+| # | Location | Category | Description | Impact | Recommendation |
+|---|---|---|---|---|---|
+| 1 | [file/function] | [category] | [description] | [impact] | Fix-in-place / Quarantine / Encode as prohibition |
+
+---
+
+## M1.4 — Debt Classification
+
+| Work item | Bolt type | Priority | Notes |
+|---|---|---|---|
+| [description] | Enhancement / Remediation / Migration | High / Med / Low | [notes] |
+
+---
+
+## Confidence Notes
+
+[Anything the analyst was uncertain about, code paths not covered, or areas where a second opinion is recommended.]
+```
+
+##### Synthesis Protocol
+
+Once all Segment Reports are received:
+
+**Step 1 — Validate completeness.** Check that every agreed segment has a report. If any segment is missing, do not proceed — ask the engineer to follow up with the assigned analyst.
+
+**Step 2 — Merge architecture findings.** Combine the M1.1 sections across all reports into a single capability map. Identify: modules that appear in multiple reports (cross-segment dependencies), integration points that span segment boundaries, and data flows that pass through more than one segment.
+
+**Step 3 — Reconcile patterns.** For each pattern type in M1.2, compare findings across reports:
+
+| Situation | Action |
+|---|---|
+| Same convention found in 2+ segments | Mark as **Confirmed convention** — high confidence for the master rule file |
+| Different conventions found for the same pattern type | Mark as **Inconsistency** — flag to engineer for resolution before writing rules |
+| Convention found in only one segment | Mark as **Unconfirmed** — note the segment scope and treat with lower confidence |
+
+**Step 4 — Consolidate due diligence findings.** Merge all M1.3 findings into a single ranked list. Apply a confidence boost to any finding that appears in more than one report independently — these have been confirmed by multiple analysts without coordination and are high-priority. Flag any finding where two reports directly contradict each other (e.g. one reports a pattern as consistent, another reports it as absent) — these require engineer resolution.
+
+**Step 5 — Unify debt classification.** Merge all M1.4 items. De-duplicate by description. Where two analysts classified the same work item differently (e.g. one called it Remediation, another called it Migration), present both classifications to the engineer and ask for a decision.
+
+**Step 6 — Present the synthesis report.** Before proceeding to Phase M2, present:
+
+```
+Parallel Archaeology Synthesis
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Segments analyzed:    [N] of [N] assigned
+Analysts:             [names]
+Combined confidence:  [summary]
+
+Confirmed conventions:     [N]  (found in 2+ segments independently)
+Inconsistencies to resolve: [N]  (conflicting findings — need engineer decision)
+High-confidence findings:  [N]  (due diligence items confirmed by 2+ analysts)
+
+Items needing engineer resolution before Phase M2:
+  [list each inconsistency or conflict with both positions stated]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Resolve all conflicts with the engineer before writing any Phase M2 files. Then continue to Phase M2 using the synthesized output as the archaeology result.
 
 ---
 
@@ -411,14 +562,27 @@ The turn structure is short enough to hold in working memory — keep it inline.
 ```markdown
 ## 6. AI-DLC Workflow
 
+**Session start check:** At the beginning of every session, read the `Next dependency audit` date from Section 9. If today is on or after that date, prompt the engineer before any other work:
+> "A dependency and security audit is scheduled. Would you like to run it now, or set a new date?"
+If the engineer defers, ask for the new date and update Section 9 before continuing.
+
 **Elaboration turn structure (strictly one unit per turn):**
 1. Propose one unit — name and one-sentence purpose only. Stop.
 2. Propose ACs as a numbered list. Stop.
 3. Surface edge cases and open questions. Stop.
-4. Move to next unit. Repeat.
-5. After all units agreed, present summary table and ask for sign-off before writing any files.
+4. Ask the three observability questions: what confirms this is working in production? What log entry signals failure? What alert threshold makes sense? If the answer represents code behavior, add it as an AC. If not applicable, record "Not applicable" and move on. Stop.
+5. Move to next unit. Repeat.
+6. After all units agreed, present summary table and ask for sign-off before writing any files.
 
-**Full elaboration protocol:** read `ai-dlc/skills/mob-elab-prompts.md` before every elaboration session.
+**Full elaboration protocol (including design session):** read `ai-dlc/skills/mob-elab-prompts.md` before every elaboration session. The design session runs as Phase 0 of elaboration — it is not invoked separately.
+**Bolt risk assessment:** read `ai-dlc/skills/bolt-risk-assessment.md` after elaboration sign-off and before the first unit in a bolt executes. No unit may begin execution without a signed-off risk assessment in the bolt file.
+**UAT skill:** read `ai-dlc/skills/uat.md` when all units under an intent are marked Done, or when the engineer invokes it directly. Prompt the engineer to run UAT before setting intent status to Implemented.
+**Progress digest skill:** read `ai-dlc/skills/progress-digest.md` when the engineer asks for a stakeholder update, progress summary, or digest for an intent.
+**Process health skill:** read `ai-dlc/skills/process-health.md` when the engineer invokes it to audit how well the AI-DLC process is functioning.
+**New engineer induction skill:** read `ai-dlc/skills/new-engineer-induction.md` when an engineer says they are new to the project or invokes it directly.
+**Knowledge promotion skill:** read `ai-dlc/skills/knowledge-promotion.md` as Step 5 of the Post-Retro Improvement Workflow after all improvements are applied. A retro is not closed until every Applied improvement has a Knowledge Promotion status.
+**Dependency audit skill:** read `ai-dlc/skills/dependency-audit.md` when the engineer invokes it, or when the `Next dependency audit` date in Section 9 has been reached. Prompt at session start if the date is due.
+**Process health skill:** read `ai-dlc/skills/process-health.md` when the engineer invokes it to audit how well the AI-DLC process is functioning.
 **Compact-docs skill:** read `ai-dlc/skills/compact-docs.md` when the engineer invokes it.
 **Root-cause-analysis skill:** read `ai-dlc/skills/root-cause-analysis.md` when the engineer invokes it, or when an incident is marked Resolved and no RCA has been run on it.
 **Engagement monitoring:** read and apply `ai-dlc/rules/engagement.md` throughout all ceremonies.
@@ -448,9 +612,15 @@ A single table of project-level process settings that govern AI-DLC behaviour. P
 | Setting | Value | Notes |
 |---|---|---|
 | **Archive threshold** | [X] months | Documents older than this qualify for archiving via the compact-docs skill |
+| **Last dependency audit** | — | Updated automatically each time the dependency-audit skill runs |
+| **Next dependency audit** | YYYY-MM-DD | AI prompts at session start on or after this date; default interval is 30 days |
 ```
 
 The archive threshold is read by the `compact-docs` skill at runtime. If this section is absent, the skill will ask the engineer for the value before proceeding.
+
+The dependency audit dates are read and written by the `dependency-audit` skill. The `Next dependency audit` date is checked at the start of every session — if today is on or after that date, the AI prompts the engineer to run the audit before any other work begins. Set this value during onboarding by asking the engineer:
+
+> "When would you like to schedule the first dependency and security audit? The recommended interval is once a month."
 
 ---
 
@@ -507,8 +677,10 @@ Copy this file verbatim from the base repo (`ai-dlc/rules/engagement.md`). It de
 ### `skills/mob-elab-prompts.md`
 
 The mob elaboration reference. Must include:
+- **Phase 0 — Design Session:** read `ai-dlc/skills/design-session.md` and run it at the opening of every session before proposing any units. The design session scopes the intent's API surface, data model, and architectural patterns, then produces binding constraints that govern every unit and AC in the session. For simple intents with nothing new to design, Phase 0 concludes quickly and flows straight into unit decomposition.
 - The mandatory interactive protocol (turn structure + never-do rules)
-- Facilitation prompts for: opening a session, proposing ACs, edge case check, generating API contract, generating implementation scaffold, reviewing output
+- Facilitation prompts for: proposing units, proposing ACs, edge case check, observability check (success signal / failure signal / alert threshold per unit), generating implementation scaffold, reviewing output
+- **Post sign-off — Dependency Map update:** after the engineer confirms sign-off on the unit summary table and before writing any files, read `ai-dlc/ops/inception/dependency-map.md` and update it: record any prerequisites this intent has on other intents, and any shared interfaces (API contracts, data entities) that cross intent boundaries. Add a row to the Update Log. If a dependency on an incomplete intent is found, flag it to the engineer before proceeding.
 
 ### `skills/review-checklist.md`
 
@@ -522,6 +694,7 @@ Structured review sections covering all five AI failure modes:
 | Architecture | Architectural drift |
 | Tests | Logic errors; hallucinations |
 | AI-Specific Checks | Hallucinated library calls; prompt log; scope creep |
+| Observability | Missing production evidence; silent failures |
 | Deployment Readiness | Configuration errors; breaking changes |
 
 Key items that must be present:
@@ -530,6 +703,7 @@ Key items that must be present:
 - Diff checked against system boundaries in `architecture.md`
 - Behavioral trade-offs confirmed before accepting output
 - For wrapper/layout components: existing files grepped for patterns the new component will duplicate before generation
+- Observability section of the unit file is complete — success signal, failure signal, and alert threshold are recorded; any that represent code behavior are expressed as ACs and implemented in the diff
 
 ### `skills/compact-docs.md`
 
@@ -544,6 +718,122 @@ The root-cause-analysis skill applies structured 5-Whys analysis to resolved inc
 Can operate on a single file or across a batch to surface cross-cutting patterns and recurring vulnerabilities.
 
 Copy this file verbatim from the base repo (`ai-dlc/skills/root-cause-analysis.md`). No customisation is needed.
+
+### `skills/design-session.md`
+
+The design-session skill runs as Phase 0 of mob elaboration to establish an agreed design foundation — API contracts, data model sketch, and architectural pattern decisions — before any units are proposed. Mob elaboration inherits the design as binding constraints, so ACs are written against a concrete interface rather than a vague description.
+
+The skill works through three optional areas (API contract, data model, architectural patterns) based on the intent's scope. It produces a `ops/inception/designs/YYYY-MM-DD-[slug]-design.md` artifact and links it back to the intent file. Any new architectural patterns agreed during the session are written to `ai-dlc/rules/architecture.md` as ADRs immediately.
+
+Copy this file verbatim from the base repo (`ai-dlc/skills/design-session.md`). No customization is needed — it is called by mob-elab-prompts.md, not invoked separately.
+
+### `skills/uat.md`
+
+The UAT skill runs when all units under an intent are marked Done. It generates a plain-language demo script from the acceptance criteria of every unit under the intent, guides the engineer through a stakeholder validation session, and records the outcome in the intent file's UAT Sign-off section.
+
+The engineer chooses one of three paths: conduct UAT now (the AI walks through the script step by step and records pass/fail per step), defer UAT to a later date (recorded with a revisit date, intent can still close as Implemented), or mark UAT as not required (a reason must be stated). All three choices are recorded. The intent status cannot move to Implemented without a UAT Sign-off entry.
+
+Any UAT failure automatically creates a draft unit in the backlog for the engineer to confirm.
+
+Copy this file verbatim from the base repo (`ai-dlc/skills/uat.md`). No customization is needed.
+
+**Wire into the master rule file Section 6** by adding one routing line:
+
+```markdown
+**UAT skill:** read `ai-dlc/skills/uat.md` when all units under an intent are marked Done, or when the engineer invokes it directly. Prompt the engineer to run UAT before setting intent status to Implemented.
+```
+
+### `skills/progress-digest.md`
+
+The progress-digest skill generates a plain-language, one-page progress summary for a feature intent — written for non-technical stakeholders (product owners, clients, leadership) who cannot read engineering artifacts. It translates the intent file, bolt status, and unit statuses into a clear picture of what is being built, what is done, and what comes next.
+
+Engineer-triggered at any point during or after delivery of an intent. Produces a single file at `ai-dlc/ops/inception/intents/[intent-slug]-digest.md`, overwriting any previous digest for that intent. The digest is never archived — it reflects the current state of the intent whenever generated.
+
+Copy this file verbatim from the base repo (`ai-dlc/skills/progress-digest.md`). No customization is needed.
+
+**Wire into the master rule file Section 6** by adding one routing line:
+
+```markdown
+**Progress digest skill:** read `ai-dlc/skills/progress-digest.md` when the engineer asks for a stakeholder update, progress summary, or digest for an intent.
+```
+
+### `ops/inception/dependency-map.md`
+
+A single file that records which intents depend on which others, and which API contracts, data entities, or shared services cross intent boundaries. Updated automatically by the AI after every elaboration sign-off. Read before every bolt planning step.
+
+Copy this file verbatim from the base repo (`ai-dlc/ops/inception/dependency-map.md`). It contains the empty table structure and update log — the AI populates it as intents are elaborated.
+
+The AI must read this file before planning a bolt and flag: (1) any prerequisite intent not yet Implemented, (2) any units in the planned bolt that touch a shared interface owned by a different intent.
+
+### `skills/new-engineer-induction.md`
+
+The new-engineer-induction skill runs when an engineer joins an AI-DLC project for the first time. It reads the project's actual master rule file, domain glossary, quality gate, and backlog — then explains each section in plain language, demonstrates the quality gate with a project-specific example, optionally runs a practice elaboration for two units, and produces a personalized quick-reference card written to `ai-dlc/guidelines/[engineer-name-slug]-quick-ref.md`.
+
+The session takes 30–45 minutes. Engineers who want a faster version say "quick tour" to skip the practice elaboration.
+
+Copy this file verbatim from the base repo (`ai-dlc/skills/new-engineer-induction.md`). No customization is needed — the skill reads the project's own files to personalize the session.
+
+**Wire into the master rule file Section 6** by adding one routing line:
+
+```markdown
+**New engineer induction skill:** read `ai-dlc/skills/new-engineer-induction.md` when an engineer says they are new to the project, or invokes it directly.
+```
+
+### `skills/knowledge-promotion.md`
+
+The knowledge-promotion skill evaluates each applied improvement to determine whether it is generic (beneficial to all AI-DLC projects) or project-specific. For generic improvements, it drafts the exact change needed in the base repository — file path, current text, and proposed replacement — so the engineer can raise a PR against `ai-dlc-base` without having to reconstruct the context later. The promotion decision and draft are recorded in the improvement file.
+
+Runs automatically as Step 5 of the Post-Retro Improvement Workflow after all improvements are applied. Can also be invoked directly against a specific improvement. A retro is not fully closed until every Applied improvement has a Knowledge Promotion status recorded.
+
+The skill uses the target file as the primary classification signal — files copied verbatim from the base repo (skills, templates, `engagement.md`) are classified generic; files generated per project (code-standards, architecture, domain-glossary, etc.) are classified project-specific. Ambiguous cases are resolved using a content test: would this improvement still apply to a project with a completely different tech stack and domain?
+
+Copy this file verbatim from the base repo (`ai-dlc/skills/knowledge-promotion.md`). No customization is needed.
+
+**Wire into the master rule file Section 6** by adding one routing line:
+
+```markdown
+**Knowledge promotion skill:** read `ai-dlc/skills/knowledge-promotion.md` as Step 5 of the Post-Retro Improvement Workflow, after all improvements are applied. A retro is not closed until every Applied improvement has a Knowledge Promotion status.
+```
+
+### `skills/dependency-audit.md`
+
+The dependency-audit skill audits third-party dependencies for major version drift, end-of-life packages, and known vulnerability patterns. It runs in two phases: AI analysis of manifest files using training knowledge, followed by a tool-assisted scan where the engineer runs their ecosystem's security scanner (npm audit, pip-audit, bundler-audit, etc.) and shares the output. Findings are classified by severity and converted into Remediation Bolts in the backlog.
+
+The skill is scheduled — the next audit date is stored in the master rule file Section 9 (Process Configuration). At the start of every session, the AI checks whether the scheduled date has passed and prompts the engineer if so. The engineer may run the audit immediately or defer it to a new date. The recommended cadence is once a month.
+
+Copy this file verbatim from the base repo (`ai-dlc/skills/dependency-audit.md`). No customization is needed.
+
+**During onboarding (Step 9 of the Process Configuration section):** ask the engineer when they would like to schedule the first audit and populate the `Next dependency audit` row accordingly.
+
+### `skills/process-health.md`
+
+The process-health skill analyses the project's operational artifacts and produces a quantitative report on how well the AI-DLC process is functioning. It calculates four metrics — improvement adoption rate, quality gate failure rate, AC revision rate, and bolt velocity trend — and surfaces additional decay signals such as retros with no improvements, stale open improvements, and recurring failure patterns.
+
+The report is presented in-conversation and always saved to `ai-dlc/ops/operate/process-health-YYYY-MM-DD.md` automatically. Reports accumulate over time, making it possible to compare health trends across runs.
+
+Recommended cadence: after every third or fourth bolt, or whenever the team suspects the process has drifted.
+
+Copy this file verbatim from the base repo (`ai-dlc/skills/process-health.md`). No customization is needed.
+
+**Wire into the master rule file Section 6** by adding one routing line:
+
+```markdown
+**Process health skill:** read `ai-dlc/skills/process-health.md` when the engineer invokes it to audit how well the AI-DLC process is functioning.
+```
+
+### `skills/bolt-risk-assessment.md`
+
+The bolt-risk-assessment skill runs after elaboration sign-off and before the first unit in a bolt executes. It actively interrogates each unit for blast radius, cross-unit sequencing risks, rollback feasibility, and feature flag requirements — replacing the passive "Risks and Assumptions" table in the bolt file with structured, engineer-signed-off findings.
+
+For mature projects (those with existing code), this assessment is mandatory before any unit executes. For fresh projects with no existing modules affected, it may be brief but must still be completed.
+
+Copy this file verbatim from the base repo (`ai-dlc/skills/bolt-risk-assessment.md`). No customization is needed.
+
+**Wire into the master rule file Section 6** by adding one routing line:
+
+```markdown
+**Bolt risk assessment:** read `ai-dlc/skills/bolt-risk-assessment.md` after elaboration sign-off and before the first unit in a bolt executes. No unit may begin execution without a signed-off risk assessment in the bolt file.
+```
 
 ---
 
@@ -687,11 +977,12 @@ Whenever the master rule file is updated, all mirror files must be updated in th
 ## Step 9 — Initialize the Backlog and First Intent
 
 1. Copy `ops/build/backlog.md` from the base repo — it already contains the empty status sections and the Reference Link Registry comment at the bottom.
-2. Identify the first capability to build and write an intent: `ops/inception/intents/YYYY-MM-DD-<slug>.md`
-3. Say to your AI assistant: "Run a mob elaboration for the [intent name] intent"
-4. After sign-off, the AI creates unit files and updates the backlog. **When adding any unit or bolt to the backlog, the AI must use reference-style links** — write the display text as `[Unit-name][unit-slug]` in the table and add the path definition to the Reference Link Registry at the bottom of the file. Never use inline URLs in backlog tables.
-5. Say: "Plan a bolt from the open units in the backlog"
-6. Say: "Execute unit [name] from bolt [name]"
+2. Copy `ops/inception/dependency-map.md` from the base repo — it contains the empty map structure and update log.
+3. Identify the first capability to build and write an intent: `ops/inception/intents/YYYY-MM-DD-<slug>.md`
+4. Say to your AI assistant: "Run a mob elaboration for the [intent name] intent"
+5. After sign-off, the AI creates unit files, updates the backlog, and updates the dependency map. **When adding any unit or bolt to the backlog, the AI must use reference-style links** — write the display text as `[Unit-name][unit-slug]` in the table and add the path definition to the Reference Link Registry at the bottom of the file. Never use inline URLs in backlog tables.
+6. Say: "Plan a bolt from the open units in the backlog" — before creating the bolt file, the AI reads `ops/inception/dependency-map.md` and flags any prerequisite intents that are not yet Implemented, or any units that touch a shared interface owned by a different intent.
+7. Say: "Execute unit [name] from bolt [name]"
 
 ---
 

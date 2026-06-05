@@ -3,6 +3,7 @@
 **Status:** Open | Applied | Rejected
 **Triggered by:** [ops/operate/retros/... or ops/operate/incidents/...](link)
 **Applied date:** —
+**Knowledge promotion:** Pending | Promoted — PR to be raised | Declined — [reason] | Project-specific — [reason]
 
 ---
 

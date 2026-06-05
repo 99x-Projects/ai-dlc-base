@@ -51,6 +51,14 @@
 
 ---
 
+## UAT Sign-off
+
+> **Complete this section before setting the intent status to Implemented.** Run `ai-dlc/skills/uat.md` when all units are Done. The engineer may choose to conduct UAT now, defer it, or waive it — all three choices are recorded here.
+
+**Status:** Pending | Passed | Passed with findings | Failed | Deferred | Not required
+
+---
+
 ## Implementation Summary
 
 > **Complete this section when all units under this intent have been delivered and merged. Do not fill it in until the intent status is set to Implemented.**

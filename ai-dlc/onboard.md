@@ -23,10 +23,18 @@ You are about to onboard this repository to the AI-DLC framework. Read and follo
    - `ai-dlc/Instructions2FDE.md`
 
    **Do not treat the following as evidence of existing setup** — they are part of the base repo and are present in every fresh copy:
-   - `ai-dlc/ops/` and all files inside it
+   - `ai-dlc/ops/` and all files inside it (including `ai-dlc/ops/inception/dependency-map.md`)
    - `ai-dlc/rules/engagement.md`
    - `ai-dlc/skills/compact-docs.md`
    - `ai-dlc/skills/root-cause-analysis.md`
+   - `ai-dlc/skills/design-session.md`
+   - `ai-dlc/skills/bolt-risk-assessment.md`
+   - `ai-dlc/skills/progress-digest.md`
+   - `ai-dlc/skills/uat.md`
+   - `ai-dlc/skills/process-health.md`
+   - `ai-dlc/skills/dependency-audit.md`
+   - `ai-dlc/skills/knowledge-promotion.md`
+   - `ai-dlc/skills/new-engineer-induction.md`
    - `ai-dlc/setup-guide.md`
    - `ai-dlc/onboard.md`
 
@@ -82,13 +90,22 @@ Present the completion report defined in `ai-dlc/setup-guide.md` under **Onboard
 
 ### Step 3-M — Codebase archaeology (Phase M1)
 
-Execute Phase M1 from the setup guide:
-1. Read the codebase module by module. List every module you find.
-2. Write a business-language description of each module (what it does, not how).
-3. Produce a capability map table.
-4. Identify service boundaries, integration points, and data flows.
-5. Read 10–20 representative files. Extract naming conventions, error handling style, ORM usage, API shapes, auth patterns, test patterns.
-6. Classify all identified work into Enhancement / Remediation / Migration Bolts. Present the classification to the engineer and ask for confirmation before proceeding.
+Execute Phase M1 from the setup guide. Start with **M1.0 — Scope Agreement** to define the analysis segments, then offer the engineer the **parallel archaeology option (M1.0-P)**:
+
+> Multiple engineers can each analyze a segment on their own machine simultaneously. Independent findings that match across sessions have higher confidence than single-session findings, and engineers familiar with a module will surface risks a cold analysis misses. Ask the engineer if they want to run segments in parallel — if yes, generate a Segment Assignment Brief for each segment and pause until all reports are returned.
+
+If running in **single session**: proceed through M1.1 → M1.2 → M1.3 → M1.4 one segment at a time.
+
+If running in **parallel mode**: pause after generating briefs. Resume at **M1.5 — Parallel Synthesis** once all Segment Reports are received, then continue to Phase M2.
+
+Phases to execute:
+1. M1.0 — Scope Agreement (define segments)
+2. M1.0-P — Offer parallel mode (mandatory offer, engineer decides)
+3. M1.1 — Architecture Mapping (per segment)
+4. M1.2 — Pattern Extraction (per segment)
+5. M1.3 — Due Diligence Audit (per segment)
+6. M1.4 — Debt and Gap Mapping (per segment)
+7. M1.5 — Parallel Synthesis (only if parallel mode was chosen)
 
 ### Step 4-M — Repository overlay (Phase M2)
 

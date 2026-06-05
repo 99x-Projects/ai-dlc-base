@@ -59,6 +59,23 @@ Before generating code for this unit, the agent must run these checks:
 
 ---
 
+## Observability
+
+> What evidence must exist in production to know this unit is working correctly? Any entry that represents code behavior the AI must implement should be expressed as an AC in the Acceptance Criteria section above.
+
+**Success signal** — what metric or log entry confirms this unit is operating normally?
+- [ ] [e.g. "A counter increments on every successful call to /api/bookings"]
+- [ ] [or: "Not applicable — this unit has no production traffic or async process to monitor"]
+
+**Failure signal** — what log entry confirms something has gone wrong?
+- [ ] [e.g. "A WARNING-level log entry is written when payment processing fails, including the order ID and error code"]
+
+**Alert threshold** — at what point should an on-call engineer be notified?
+- [ ] [e.g. "Alert fires if the error rate for /api/bookings exceeds 5% over a 5-minute window"]
+- [ ] [or: "Not applicable"]
+
+---
+
 ## Breaking Changes Register
 
 > **Complete this section only for Migration or Remediation Bolts that change contract boundaries. Leave blank (write "N/A — not a contract-change Bolt") for all other Bolts. This section must be completed and approved before any code is generated.**

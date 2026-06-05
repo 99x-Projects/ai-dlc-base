@@ -88,14 +88,18 @@ The output is a fully configured `ai-dlc/` folder with a master rule file, rules
 
 **How it works:** The master rule file (generated during onboarding) is a routing table that loads the agent's behaviour from the framework files:
 - Enforces the **Prompt Quality Gate** before any code is generated
-- Runs **mob elaboration** turn by turn — one unit at a time, ACs confirmed before edge cases, sign-off before file creation
+- Runs **mob elaboration** turn by turn — starting with a design session (Phase 0) to lock down API contracts and data models, then one unit at a time with ACs confirmed before edge cases, sign-off before file creation
+- Runs a **bolt risk assessment** before the first unit executes — blast radius, rollback options, and feature flag requirements
 - Monitors **engineer engagement** and intervenes when disengagement signals are detected
-- Executes the **Post-Retro Improvement Workflow** automatically after every retro — synthesising findings into improvement proposals, applying approved changes to rules and skills files
+- Executes the **Post-Retro Improvement Workflow** automatically after every retro — synthesizing findings into improvement proposals, applying approved changes to rules and skills files, and running knowledge promotion to surface generic improvements for this base repo
+- Conducts **UAT** at intent close — generates a plain-language demo script from ACs, walks each step, records pass/fail outcomes, and writes a sign-off before the intent is marked Implemented
+- Tracks **process health** on demand — computes improvement adoption rate, quality gate failure rate, AC revision rate, and bolt velocity; saves a dated report automatically
+- Prompts for a **dependency audit** when the scheduled date in Section 9 arrives — reads manifests, analyzes findings, and creates remediation bolts for critical issues
 - Writes an **Implementation Summary** when all units under an intent are delivered
 - Suggests running **Root Cause Analysis** when an incident is resolved
-- Responds to engineer-triggered skills: `compact-docs` to archive old operational documents, `root-cause-analysis` to analyse patterns across incidents and improvements
+- Responds to engineer-triggered skills: `compact-docs`, `root-cause-analysis`, `progress-digest` (stakeholder summaries), `new-engineer-induction` (onboards a new team member with a personalized quick-reference card)
 
-The experience agent compounds in quality over time — every retro tightens the rules, every RCA surfaces deeper gaps, and every improvement makes the next bolt safer.
+The experience agent compounds in quality over time — every retro tightens the rules, every RCA surfaces deeper gaps, knowledge promotion propagates improvements across teams, and every bolt is safer than the last.
 
 **Entry point:** The master rule file at the repo root (`CLAUDE.md`, `.cursorrules`, or `.github/copilot-instructions.md`)
 
@@ -135,6 +139,15 @@ This repo is the **base template** — the source of truth that gets copied into
 | `ai-dlc/onboard.md` | The bootstrap trigger. Drop this into a target repo and follow the instructions to start onboarding. |
 | `ai-dlc/skills/compact-docs.md` | Engineer-triggered skill to archive operational documents older than the project's configured threshold. |
 | `ai-dlc/skills/root-cause-analysis.md` | Skill to run 5-Whys analysis on incidents and improvements, classify root causes (Solution Design / Technology / Process), surface cross-cutting patterns, and produce linked intent or improvement artifacts. |
+| `ai-dlc/skills/design-session.md` | Phase 0 of mob elaboration. Runs at the start of every elaboration session to lock down API contracts, data models, and architectural patterns before unit decomposition begins. |
+| `ai-dlc/skills/bolt-risk-assessment.md` | Pre-bolt risk assessment. Analyzes blast radius, cross-unit sequencing risks, rollback options, and feature flag requirements before the first unit executes. Mandatory for mature projects. |
+| `ai-dlc/skills/progress-digest.md` | Stakeholder communication artifact. Translates technical progress (units, bolts, statuses) into plain-language summaries for non-technical stakeholders. |
+| `ai-dlc/skills/uat.md` | Acceptance testing protocol. Guides the engineer through UAT using the intent's ACs as the test script; records pass/fail/deferred outcomes; blocks intent from being marked Implemented without sign-off. |
+| `ai-dlc/skills/process-health.md` | Process health metrics. Computes four metrics (improvement adoption, quality gate failure rate, AC revision rate, bolt velocity) and surfaces decay signals; saves a dated health report automatically. |
+| `ai-dlc/skills/dependency-audit.md` | Monthly dependency and security posture audit. Reads manifests, classifies findings by severity, and creates remediation bolts for high/critical issues. Scheduled via Section 9 of the master rule file. |
+| `ai-dlc/skills/knowledge-promotion.md` | Cross-project learning protocol. Runs as the final step of every retro; classifies each improvement as generic (to be contributed back to this base repo) or project-specific. |
+| `ai-dlc/skills/new-engineer-induction.md` | New engineer onboarding session. Walks a new team member through the project's framework using actual project files; produces a personalized quick-reference card. |
+| `ai-dlc/ops/inception/dependency-map.md` | Intent dependency map. Records which intents depend on others and which interfaces are shared across intent boundaries; read before bolt planning, updated after every elaboration sign-off. |
 | `ai-dlc/rules/engagement.md` | Engineer engagement monitoring — signals of disengagement, intervention script, and escalation protocol. Copied verbatim into every project. |
 | `ai-dlc/ops/inception/intents/_template.md` | Template for writing a feature intent (includes Implementation Summary section, written when all units under the intent are delivered) |
 | `ai-dlc/ops/inception/elaborations/_template.md` | Template for logging a mob elaboration session |
@@ -185,6 +198,14 @@ After onboarding, your target repo will contain:
       review-checklist.md
       compact-docs.md
       root-cause-analysis.md
+      design-session.md
+      bolt-risk-assessment.md
+      progress-digest.md
+      uat.md
+      process-health.md
+      dependency-audit.md
+      knowledge-promotion.md
+      new-engineer-induction.md
     guidelines/
       domain-glossary.md
       edge-cases.md
@@ -197,6 +218,7 @@ After onboarding, your target repo will contain:
     ops/
       inception/intents/
       inception/elaborations/
+      inception/dependency-map.md
       build/backlog.md
       build/units/
       build/bolts/
@@ -233,11 +255,12 @@ The reviewer never generates code or creates files unprompted. It is a diagnosti
 
 When any 99x project completes a retro and produces an improvement that changes a **generic rule** (one that should apply to all projects, not just that project's specific stack), bring it back here:
 
-1. Open a PR against this repo
-2. Apply the change to the relevant file in `ai-dlc/`
-3. Note the source project and retro in the PR description
+1. After each retro, the `ai-dlc/skills/knowledge-promotion.md` skill automatically classifies each improvement as **generic** (contribute back) or **project-specific** (keep local). Check the `Knowledge promotion` field on each improvement file.
+2. For improvements marked **Promoted**, open a PR against this repo.
+3. Apply the change to the relevant file in `ai-dlc/`.
+4. Note the source project and retro in the PR description.
 
-This is how the framework compounds across teams over time.
+This is how the framework compounds across teams over time. The knowledge promotion step is mandatory at the end of every retro — no improvement is closed without a classification.
 
 ---
 

@@ -91,3 +91,9 @@ For each approved proposal:
 ### Step 4 — Update this retro
 
 Update the "Improvements Triggered" table above with the improvement file links and mark each as Applied or Rejected. Close the retro only after all approved improvements are applied.
+
+### Step 5 — Knowledge Promotion Evaluation
+
+After all improvements are applied, read `ai-dlc/skills/knowledge-promotion.md` and run it against every improvement marked Applied in this retro. This step evaluates whether each improvement is generic enough to benefit all AI-DLC projects and should be contributed back to the base repository.
+
+**This step is mandatory and must not be skipped.** A retro is not fully closed until every Applied improvement has a `Knowledge Promotion` status recorded in its improvement file — even if that status is "Project-specific."

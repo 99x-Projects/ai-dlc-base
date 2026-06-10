@@ -178,7 +178,7 @@ An **intent** describes what needs to be built and why, written from the user's 
 
 ```mermaid
 flowchart TD
-    subgraph INCEPTION ["Inception"]
+    subgraph INCEPTION ["Inception ( ^ Start Here)"]
         direction TB
         INTENT["Intent\n─────────────────\nWhat · Why · Success Looks Like\nAI Risk: Minimal / Limited / High"]
         INTENT --> DESIGN["Design Session\nAPI surface · Data model · Architecture decisions\nProduces binding constraints for elaboration"]

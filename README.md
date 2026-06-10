@@ -129,6 +129,99 @@ The output is a comprehensive Review Report containing: a domain-by-domain score
 
 ---
 
+## How the Agents Work Together
+
+```mermaid
+flowchart TD
+    START([Copy ai-dlc/ to project repo])
+    START --> OA_ENTRY
+
+    subgraph OA ["SESSION 1 — Onboarding Agent"]
+        direction TB
+        OA_ENTRY["Say: 'Read ai-dlc/onboard.md'"]
+        OA_ENTRY --> BRANCH{Fresh or Mature?}
+        BRANCH -->|Fresh| INTERVIEW["Structured Interview\n9 questions"]
+        BRANCH -->|Mature| ARCHAEOLOGY["Codebase Archaeology\nArchitecture · Patterns · Audit · Debt"]
+        INTERVIEW --> FILES["Write all framework files\nMaster rule file · Rules · Skills · Guidelines"]
+        ARCHAEOLOGY --> FILES
+        FILES --> REPORT["Completion Report + Handoff instruction"]
+    end
+
+    OA --> BREAK(["Close this session"])
+    BREAK --> NEW_SESSION(["Open a new session\nMaster rule file loads automatically"])
+
+    subgraph EA ["SESSIONS 2+ — Experience Agent"]
+        direction TB
+        NEW_SESSION --> INCEPTION["Inception\nWrite intent · Set AI Risk level"]
+        INCEPTION --> DESIGN["Design Session\nAPI contracts · Data model · Architecture"]
+        DESIGN --> ELABORATION["Mob Elaboration\nOne unit per turn · ACs · Edge cases · Observability"]
+        ELABORATION --> BOLTS["Bolt Planning\nRisk Assessment · Blast radius · Rollback"]
+        BOLTS --> BUILD["Build\nExecute units · Review output"]
+        BUILD --> UAT["UAT Sign-off"]
+        UAT --> RETRO["Retro\nImprovement Workflow · Knowledge Promotion"]
+        RETRO -->|Next feature| INCEPTION
+    end
+
+    subgraph DIAG ["Periodically — Diagnostics Agent"]
+        direction TB
+        REVIEW["Say: 'Read ai-dlc-reviewer/role-play.md'\nAudit artifacts · Score domains · Report findings"]
+    end
+
+    EA -. "After every few bolts" .-> DIAG
+```
+
+---
+
+## Artifact Lifecycle: Intents, Units, and Bolts
+
+An **intent** describes what needs to be built and why, written from the user's perspective. Mob elaboration breaks it into **units** — atomic pieces of work, each with testable ACs. A **bolt** is a planned batch of units grouped for execution. The three artifacts are distinct: an intent captures the goal, units capture the work, and a bolt controls the delivery sequence.
+
+```mermaid
+flowchart TD
+    subgraph INCEPTION ["Inception"]
+        direction TB
+        INTENT["Intent\n─────────────────\nWhat · Why · Success Looks Like\nAI Risk: Minimal / Limited / High"]
+        INTENT --> DESIGN["Design Session\nAPI surface · Data model · Architecture decisions\nProduces binding constraints for elaboration"]
+        DESIGN --> ELABORATION["Mob Elaboration\nOne unit proposed per turn\nACs confirmed → Edge cases → Observability\nSign-off before any file is written"]
+    end
+
+    ELABORATION -->|"Produces N units\nBacklog updated\nDependency map updated"| BACKLOG
+
+    subgraph BACKLOG ["Backlog"]
+        direction LR
+        U1["Unit\n─────────────\nContext · ACs\nScope · Observability\nPre-gen checks"]
+        U2["Unit\n─────────────\nContext · ACs\nScope · Observability\nPre-gen checks"]
+        U3["Unit\n─────────────\nContext · ACs\nScope · Observability\nPre-gen checks"]
+    end
+
+    BACKLOG -->|"Bolt Planning reads\nbacklog + dependency map"| BUILD
+
+    subgraph BUILD ["Build"]
+        direction TB
+        BOLT["Bolt\n─────────────────\nOrdered batch of units\nRisk Assessment · Blast radius\nRollback plan · Feature flag decision"]
+        BOLT --> EXECUTE["Execute units one at a time\nReview output before proceeding to next\nCircuit breaker if output fails 3× in a row"]
+    end
+
+    EXECUTE -->|"All units Done"| CLOSE_INTENT
+    EXECUTE -->|"Bolt complete"| CLOSE_BOLT
+
+    subgraph CLOSE_INTENT ["Intent Close"]
+        direction TB
+        UAT["UAT Sign-off\nDemo script generated from ACs\nPass · Pass with findings · Fail · Deferred"]
+        UAT --> IMPL["Intent → Implemented\nImplementation Summary written"]
+    end
+
+    subgraph CLOSE_BOLT ["Bolt Close"]
+        direction TB
+        RETRO["Retro\nWhat went well · What did not\nAI-specific observations · Quality gate failures"]
+        RETRO --> IMPROVE["Post-Retro Improvement Workflow\nRule changes applied · Knowledge Promotion\nRule change impact checked against open units"]
+    end
+
+    IMPROVE --->|"Tighter rules · Better conventions\nfor next bolt"| INCEPTION
+```
+
+---
+
 ## What Is This Repository?
 
 This repo is the **base template** — the source of truth that gets copied into each project repo. It contains:

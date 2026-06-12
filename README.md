@@ -113,17 +113,19 @@ The experience agent compounds in quality over time — every retro tightens the
 
 **When to use:** Periodically on any active AI-DLC project — after the first few bolts to validate early practice, or whenever the team suspects the process has drifted.
 
-**How it works:** The agent adopts the role of an AI-DLC Process Reviewer and runs through six review domains:
+**How it works:** The agent adopts the role of an AI-DLC Process Reviewer and runs through eight review domains:
 1. **Foundation** — is the master rule file a routing table or a wall of text? Are sections complete and accurate?
 2. **Inception** — are intent files written from the user's perspective? Do elaboration sessions follow the turn structure?
 3. **Build** — are ACs testable? Is scope bounded? Are pre-generation checks being run?
 4. **Operate** — are retros closing the feedback loop? Are improvements actually applied to the target files?
 5. **Process Adherence** — assessed through conversation, not files: is the quality gate enforced? Are ACs challenged or passively accepted?
 6. **Organization & Structure** — based on where the engineer retrieves artifacts from, are like artifacts colocated, consistently named, cross-linked, and discoverable?
+7. **People** — assessed through conversation: does the team demonstrate the five FDE Focused Areas (domain knowledge, customer closeness, ownership, value through expertise, and effective communication)?
+8. **Tools** — assessed through conversation: what is the team's SDLC automation posture across nine pipeline stages, and where do gaps create risk for AI-DLC execution?
 
 The agent never asks for files by specific path — the engineer shares whatever they have from wherever they keep it. The agent evaluates content quality and organizational structure independently.
 
-The output is a comprehensive Review Report containing: a domain-by-domain scorecard, findings by severity, an Organization Assessment, a Gap Analysis mapping each finding to the specific AI-DLC principle violated, a Remediation Plan (Immediate / Short-term / Long-term actions, produced only when Critical or Important findings exist), a single "First Action" recommendation, and a Patterns section flagging process drift signals.
+The output is a comprehensive Review Report containing: a domain-by-domain scorecard, findings by severity, an Organization Assessment, a People-Process-Tools Alignment section (FDE skills profile, process adherence summary, and SDLC automation posture table with challenges and suggestions), a Gap Analysis mapping each finding to the specific AI-DLC principle violated, a Remediation Plan (Immediate / Short-term / Long-term actions, produced only when Critical or Important findings exist), a single "First Action" recommendation, and a Patterns section flagging process drift signals.
 
 **Entry point:** `ai-dlc-reviewer/role-play.md`
 
@@ -343,14 +345,14 @@ For teams already running AI-DLC, the `ai-dlc-reviewer/` folder provides a compl
 | File | Purpose |
 |---|---|
 | `ai-dlc-reviewer/role-play.md` | Bootstrap trigger. Copy into the target repo and read it to the AI to start a review session. |
-| `ai-dlc-reviewer/review-guide.md` | Full review protocol — five domains, rubrics for every artifact type, scoring system, and report format. |
+| `ai-dlc-reviewer/review-guide.md` | Full review protocol — eight domains, rubrics for every artifact type, scoring system, and report format. |
 
 **How to use:**
 
 1. Copy the `ai-dlc-reviewer/` folder into the root of the project repo being audited.
 2. Open your AI assistant inside that repo.
 3. Say: `"Read ai-dlc-reviewer/role-play.md and follow the instructions inside it."`
-4. The AI adopts the reviewer persona and runs through six review domains — Foundation, Inception, Build, Operate, Process Adherence, and Organization & Structure — requesting artifacts, scoring them against rubrics, and delivering a comprehensive report with gap analysis and a prioritised remediation plan.
+4. The AI adopts the reviewer persona and runs through eight review domains — Foundation, Inception, Build, Operate, Process Adherence, Organization & Structure, People (FDE skills), and Tools (SDLC automation posture) — requesting artifacts or conducting conversations per domain, scoring against rubrics, and delivering a comprehensive report with gap analysis, a People-Process-Tools Alignment section, and a prioritised remediation plan.
 
 The reviewer never generates code or creates files unprompted. It is a diagnostic tool, not an onboarding tool.
 

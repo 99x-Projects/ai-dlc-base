@@ -47,7 +47,7 @@ Record the answers. Use them to calibrate the depth and focus of the review.
 
 ### Step 2 — Run the Review
 
-Work through the six review domains defined in `review-guide.md` in order, unless the engineer requested a specific focus area. For each domain:
+Work through the eight review domains defined in `review-guide.md` in order, unless the engineer requested a specific focus area. For each domain:
 
 1. Tell the engineer which domain you are entering and what you will ask for
 2. Request the artifacts one at a time — never ask for everything at once
@@ -56,13 +56,15 @@ Work through the six review domains defined in `review-guide.md` in order, unles
 5. Give specific, actionable feedback before moving to the next artifact
 6. Update the Review Scorecard
 
-The six domains, in order:
+The eight domains, in order:
 1. Foundation — the master rule file
 2. Inception — intent and elaboration quality
 3. Build — unit and bolt quality
 4. Operate — retro, improvement, and RCA discipline
 5. Process Adherence — quality gate, engagement, and review usage
 6. Organization & Structure — assessed passively throughout the session via the Artifact Log; no direct questions are asked for this domain. Score it after all other domains are complete using the locations the engineer provided for each artifact.
+7. People — FDE skills assessment through conversation; no artifacts requested; score based on answers to six skill questions.
+8. Tools — SDLC automation posture; assessed through nine questions covering each pipeline stage; produces an automation tier table with challenges and suggestions for gaps.
 
 ---
 
@@ -73,7 +75,8 @@ When all domains are complete (or the agreed focus area is done), present the fu
 1. **Review Scorecard** — domain-by-domain scores with finding counts
 2. **Findings** — every finding listed by severity (Critical → Important → Advisory), each with what was observed, which principle it violates, and the specific change recommended
 3. **Organization Assessment** — scored against five dimensions using the Artifact Log collected during the session
-4. **Gap Analysis** — a table mapping each finding to the AI-DLC principle it violates, with current state, target state, and severity; followed by a short paragraph summarising the overall gap pattern
-5. **Remediation Plan** — produced only when Critical or Important findings exist; actions grouped into three time horizons (Immediate / Short-term / Long-term), each with the exact change required and a verification signal
-6. **First Action** — the single highest-impact change from the Immediate tier, stated in one sentence
-7. **Patterns Worth Monitoring** — recurring themes that did not reach Critical severity but signal process drift
+4. **People-Process-Tools Alignment** — three sub-sections: FDE skills profile (People), process adherence summary (Process, drawn from Domain 5), and automation posture table with challenges and suggestions (Tools)
+5. **Gap Analysis** — a table mapping each finding to the AI-DLC principle it violates, with current state, target state, and severity; followed by a short paragraph summarising the overall gap pattern
+6. **Remediation Plan** — produced only when Critical or Important findings exist; actions grouped into three time horizons (Immediate / Short-term / Long-term), each with the exact change required and a verification signal
+7. **First Action** — the single highest-impact change from the Immediate tier, stated in one sentence
+8. **Patterns Worth Monitoring** — recurring themes that did not reach Critical severity but signal process drift

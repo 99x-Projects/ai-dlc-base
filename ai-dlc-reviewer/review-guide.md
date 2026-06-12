@@ -1,6 +1,6 @@
 # AI-DLC Review Guide
 
-This document is the protocol for the AI-DLC Process Reviewer. It defines the five review domains, the rubric for each artifact type, the scoring system, and the format for the final Review Report.
+This document is the protocol for the AI-DLC Process Reviewer. It defines the eight review domains, the rubric for each artifact type, the scoring system, and the format for the final Review Report.
 
 ---
 
@@ -32,6 +32,8 @@ Maintain this table throughout the session. Update it after each domain complete
 | 4. Operate | — | — | — | — |
 | 5. Process Adherence | — | — | — | — |
 | 6. Organization & Structure | — | — | — | — |
+| 7. People | — | — | — | — |
+| 8. Tools | — | — | — | — |
 | **Overall** | — | — | — | — |
 
 **Scoring scale per domain:**
@@ -287,6 +289,150 @@ Ask the following questions one at a time. Wait for each answer before continuin
 
 ---
 
+## Domain 7 — People: FDE Skills
+
+**What you are reviewing:** The team's capability to operate the AI-DLC process effectively. This domain is assessed through conversation — not files, but how team members actually work.
+
+**How to conduct it:**
+
+Ask the following questions one at a time — one per FDE Focused Area. Wait for each answer before continuing.
+
+1. > "How well do you understand the customer's business domain? Can you walk me through the key business processes, the main user groups, their pain points, and any compliance or regulatory constraints that shape what you build?"
+
+   *Looking for:* ability to name specific processes, user groups with distinct needs, domain terminology, and at least one compliance or regulatory constraint. Not generic descriptions like "they're a finance company."
+
+2. > "How close is your relationship with the customer — not just professionally, but personally? Do you understand how they prefer to communicate and make decisions? Do you get early visibility into real problems before they become formal requirements?"
+
+   *Looking for:* established trust; knowledge of the customer's communication style and decision-making preferences; engineer hears about real problems directly, not filtered through a PM.
+
+3. > "When something blocks your progress — a missing requirement, a technical risk, a dependency — what do you do? Can you give me a recent example where you saw a problem coming and got ahead of it?"
+
+   *Looking for:* proactive risk identification before escalation is forced; clear ownership of outcomes; knows when and how to involve the customer without over-escalating.
+
+4. > "Can you describe a recent decision where your area of expertise shaped how the team approached a problem? How did you connect that technical decision to a business goal the customer cares about?"
+
+   *Looking for:* deliberate application of expertise grounded in business goals; ability to articulate the value created, not just the technical output; evidence of design thinking or problem framing before solution.
+
+5. > "How do you keep stakeholders informed? What does your written communication look like — do you document decisions and risks proactively, or do you tend to rely on verbal updates and meetings?"
+
+   *Looking for:* proactive, fact-based written communication; no surprises on status or risk; decisions documented; escalation happens before deadlines slip, not after.
+
+### FDE Skills Rubric
+
+| FDE Focused Area | Aligned | Partially Aligned | Not Aligned |
+|---|---|---|---|
+| **FA01 — Business Domain Knowledge** | Names key processes, user groups, pain points, domain terms, and at least one compliance constraint without prompting | Knows the surface domain but cannot explain user pain points or regulatory constraints | Cannot describe the customer's business beyond the product category or tech stack |
+| **FA02 — Customer Closeness** | Trust is established; understands the customer's communication style and decision-making preferences; receives early visibility into real problems | Has regular contact but the relationship is formal and transactional; problems arrive as formal requests | Interaction is infrequent or mediated through a project manager; no direct access to the customer's real priorities |
+| **FA03 — Self-Motivation and Ownership** | Proactively identifies risks and blockers before they escalate; takes full ownership of outcomes; involves the customer at the right moment | Takes ownership when reminded; escalates reactively after problems are visible | Waits for instructions; treats work as task execution; doesn't distinguish between "it's done" and "the outcome is achieved" |
+| **FA04 — Value Through Expertise** | Connects technical decisions to business goals explicitly; can articulate what value was created; applies critical thinking and design thinking before proposing a solution | Applies expertise competently but the link to business outcomes is implicit or unstated | Executes requirements without questioning whether they solve the right problem; solutions are technically correct but business-disconnected |
+| **FA05 — Effective Communication** | Communicates fact-based and proactively; documents decisions and risks in writing; no surprises; escalates early; maintains visibility across all stakeholders | Communicates when asked; documentation is inconsistent or after-the-fact | Communication is reactive; stakeholders are surprised by status changes, risks, or decisions already made |
+
+**Scoring:**
+
+| Score | Signal |
+|---|---|
+| **Aligned** | Engineer demonstrates all five focused areas fluently; customer outcomes drive decisions, not just technical execution |
+| **Partially Aligned** | Two or three areas are strong; one or two are weak or dependent on team support to compensate |
+| **Not Aligned** | Multiple focused areas are missing; engineer operates as a technical executor rather than a forward-deployed partner |
+
+**Common findings:**
+- Engineer knows the tech stack but cannot describe customer pain points or business processes — solutions risk being technically correct but user-wrong
+- Customer interaction is mediated through a PM — the engineer lacks direct access to real priorities and gets sanitised requirements
+- Work is executed as a task list rather than owned as an outcome — risks and blockers surface late or not at all
+- Technical decisions are made without an explicit link to business goals — the connection between code and customer value is assumed, not stated
+- Communication is verbal and undocumented — decisions made in meetings are not written down, creating misalignment over time
+
+---
+
+## Domain 8 — Tools: Automation Posture
+
+**What you are reviewing:** How much of the team's SDLC is automated, where the gaps are, and how those gaps affect AI-DLC execution.
+
+**How to conduct it:**
+
+Ask the following questions one at a time. Record the classification for each stage before continuing.
+
+1. > "How do you enforce code style and quality? Does it run automatically on every commit or PR, or is it done manually?"
+
+   *Looking for:* linters, formatters, static analysis running as a pre-commit hook or CI check; not "we have ESLint installed but run it manually."
+
+2. > "How does unit testing work? Does it run automatically, and does a failing test block a merge?"
+
+   *Looking for:* tests run on every PR; failures block merge; coverage threshold enforced.
+
+3. > "What does integration or end-to-end testing look like? Is it automated?"
+
+   *Looking for:* automated suite running in CI; not "we test manually before release."
+
+4. > "What does a code review look like? Are there automated checks that run before a human reviewer looks at it?"
+
+   *Looking for:* CI, linting, and type-checking gates before human review; evidence that `review-checklist.md` is used.
+
+5. > "How does your build and CI pipeline work? What triggers it and what does it verify?"
+
+   *Looking for:* every PR triggers build; artifact produced and verified before merge.
+
+6. > "How does deployment to staging and production work — automated, semi-automated, or manual?"
+
+   *Looking for:* automated staging deploy on merge to main; production deploy via pipeline with approvals, not SSH sessions.
+
+7. > "After you deploy, how do you know if something goes wrong? What monitoring and alerting do you have?"
+
+   *Looking for:* APM, error tracking, uptime monitoring with alert routing; not "we check the logs if someone reports a bug."
+
+8. > "Do you have automated security scanning — SAST, DAST, container scanning, or similar?"
+
+   *Looking for:* at least one automated security scan in CI; findings reviewed and actioned, not ignored.
+
+9. > "How are dependency updates and vulnerability alerts handled? Is it automated?"
+
+   *Looking for:* Dependabot or equivalent raising PRs automatically; vulnerability alerts routed to a named owner.
+
+### Automation Posture Rubric
+
+For each SDLC stage, classify using one of three tiers:
+
+| Tier | Definition |
+|---|---|
+| **Full Automation** | Process runs without human intervention; enforced as a gate (blocks merge or deploy on failure) |
+| **Co-pilot Automation** | Tool or AI assists, but a human must approve, trigger, or act; not a hard gate |
+| **Not Automated** | Fully manual or no process exists |
+
+After classifying each stage, assess the AI-DLC impact for any stage that is Not Automated:
+
+| SDLC Stage | AI-DLC Impact if Not Automated |
+|---|---|
+| **Code quality / linting** | AI-generated code style violations accumulate silently — pre-generation checks become the only quality gate |
+| **Unit testing** | Definition of Done cannot be verified objectively — units are closed on trust, not evidence |
+| **Integration testing** | Cross-unit regressions introduced by AI output go undetected until staging or production |
+| **Code review** | Reviewers spend time on formatting rather than logic — AI output review quality degrades |
+| **Build / CI** | No reproducible environment to verify AI-generated code — "works on my machine" is the only signal |
+| **Deployment** | Manual deployment introduces human error into AI-generated changes; rollback capability is unclear |
+| **Monitoring / alerting** | Production failures from AI output go undetected until user reports — circuit breaker failure data is invisible |
+| **Security scanning** | AI-generated code with security vulnerabilities ships undetected; dependency audit skill has no safety net |
+| **Dependency management** | Dependency audit skill operates reactively — findings surface late and remediation bolts are unplanned |
+
+For every stage classified as **Not Automated**, record in the report:
+- **Challenge:** What risk does this gap create given this project's context?
+- **Suggestion:** What specific automation would reduce this risk and lower cognitive load on the AI-DLC process?
+
+**Scoring:**
+
+| Score | Signal |
+|---|---|
+| **Aligned** | Six or more stages at Full Automation; no critical stages (CI, unit testing, security scanning) are unautomated |
+| **Partially Aligned** | Three to five stages at Full Automation; critical stages are at Co-pilot level or better |
+| **Not Aligned** | Fewer than three stages at Full Automation; critical stages are manual or absent |
+
+**Common findings:**
+- Build and CI are automated but testing is not — the pipeline verifies compilation, not correctness
+- Monitoring exists but alerts are not routed to anyone — failures are noticed by users before engineers
+- Security scanning is absent — AI-generated code receives no automated security review
+- Deployment is semi-automated to staging but fully manual to production — rollback is ad hoc
+- Dependency management relies on human memory rather than automated alerts — the dependency-audit skill runs against an unknown baseline
+
+---
+
 ## Review Report Format
 
 Present this report at the end of the session.
@@ -334,6 +480,46 @@ Using the completed Artifact Log, evaluate whether the team's artifacts are orga
 | **Orphaned artifacts** | None found / Some found / Many found | Are there files that exist but are not linked from anywhere? |
 
 If the team's structure differs significantly from the AI-DLC recommended layout, note it here and explain whether the deviation is intentional and defensible or accidental and worth correcting.
+
+---
+
+#### People-Process-Tools Alignment
+
+Summarise the findings across the three alignment dimensions. Present as three sub-sections.
+
+**People**
+
+Summarise the team's capability profile across the five FDE Focused Areas. Note which areas are strong, which are weak, and whether gaps are individual or team-wide. Flag any bus-factor risks (capability concentrated in one person).
+
+| FDE Focused Area | Assessment | Finding |
+|---|---|---|
+| FA01 — Business Domain Knowledge | Aligned / Partially Aligned / Not Aligned | [Observation] |
+| FA02 — Customer Closeness | Aligned / Partially Aligned / Not Aligned | [Observation] |
+| FA03 — Self-Motivation and Ownership | Aligned / Partially Aligned / Not Aligned | [Observation] |
+| FA04 — Value Through Expertise | Aligned / Partially Aligned / Not Aligned | [Observation] |
+| FA05 — Effective Communication | Aligned / Partially Aligned / Not Aligned | [Observation] |
+
+**Process**
+
+[Drawn from Domain 5 findings. Summarise in 2–3 sentences: which ceremonies are consistently followed, where shortcuts are taken, and whether the feedback loop (retro → improvement → applied change) is closing.]
+
+**Tools**
+
+Present the automation posture table. For each stage classified as Not Automated, include the challenge and suggestion.
+
+| SDLC Stage | Automation Tier | Challenge (if gap) | Suggestion (if gap) |
+|---|---|---|---|
+| Code quality / linting | Full / Co-pilot / Not Automated | — | — |
+| Unit testing | Full / Co-pilot / Not Automated | — | — |
+| Integration testing | Full / Co-pilot / Not Automated | — | — |
+| Code review | Full / Co-pilot / Not Automated | — | — |
+| Build / CI | Full / Co-pilot / Not Automated | — | — |
+| Deployment | Full / Co-pilot / Not Automated | — | — |
+| Monitoring / alerting | Full / Co-pilot / Not Automated | — | — |
+| Security scanning | Full / Co-pilot / Not Automated | — | — |
+| Dependency management | Full / Co-pilot / Not Automated | — | — |
+
+Close with a 2–3 sentence summary: overall automation posture, which gaps have the highest AI-DLC impact, and the single automation investment that would most reduce process risk.
 
 ---
 

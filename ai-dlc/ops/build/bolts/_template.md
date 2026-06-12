@@ -1,6 +1,7 @@
 # Bolt: [name]
 
 **Status:** Planned | In Progress | Done | Blocked
+**Bolt Type:** Feature | Bug | Hotfix | NFR
 **Goal:** [One sentence — what this bolt delivers when complete]
 **Start date:** YYYY-MM-DD
 **Target date:** YYYY-MM-DD
@@ -28,11 +29,15 @@
 
 ---
 
-## Risks and Assumptions
+## Risk Assessment
 
-| Risk / Assumption | Likelihood | Mitigation |
-|---|---|---|
-| [description] | High / Med / Low | [what to do if it materialises] |
+> Populated by `ai-dlc/skills/bolt-risk-assessment.md` before the first unit executes. For Bug and Hotfix bolts, record blast radius inline without running the full skill unless shared interfaces are affected.
+
+| Risk | Blast radius | Rollback option | Mitigation |
+|---|---|---|---|
+| [description] | Isolated / Component / Service / Cross-service | [yes — how / no] | [what to do if it materialises] |
+
+**Feature flag required:** Yes / No — [reason if yes]
 
 ---
 

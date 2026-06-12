@@ -38,6 +38,8 @@ What AI-DLC *does* provide is the **master guideline** — a structured process 
 
 The result is a governance layer that is genuinely native to your project — written in your team's language, calibrated to your stack, and tightened by your own retros.
 
+> **Note on bolt-type skills:** The skill files `bug-bolt.md`, `hotfix-bolt.md`, and `nfr-bolt.md` are bolt-type variants within the framework — not standalone tools. They abbreviate the elaboration ceremony for specific work types (bugs, production incidents, non-functional improvements) while keeping all quality gates active. They require the full AI-DLC framework to be installed and are routed from the master rule file. Do not use them in isolation.
+
 ---
 
 ## Supported AI Tools
@@ -97,6 +99,7 @@ The output is a fully configured `ai-dlc/` folder with a master rule file, rules
 - Prompts for a **dependency audit** when the scheduled date in Section 9 arrives — reads manifests, analyzes findings, and creates remediation bolts for critical issues
 - Writes an **Implementation Summary** when all units under an intent are delivered
 - Suggests running **Root Cause Analysis** when an incident is resolved
+- Routes **bolt-type variants** based on natural language: "fix a bug in X" → bug bolt (abbreviated workflow, no elaboration, mandatory RCA if recurring); "hotfix" / "prod is down" → hotfix bolt (emergency intake, minimal ACs, retro within 24 hours); "improve performance of X" / "NFR bolt" → NFR bolt (measurable threshold ACs, before/after baseline, no new intent created)
 - Responds to engineer-triggered skills: `compact-docs`, `root-cause-analysis`, `progress-digest` (stakeholder summaries), `new-engineer-induction` (onboards a new team member with a personalized quick-reference card)
 
 The experience agent compounds in quality over time — every retro tightens the rules, every RCA surfaces deeper gaps, knowledge promotion propagates improvements across teams, and every bolt is safer than the last.
@@ -242,6 +245,9 @@ This repo is the **base template** — the source of truth that gets copied into
 | `ai-dlc/skills/dependency-audit.md` | Monthly dependency and security posture audit. Reads manifests, classifies findings by severity, and creates remediation bolts for high/critical issues. Scheduled via Section 9 of the master rule file. |
 | `ai-dlc/skills/knowledge-promotion.md` | Cross-project learning protocol. Runs as the final step of every retro; classifies each improvement as generic (to be contributed back to this base repo) or project-specific. |
 | `ai-dlc/skills/new-engineer-induction.md` | New engineer onboarding session. Walks a new team member through the project's framework using actual project files; produces a personalized quick-reference card. |
+| `ai-dlc/skills/bug-bolt.md` | Lightweight bolt workflow for fixing a specific, reproducible bug. Triggered by "fix a bug in X". Skips design session and elaboration; replaces them with a four-question intake, recurrence check, and a single focused unit. Runs RCA automatically if the bug is recurring. |
+| `ai-dlc/skills/hotfix-bolt.md` | Emergency bolt for production incidents. Triggered by "hotfix" or "prod is down". Runs a three-question intake (symptom, severity, rollback), creates a minimal unit, mandates a retro and RCA within 24 hours. |
+| `ai-dlc/skills/nfr-bolt.md` | Non-functional quality attribute bolt. Triggered by "improve performance of X", "NFR bolt for X", etc. Requires a measurable threshold AC, establishes a before/after baseline, and cross-references affected intents. Does not create a new intent. |
 | `ai-dlc/ops/inception/dependency-map.md` | Intent dependency map. Records which intents depend on others and which interfaces are shared across intent boundaries; read before bolt planning, updated after every elaboration sign-off. |
 | `ai-dlc/rules/engagement.md` | Engineer engagement monitoring — signals of disengagement, intervention script, and escalation protocol. Copied verbatim into every project. |
 | `ai-dlc/ops/inception/intents/_template.md` | Template for writing a feature intent (includes Implementation Summary section, written when all units under the intent are delivered) |
@@ -313,6 +319,9 @@ After onboarding, your target repo will contain:
       dependency-audit.md
       knowledge-promotion.md
       new-engineer-induction.md
+      bug-bolt.md
+      hotfix-bolt.md
+      nfr-bolt.md
     guidelines/
       domain-glossary.md
       edge-cases.md

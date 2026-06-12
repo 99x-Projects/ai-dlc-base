@@ -585,6 +585,9 @@ If the engineer defers, ask for the new date and update Section 9 before continu
 **Process health skill:** read `ai-dlc/skills/process-health.md` when the engineer invokes it to audit how well the AI-DLC process is functioning.
 **Compact-docs skill:** read `ai-dlc/skills/compact-docs.md` when the engineer invokes it.
 **Root-cause-analysis skill:** read `ai-dlc/skills/root-cause-analysis.md` when the engineer invokes it, or when an incident is marked Resolved and no RCA has been run on it.
+**Bug bolt:** read `ai-dlc/skills/bug-bolt.md` when the engineer says "fix a bug", "there's a bug in X", or "bug: [description]". Do not run a full mob elaboration — follow the bug bolt workflow directly.
+**Hotfix bolt:** read `ai-dlc/skills/hotfix-bolt.md` when the engineer says "hotfix", "production issue", "prod is down", or "emergency fix for X". Skip elaboration — begin hotfix intake immediately.
+**NFR bolt:** read `ai-dlc/skills/nfr-bolt.md` when the engineer says "improve performance", "harden security", "accessibility improvements", "NFR bolt for X", or "non-functional work on X". Do not create a new intent — follow the NFR bolt workflow.
 **Engagement monitoring:** read and apply `ai-dlc/rules/engagement.md` throughout all ceremonies.
 ```
 
@@ -833,6 +836,46 @@ Copy this file verbatim from the base repo (`ai-dlc/skills/bolt-risk-assessment.
 
 ```markdown
 **Bolt risk assessment:** read `ai-dlc/skills/bolt-risk-assessment.md` after elaboration sign-off and before the first unit in a bolt executes. No unit may begin execution without a signed-off risk assessment in the bolt file.
+```
+
+### `skills/bug-bolt.md`
+
+The bug-bolt skill is a lightweight bolt workflow for fixing a specific, reproducible bug. It replaces the full elaboration ceremony with a four-question intake, a recurrence check against retro and incident history, a single focused unit with regression-guard ACs, and a mandatory RCA if the bug is recurring. Skips: design session, dependency map update, mob elaboration. Preserves: pre-generation checks, review checklist, blast radius assessment for shared components, and post-fix retro.
+
+Copy this file verbatim from the base repo (`ai-dlc/skills/bug-bolt.md`). No customization is needed.
+
+**Wire into the master rule file Section 6** by adding one routing line:
+
+```markdown
+**Bug bolt:** read `ai-dlc/skills/bug-bolt.md` when the engineer says "fix a bug", "there's a bug in X", or "bug: [description]". Do not run a full mob elaboration — follow the bug bolt workflow directly.
+```
+
+---
+
+### `skills/hotfix-bolt.md`
+
+The hotfix-bolt skill is an emergency bolt for production incidents that cannot wait for a planning cycle. It runs a three-question intake (symptom, severity, rollback availability), creates a minimal unit with a two-AC pair (fix applied / no regressions), confirms the blast radius before any code is generated, and mandates a retro and RCA within 24 hours. Skips: elaboration, design session, dependency map update. Preserves: review checklist, pre-generation checks, incident file creation, retro.
+
+Copy this file verbatim from the base repo (`ai-dlc/skills/hotfix-bolt.md`). No customization is needed.
+
+**Wire into the master rule file Section 6** by adding one routing line:
+
+```markdown
+**Hotfix bolt:** read `ai-dlc/skills/hotfix-bolt.md` when the engineer says "hotfix", "production issue", "prod is down", or "emergency fix for X". Skip elaboration — begin hotfix intake immediately.
+```
+
+---
+
+### `skills/nfr-bolt.md`
+
+The nfr-bolt skill handles non-functional quality attribute improvements — performance, security hardening, accessibility, reliability, observability, and scalability. It does not create a new intent; it references and improves existing ones. Key controls: measurable threshold ACs are mandatory (vague ACs are rejected), a before/after measurement is required for bolt closure, affected intents are identified upfront and cross-referenced after completion, and bolt-risk-assessment runs before any unit executes because NFR changes often have wider blast radii than they appear.
+
+Copy this file verbatim from the base repo (`ai-dlc/skills/nfr-bolt.md`). No customization is needed.
+
+**Wire into the master rule file Section 6** by adding one routing line:
+
+```markdown
+**NFR bolt:** read `ai-dlc/skills/nfr-bolt.md` when the engineer says "improve performance", "harden security", "accessibility improvements", "NFR bolt for X", or "non-functional work on X". Do not create a new intent — follow the NFR bolt workflow.
 ```
 
 ---

@@ -147,6 +147,7 @@ Note the location each file comes from in the Artifact Log. Review the planning 
 
 | Check | Aligned | Partially Aligned | Not Aligned |
 |---|---|---|---|
+| **Bolt Type** | Field set to Feature, Bug, Hotfix, or NFR; correct skill was used for the declared type | Field present but type does not match the actual work (e.g. Bug bolt run as Feature) | Field missing entirely |
 | **Goal is bounded** | One clear outcome; maps to one intent | Multiple intents mixed | Vague or missing goal |
 | **Units table** | All units listed with status and links | Present but incomplete | Missing |
 | **Execution order** | Dependencies between units are documented | Implied but not stated | Missing — units executed in arbitrary order |
@@ -173,6 +174,8 @@ Note the location each file comes from in the Artifact Log. Review the planning 
 - Definition of Done not completed after execution — no evidence the unit was properly closed
 - Breaking Changes Register missing on Remediation units that changed API contracts
 - Bolt has no Risk Assessment — blast radius and rollback options were never analyzed before execution began
+- Bolt Type field is missing or set to Feature for work that is clearly a bug fix or hotfix — the abbreviated workflow was not used, adding unnecessary ceremony overhead
+- Bug bolt did not trigger RCA for a recurring bug — the recurrence check was skipped or its output was ignored
 
 ---
 

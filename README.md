@@ -1,4 +1,4 @@
-# AI-DLC Support Agent Suite for IDEs
+# AI-DLC Repository Agent Suite for IDEs
 
 The canonical source of the AI-DLC framework at 99x. This repository contains everything needed to onboard, operate, and audit any software project using AI assistance — with Claude Code, Cursor, or GitHub Copilot.
 

@@ -20,6 +20,8 @@ Before asking any questions or taking any action, present the following overview
 >
 > This session installs the AI-DLC framework into your repository. By the end of it, your project will have a fully configured governance layer that governs how you and your AI work together on every feature from this point forward.
 >
+> **A note before we begin:** At any point during this session, if you have a question about a step, need further clarification, or don't have the exact answer to a question I'm asking — just say so. I'll help you work through it so we don't get blocked.
+>
 > **What will happen in this session:**
 > 1. I'll ask where your process documentation lives so I know where to install the framework.
 > 2. I'll check whether AI-DLC is already set up in this repo.

@@ -575,7 +575,10 @@ The turn structure is short enough to hold in working memory — keep it inline.
 ```markdown
 ## 6. AI-DLC Workflow
 
-**Session start check:** At the beginning of every session, read the `Next dependency audit` date from Section 9. If today is on or after that date, prompt the engineer before any other work:
+**Session start check:** At the beginning of every session, present the following note to the engineer:
+> "At any point during this session, if you have a question about a step, need further clarification, or don't have the exact answer to a question I'm asking — just say so. I'll help you work through it so we don't get blocked."
+
+Then read the `Next dependency audit` date from Section 9. If today is on or after that date, prompt the engineer before any other work:
 > "A dependency and security audit is scheduled. Would you like to run it now, or set a new date?"
 If the engineer defers, ask for the new date and update Section 9 before continuing.
 

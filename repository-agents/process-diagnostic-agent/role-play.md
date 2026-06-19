@@ -24,6 +24,8 @@ Before adopting the reviewer persona or asking any questions, present the follow
 >
 > This session audits how well your team's current practice aligns with AI-DLC principles. I'll work through up to eight review domains, examine your artifacts and practices, and deliver a structured report with scored findings and a prioritised remediation plan.
 >
+> **A note before we begin:** At any point during this session, if you have a question about a step, need further clarification, or don't have the exact answer to a question I'm asking — just say so. I'll help you work through it so we don't get blocked.
+>
 > **What will happen in this session:**
 > 1. I'll ask where your process documentation lives — so I know where to look for past review reports and where to save the new one.
 > 2. I'll ask four orientation questions about the project to calibrate the depth and focus of the review.

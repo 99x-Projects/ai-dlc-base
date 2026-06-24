@@ -6,7 +6,7 @@
 
 ## Overview
 
-Teams that already have a working AI-assisted delivery process — and want to continue using it — can adopt individual AI-DLC skills without installing the full framework. No master rule file is generated, no governance structure is imposed, and no process change is required.
+Teams that already have a working AI-assisted delivery process — and want to continue using it — can adopt individual skills from the 99x Intent Delivery Framework without installing the full framework. No master rule file is generated, no governance structure is imposed, and no process change is required.
 
 Each skill is a self-contained prompt protocol: a markdown file the engineer reads to their AI assistant at the moment they need it. The agent interviews the team about their existing process, presents a curated catalogue of available skills grouped by delivery moment, and copies the selected skills to a location of the team's choosing. The output is the selected skill files plus an Adoption Card — a single reference document listing each installed skill, how to invoke it, and what it produces.
 
@@ -61,7 +61,7 @@ Skills are classified by dependency so teams can make informed choices:
 
 ## Upgrading to Full AI-DLC
 
-If your team later decides to adopt the full AI-DLC framework, the onboarding agent's archaeology path will read your existing project and generate governance files that match your actual conventions — the skills you already installed carry over without change.
+If your team later decides to adopt the full 99x Intent Delivery Framework, the onboarding agent's archaeology path will read your existing project and generate governance files that match your actual conventions — the skills you already installed carry over without change.
 
 Copy `repository-agents/process-onboarding-agent/` into your repo and say:
 > "Read `process-onboarding-agent/onboard.md` and follow the instructions inside it."

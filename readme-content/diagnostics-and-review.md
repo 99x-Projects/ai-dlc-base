@@ -6,7 +6,7 @@
 
 ## AI-DLC Reviewer (Diagnostics)
 
-The `repository-agents/process-diagnostic-agent/` folder provides a **pull** mode audit that works at any stage — whether the project is fully onboarded, partially adopted, or has no AI-DLC installation at all. The agent works with whatever process artifacts the team already has and scores them against AI-DLC principles, making it equally useful as a pre-onboarding readiness assessment or a periodic health check on a running project.
+The `repository-agents/process-diagnostic-agent/` folder provides a **pull** mode audit that works at any stage — whether the project is fully onboarded, partially adopted, or has no installation of the 99x Intent Delivery Framework at all. The agent works with whatever process artifacts the team already has and scores them against AI-DLC principles, making it equally useful as a pre-onboarding readiness assessment or a periodic health check on a running project.
 
 | File | Purpose |
 |---|---|
@@ -68,4 +68,4 @@ The diagnostics agent works equally well before AI-DLC is installed. Share your 
 
 The resulting gap report tells you exactly what is missing and why, and becomes the brief for your onboarding session. It is a faster path to a high-quality onboarding than starting from scratch.
 
-You do not need to copy `process-onboarding-agent/` for this — the diagnostics agent never reads from it.
+You do not need to copy `process-onboarding-agent/` for this — the diagnostics agent never reads from it. The resulting gap report is a practical brief for a 99x Intent Delivery Framework onboarding session if the team decides to proceed.

@@ -8,7 +8,7 @@
 
 This repository does **not** ship a fixed set of rules that get stamped into your project.
 
-A common first impression is that AI-DLC is a standards pack — a collection of pre-written rules and conventions that are applied uniformly across every project. That is not what happens. The files in this repository are a **framework skeleton and an agent protocol**, not a rule book.
+A common first impression is that the 99x Intent Delivery Framework is a standards pack — a collection of pre-written rules and conventions that are applied uniformly across every project. That is not what happens. The files in this repository are a **framework skeleton and an agent protocol**, not a rule book.
 
 Here is what actually gets built:
 
@@ -29,17 +29,17 @@ The result is a governance layer that is genuinely native to your project — wr
 
 ### 1. Onboarding Agent
 
-**What it does:** Installs the AI-DLC framework into a project that does not yet have it.
+**What it does:** Installs the 99x Intent Delivery Framework into a project that does not yet have it.
 
 **Mode:** Push — the agent drives the entire setup process and delivers a ready-to-use governance layer.
 
-**When to use:** When a project is starting fresh or when an existing project wants to adopt AI-DLC for the first time.
+**When to use:** When a project is starting fresh or when an existing project wants to adopt the 99x Intent Delivery Framework for the first time.
 
 **How it works:**
 - For **fresh projects**: runs a nine-question structured interview to extract the project's identity, stack, domain language, and constraints, then generates all framework files from those answers.
 - For **mature projects**: performs a phased codebase archaeology (architecture mapping, pattern extraction, due diligence audit, debt classification) before generating the framework, ensuring the AI inherits the existing project's conventions rather than overwriting them.
 
-The output is a fully configured `intent-execution-framework/` folder (placed inside the team's existing docs folder, or at `docs/process/intent-execution-framework/` if none exists) with a master rule file, rules, skills, guidelines, ops templates, and a completion report flagging anything that still needs engineer input.
+The output is a fully configured `intent-execution-framework/` folder (placed inside the team's existing docs folder, or at `docs/process/intent-execution-framework/` if none exists) with a master rule file, rules, skills, guidelines, ops templates, and a completion report flagging anything that still needs engineer input. This is the installed 99x Intent Delivery Framework for the project.
 
 **Entry point:** `process-onboarding-agent/onboard.md`
 
@@ -75,7 +75,7 @@ The experience agent compounds in quality over time — every retro tightens the
 
 ### 3. Diagnostics Agent
 
-**What it does:** Audits a project against AI-DLC principles and delivers a structured gap report. Works whether or not AI-DLC is installed — the agent works with whatever process artifacts the team already has.
+**What it does:** Audits a project against AI-DLC principles and delivers a structured gap report. Works whether or not the 99x Intent Delivery Framework is installed — the agent works with whatever process artifacts the team already has.
 
 **Mode:** Pull — the agent requests artifacts from the engineer, scores them against structured rubrics, and delivers a prioritised review report.
 

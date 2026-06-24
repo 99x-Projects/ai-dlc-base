@@ -1,12 +1,12 @@
-# AI-DLC Repository Agent Suite for IDEs
+# 99x Intent Delivery Framework for AI-DLC
 
-The canonical source of the AI-DLC framework at 99x. This repository contains everything needed to onboard, operate, and audit any software project using AI assistance — with Claude Code, Cursor, or GitHub Copilot.
+The canonical source of the 99x Intent Delivery Framework at 99x. This is the intent-driven delivery subsystem within the broader AI-DLC methodology — containing everything needed to onboard, operate, and audit any software project using AI assistance — with Claude Code, Cursor, or GitHub Copilot.
 
 ---
 
-## What Is AI-DLC?
+## What Is the 99x Intent Delivery Framework?
 
-AI-DLC is a structured operating system for building software with AI assistance. It is not a tool — it is a set of files, conventions, and ceremonies that govern how a team and its AI work together. The output is a repository where:
+The 99x Intent Delivery Framework is the intent-first delivery operating system within 99x's broader AI-DLC methodology. AI-DLC is a vast set of tools, practices, and principles for AI-assisted software delivery — this framework is the subsystem that governs how a team structures, executes, and governs its day-to-day work using those principles. It is not a tool — it is a set of files, conventions, and ceremonies that govern how a team and its AI work together. The output is a repository where:
 
 - Every feature starts with a written intent and testable acceptance criteria
 - Every AI interaction is gated by a quality check and logged for audit
@@ -20,6 +20,8 @@ Inception → Build → Operate → Improvements → (back to Inception)
 ```
 
 Rules, skills, and guidelines are generated through conversation with your team — not stamped from a template. → [What to expect in detail](readme-content/agents.md)
+
+> **Scope note:** This repository covers the intent-driven delivery layer of AI-DLC. It does not represent the full AI-DLC methodology, which spans tooling, governance, team practices, and more.
 
 ---
 
@@ -41,10 +43,10 @@ Each tool loads its master rule file automatically at the start of every session
 
 | Agent | What it does | Entry point |
 |---|---|---|
-| **Onboarding** | Installs the AI-DLC framework through a structured interview or codebase archaeology session | `process-onboarding-agent/onboard.md` |
+| **Onboarding** | Installs the 99x Intent Delivery Framework through a structured interview or codebase archaeology session | `process-onboarding-agent/onboard.md` |
 | **Experience** | Governs AI behavior on every working session — quality gates, elaboration, bolts, retros, UAT | Master rule file (auto-loaded at session start) |
-| **Diagnostics** | Audits process and delivers a structured gap report — works with or without AI-DLC installed | `process-diagnostic-agent/role-play.md` |
-| **Skills** | Installs individual AI-DLC skills into a bespoke delivery process without the full framework | `process-skills-agent/onboard.md` |
+| **Diagnostics** | Audits process against AI-DLC principles and delivers a structured gap report — works with or without the framework installed | `process-diagnostic-agent/role-play.md` |
+| **Skills** | Installs individual framework skills into a bespoke delivery process without installing the full framework | `process-skills-agent/onboard.md` |
 | **Migration** | Migrates a project from the old `ai-dlc/` structure to the new methodology | `process-migration-agent/migrate.md` |
 
 → [Detailed agent descriptions and diagrams](readme-content/agents.md)
@@ -55,7 +57,7 @@ Each tool loads its master rule file automatically at the start of every session
 
 ### Onboarding a new project
 
-This is a two-session process: the onboarding agent runs in session 1; the experience agent is live from session 2 onward.
+This is a two-session process: the onboarding agent installs the framework in session 1; the experience agent is live from session 2 onward.
 
 **Session 1:**
 1. Copy `process-onboarding-agent/` from `repository-agents/` into your project root.

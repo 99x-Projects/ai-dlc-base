@@ -6,11 +6,11 @@
 
 ## Not Ready to Onboard Yet? Start Here.
 
-Full AI-DLC adoption — with onboarding, a master rule file, and governance ceremonies — delivers the most value, but it requires a deliberate commitment that not every team is ready to make. If your team is still evaluating, or wants to prove value before committing, the activities below are a low-risk starting point.
+Full adoption of the 99x Intent Delivery Framework — with onboarding, a master rule file, and governance ceremonies — delivers the most value, but it requires a deliberate commitment that not every team is ready to make. If your team is still evaluating, or wants to prove value before committing, the activities below are a low-risk starting point.
 
 Each activity plugs into a ceremony you already run. No new framework is imposed, no files need to be installed, and no onboarding session is required. Pick two activities from Phase 1, run them for a sprint or two, and measure the lift. Then add the next.
 
-Phase 3 activities are the natural signal that a team is ready to graduate to full AI-DLC adoption — by the time you reach them, you will have already reproduced most of the framework's core behaviors organically.
+Phase 3 activities are the natural signal that a team is ready to graduate to full 99x Intent Delivery Framework adoption — by the time you reach them, you will have already reproduced most of the framework's core behaviors organically.
 
 ---
 
@@ -54,7 +54,7 @@ By this phase, the team is running a recognizable version of the AI-DLC cycle. C
 | 14 | **Risk and blast-radius check** | Before a sizeable change, assesses impact on other components, rollback options, and whether a feature flag is needed. | Bolt risk assessment |
 | 15 | **Dependency and security audit** | Reads package manifests monthly, lists risky or outdated packages, and suggests remediation steps. | dependency-audit skill |
 | 16 | **New-joiner induction** | Walks a new engineer through the codebase and produces a personalized quick-reference card. | new-engineer-induction skill |
-| 17 | **Capture conventions as a prompt** | Seeds a `CLAUDE.md` or `.cursorrules` with the team's actual coding standards and domain terms — the first step of a real onboarding. | Master rule file → full adoption |
+| 17 | **Capture conventions as a prompt** | Seeds a `CLAUDE.md` or `.cursorrules` with the team's actual coding standards and domain terms — the first step of a real onboarding. | Master rule file → full framework adoption |
 
 ---
 

@@ -22,7 +22,7 @@ At the end of the session, use this log to assess whether the team's artifacts a
 
 ## Review Scorecard
 
-Maintain this table throughout the session. Update it after each domain completes.
+Maintain this table throughout the session. Update it after each domain completes. For domains not selected in scope, enter **Skipped** in the Score column and leave finding counts blank.
 
 | Domain | Score | Critical findings | Important findings | Advisory findings |
 |---|---|---|---|---|
@@ -32,9 +32,11 @@ Maintain this table throughout the session. Update it after each domain complete
 | 4. Operate | — | — | — | — |
 | 5. Process Adherence | — | — | — | — |
 | 6. Organization & Structure | — | — | — | — |
-| 7. People | — | — | — | — |
-| 8. Tools | — | — | — | — |
+| 7. People | — / Skipped | — | — | — |
+| 8. Tools | — / Skipped | — | — | — |
 | **Overall** | — | — | — | — |
+
+The Overall score is derived from the domains that were run. Skipped domains do not influence the overall score.
 
 **Scoring scale per domain:**
 
@@ -296,9 +298,33 @@ Ask the following questions one at a time. Wait for each answer before continuin
 
 **What you are reviewing:** The team's capability to operate the AI-DLC process effectively. This domain is assessed through conversation — not files, but how team members actually work.
 
-**How to conduct it:**
+**This domain is optional.** Run it only if selected during scope confirmation (Step 1b of the session). If skipped, mark Domain 7 as **Skipped** in the scorecard and omit the People sub-section from the People-Process-Tools Alignment section of the report.
 
-Ask the following questions one at a time — one per FDE Focused Area. Wait for each answer before continuing.
+---
+
+### Single-member assessment
+
+If one team member was named, ask the five questions below for that person. Introduce the assessment:
+
+> "I'll ask you five questions, one per capability area. Answer from your own perspective — there are no right or wrong answers, just honest reflection."
+
+Ask the questions one at a time. Wait for each answer before continuing.
+
+### Multi-member assessment
+
+If more than one team member was named, run the full five-question assessment for each person in sequence before moving on. Introduce the process:
+
+> "I'll work through each team member one at a time. For each person, I'll ask the same five questions. You can answer on their behalf, or if any team members are present they can answer directly."
+
+For each team member:
+1. Announce which person you are assessing: *"Let's start with [name]."*
+2. Ask all five questions in sequence, recording answers against that person's name.
+3. Score that person against the FDE Skills Rubric before moving to the next.
+4. After all team members are assessed, compile the team-level aggregate profile (see Multi-member report format below).
+
+---
+
+### The five assessment questions
 
 1. > "How well do you understand the customer's business domain? Can you walk me through the key business processes, the main user groups, their pain points, and any compliance or regulatory constraints that shape what you build?"
 
@@ -488,11 +514,15 @@ If the team's structure differs significantly from the AI-DLC recommended layout
 
 #### People-Process-Tools Alignment
 
-Summarise the findings across the three alignment dimensions. Present as three sub-sections.
+Summarise the findings across the three alignment dimensions. Present as three sub-sections. If People or Tools was not included in the session scope, replace that sub-section with: *"Not assessed in this session."*
+
+---
 
 **People**
 
-Summarise the team's capability profile across the five FDE Focused Areas. Note which areas are strong, which are weak, and whether gaps are individual or team-wide. Flag any bus-factor risks (capability concentrated in one person).
+*If Domain 7 was skipped:* write *"Not assessed in this session."* and omit the tables below.
+
+*If one team member was assessed:* present the standard profile table.
 
 | FDE Focused Area | Assessment | Finding |
 |---|---|---|
@@ -502,11 +532,43 @@ Summarise the team's capability profile across the five FDE Focused Areas. Note 
 | FA04 — Value Through Expertise | Aligned / Partially Aligned / Not Aligned | [Observation] |
 | FA05 — Effective Communication | Aligned / Partially Aligned / Not Aligned | [Observation] |
 
+*If more than one team member was assessed:* present one profile table per person, then a team aggregate table.
+
+**[Name]**
+
+| FDE Focused Area | Assessment | Finding |
+|---|---|---|
+| FA01 — Business Domain Knowledge | Aligned / Partially Aligned / Not Aligned | [Observation] |
+| FA02 — Customer Closeness | Aligned / Partially Aligned / Not Aligned | [Observation] |
+| FA03 — Self-Motivation and Ownership | Aligned / Partially Aligned / Not Aligned | [Observation] |
+| FA04 — Value Through Expertise | Aligned / Partially Aligned / Not Aligned | [Observation] |
+| FA05 — Effective Communication | Aligned / Partially Aligned / Not Aligned | [Observation] |
+
+*(Repeat the table above for each additional team member.)*
+
+**Team Aggregate**
+
+| FDE Focused Area | Team Strength | Notes |
+|---|---|---|
+| FA01 — Business Domain Knowledge | Strong / Mixed / Weak | [Which members are strong / where the gap sits] |
+| FA02 — Customer Closeness | Strong / Mixed / Weak | [Which members are strong / where the gap sits] |
+| FA03 — Self-Motivation and Ownership | Strong / Mixed / Weak | [Which members are strong / where the gap sits] |
+| FA04 — Value Through Expertise | Strong / Mixed / Weak | [Which members are strong / where the gap sits] |
+| FA05 — Effective Communication | Strong / Mixed / Weak | [Which members are strong / where the gap sits] |
+
+Close the People sub-section with a short paragraph (2–3 sentences): overall team capability profile, whether gaps are individual or team-wide, and any bus-factor risks (capability concentrated in one person).
+
+---
+
 **Process**
 
 [Drawn from Domain 5 findings. Summarise in 2–3 sentences: which ceremonies are consistently followed, where shortcuts are taken, and whether the feedback loop (retro → improvement → applied change) is closing.]
 
+---
+
 **Tools**
+
+*If Domain 8 was skipped:* write *"Not assessed in this session."* and omit the table below.
 
 Present the automation posture table. For each stage classified as Not Automated, include the challenge and suggestion.
 

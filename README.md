@@ -48,6 +48,7 @@ Each tool loads its master rule file automatically at the start of every session
 | **Diagnostics** | Audits process against AI-DLC principles and delivers a structured gap report — works with or without the framework installed | `process-diagnostic-agent/role-play.md` |
 | **Skills** | Installs individual framework skills into a bespoke delivery process without installing the full framework | `process-skills-agent/onboard.md` |
 | **Migration** | Migrates a project from the old `ai-dlc/` structure to the new methodology | `process-migration-agent/migrate.md` |
+| **Estimation** | Produces structured estimates — ballpark ranges from draft requirements (pre-sales/feasibility) or bolt-level delivery estimates from elaborated units (release planning) | `process-estimation-agent/estimate.md` |
 
 → [Detailed agent descriptions and diagrams](readme-content/agents.md)
 
@@ -95,6 +96,20 @@ Works with any project — no AI-DLC installation required. → [Full diagnostic
 
 → [Full migration guide](readme-content/migrating-from-old-structure.md)
 
+### Producing an estimate
+
+**Ballpark (pre-sales / feasibility):**
+1. Copy `process-estimation-agent/` from `repository-agents/` into your working folder.
+2. Open your AI assistant.
+3. Say: `"Read process-estimation-agent/estimate.md and follow the instructions inside it."` — select **Mode 1** when prompted.
+
+**Delivery (bolt-level / release planning):**
+1. The framework must already be installed and mob elaboration complete.
+2. Copy `process-estimation-agent/` from `repository-agents/` into your project root.
+3. Say: `"Read process-estimation-agent/estimate.md and follow the instructions inside it."` — select **Mode 2** when prompted.
+
+→ [Full estimation guide](readme-content/estimation.md)
+
 ---
 
 ## Further Reading
@@ -106,6 +121,7 @@ Works with any project — no AI-DLC installation required. → [Full diagnostic
 - [Incremental adoption activities](readme-content/incremental-adoption.md) — Phase 1–3 activities for teams not ready to fully onboard
 - [Migrating from the old structure](readme-content/migrating-from-old-structure.md) — from `ai-dlc/` to the new methodology
 - [Contributing improvements back](readme-content/contributing.md) — how the base repo evolves through knowledge promotion
+- [Estimation guide](readme-content/estimation.md) — ballpark and delivery estimation modes, tier classifications, calibration from recorded hours
 
 ---
 

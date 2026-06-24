@@ -1,10 +1,21 @@
 # AI-DLC Onboarding Prompt
 
-Copy this file into the root of your target repository. Then say the following to your AI assistant:
+## Prerequisites — copy these folders from the AI-DLC base repo before starting
+
+Copy both of the following from `repository-agents/` in the base repo into your **project root**:
+
+```
+process-onboarding-agent/       ← this agent (the trigger and setup guide)
+process-estimation-agent/       ← delivery estimation for release planning (keep after onboarding)
+```
+
+## Trigger
+
+Once both folders are in your project root, say the following to your AI assistant:
 
 ---
 
-> **Read `process-onboarding-agent/onboard.md` and follow the instructions inside it.**
+> **"Read `process-onboarding-agent/onboard.md` and follow the instructions inside it."**
 
 ---
 
@@ -38,6 +49,7 @@ Before asking any questions or taking any action, present the following overview
 >   - Guidelines files (domain glossary, edge cases, acceptance patterns, dev setup)
 >   - Ops templates (intents, units, bolts, retros, incidents, improvements)
 > - A **completion report** listing every file created and flagging anything that needs your review before the first feature bolt runs
+> - **`process-estimation-agent/`** already in your project root and ready to use — once mob elaboration produces units, invoke it in Mode 2 to get bolt-level estimates and a release milestone map
 >
 > **When this session ends:** Close it and open a brand new session. Your AI tool will automatically load the master rule file — that is the experience agent, ready to run your first feature.
 >
@@ -57,7 +69,7 @@ Record the answer and set **`FRAMEWORK_ROOT`**:
 
 Use `FRAMEWORK_ROOT` as the base path for every framework file created during this session. **Do not create framework files under `process-onboarding-agent/`** — that folder is the bootstrap agent, not the installed framework.
 
-> **After the completion report is delivered**, remind the engineer: "You can now delete `process-onboarding-agent/` from your project root — it is only needed for this onboarding session and serves no purpose in the running framework."
+> **After the completion report is delivered**, remind the engineer: "You can now delete `process-onboarding-agent/` from your project root — it is only needed for this onboarding session and serves no purpose in the running framework. Keep `process-estimation-agent/` — it is used for delivery estimation once mob elaboration produces units."
 
 ---
 
@@ -136,7 +148,7 @@ The completion report includes a mandatory handoff instruction (Section 5 of the
 
 After presenting the report, add this note:
 
-> "The framework has been installed at `{FRAMEWORK_ROOT}/`. You can now delete `process-onboarding-agent/` from your project root — it is no longer needed."
+> "The framework has been installed at `{FRAMEWORK_ROOT}/`. You can now delete `process-onboarding-agent/` from your project root — it is no longer needed. Keep `process-estimation-agent/` — it is used for delivery estimation once mob elaboration produces units."
 
 ---
 
@@ -183,4 +195,4 @@ The completion report includes a mandatory handoff instruction (Section 5 of the
 
 After presenting the report, add this note:
 
-> "The framework has been installed at `{FRAMEWORK_ROOT}/`. You can now delete `process-onboarding-agent/` from your project root — it is no longer needed."
+> "The framework has been installed at `{FRAMEWORK_ROOT}/`. You can now delete `process-onboarding-agent/` from your project root — it is no longer needed. Keep `process-estimation-agent/` — it is used for delivery estimation once mob elaboration produces units."

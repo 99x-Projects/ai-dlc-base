@@ -24,6 +24,15 @@ Ask the engineer four questions:
 
 Do not proceed without a measurable target threshold. "Better", "faster", and "more secure" are not valid thresholds — ask again until a number or verifiable criterion is provided.
 
+**Scope the threshold to what the change CONTROLS, not to the outcome the engineer wishes for.** A measurable threshold can still be the wrong threshold: if it depends on defects the unit does not touch, then doing the work perfectly cannot satisfy it, and the bolt lands in Step 7's Blocked state for reasons that have nothing to do with the work.
+
+The test at intake: **name the failure modes that could redden this threshold, then strike out every one the change cannot reach.** If any remain, the threshold is measuring someone else's bug. Two consequences worth stating in the bolt file:
+
+- Prefer a threshold on the **specific signal** the change governs over a threshold on a **composite gate result** (e.g. "the whole suite is green"), which aggregates every unrelated defect in the system.
+- Where the composite really is the goal, the prerequisite fixes belong in the plan — the same rule this skill already applies to end-to-end thresholds.
+
+Declaring a defect out of scope in the unit's Scope section does **not** protect the threshold from it; scope and threshold must agree, and only the threshold closes the bolt. And if a threshold must be narrowed after measurement, record the original wording, why it failed, and who decided — a threshold quietly rewritten to match its result is not a threshold.
+
 ---
 
 ## Step 2 — Identify Affected Intents

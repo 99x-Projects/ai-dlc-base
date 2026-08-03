@@ -94,6 +94,8 @@ Work through the demo script one step at a time. For each step:
 
 Do not ask for more than one step at a time.
 
+**Tooling-failure fallback:** for a UI-heavy intent where hands-on step-by-step driving is impractical — e.g. the preview/automation browser is unreliable (viewport/coordinate mismatch, renderer hang) — UAT may be evidenced by the intent's deterministic E2E executing each AC in the *authed* app PLUS screenshots confirming the surfaces render, with the method recorded explicitly in the script and the sign-off. This is a fallback for tooling failure, not a substitute for stakeholder validation when hands-on driving is available.
+
 ### Record the Session Outcome
 
 After all steps are completed, calculate and display the outcome summary:

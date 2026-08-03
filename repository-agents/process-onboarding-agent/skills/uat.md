@@ -82,7 +82,15 @@ Work through the demo script one step at a time. For each step:
 1. Display the step clearly.
 2. Ask: > "Run this step and tell me the result: Pass, Fail, Partial, or Skip."
 3. If **Fail** or **Partial**: ask > "Describe what happened instead of the expected outcome."
-4. Record the result and move to the next step.
+4. **Corroborate, then record.** Where the step's expected outcome leaves a trace you can read — a database row, a log line, an audit event, a rendered element — read it, and record the result from that evidence alongside the reported verdict. If the trace **contradicts** the report, record NEITHER: put the contradiction to the engineer in plain terms, with the readings it allows, and re-run or investigate before anything is written down. Where a step's outcome leaves no readable trace, record the report alone and say so in the script, so a later reader knows which results rest on evidence and which on observation.
+
+> **Why.** This is the prerequisite rule above applied one stage later. That rule already refuses a verbal assurance for *setup* — a credential is verified by a direct provider call, "**and not by the engineer saying it works**". Step results were still taken from the reported verdict alone.
+>
+> A reported verdict is a genuine and irreplaceable signal: only the tester can say whether a screen made sense, whether copy read correctly, whether real third-party software accepted a real input. It is **not** a reliable signal for whether the system did the thing, because a tester can honestly report a step they believe complete, or attribute one session's behaviour to another. The trace and the report answer different questions, and a UAT that records only one of them discards the cheaper half.
+>
+> Worked example (Ascent, 2026-08-02): the final step of an MFA intent — *an un-enrolled user on a policy-bound company cannot reach the app* — was reported **Pass** while the database showed a pending credential, zero recovery codes, and no enrolment log line. The same evidence allowed two readings: a **fail-open defect in the sign-in gate**, or an unfinished step. It was the latter, and the step passed cleanly on a re-run — but recording the reported Pass would have closed the intent with its most security-critical assertion untested.
+>
+> Note the incentive this corrects: an agent that wrote the code has every reason to accept a Pass and move on. Requiring the trace makes accepting a false Pass **more work than checking**, which is the only kind of safeguard that survives a long session.
 
 Do not ask for more than one step at a time.
 

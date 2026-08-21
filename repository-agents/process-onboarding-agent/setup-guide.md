@@ -425,7 +425,7 @@ For fresh projects the agent cannot read a codebase to populate the master rule 
 
 Once all nine questions are answered, the agent has enough to:
 - Create the folder structure (Step 1)
-- Write the master rule file with Sections 1–5, Section 8, and Process Configuration fully populated
+- Write the master rule file with Sections 1–5, Section 8, and Process Configuration fully populated, and Section 10 (Notifications) as `Status: Disabled` until Step 4 settles it
 - Write an initial first intent file from the answer to question 8
 - Flag Sections 6 and 7 (workflow and review) as pre-populated from the guide defaults
 
@@ -451,6 +451,7 @@ Create this directory tree at the root of your repository:
     unit-template.md         ← how to write a unit (reference doc)
     compact-docs.md          ← engineer-triggered skill to archive old operational documents
     root-cause-analysis.md   ← skill to analyse incidents and improvements for design, technology, and process gaps
+    notifications.md         ← Slack alerts at delivery moments that need a human
   guidelines/
     domain-glossary.md       ← canonical business terms used in code and prompts
     edge-cases.md            ← known failure modes to check before generating code
@@ -479,6 +480,8 @@ Create this directory tree at the root of your repository:
       improvements/          ← one file per process change triggered by retro/incident
         _template.md
 ```
+
+**Files created outside `{FRAMEWORK_ROOT}`.** Almost everything this framework creates lives under `{FRAMEWORK_ROOT}`. The notifications skill is the exception: if the team enables it in Step 4, two artifacts are created at the **repository root** instead — `scripts/notify.sh` (the send script) and `.claude/settings.json` (hooks and the command allowlist, Claude Code only). Both must be at the root, not nested under `{FRAMEWORK_ROOT}`, or the allowlist rule will not match and the hooks will not load.
 
 ---
 
@@ -603,6 +606,7 @@ If the engineer defers, ask for the new date and update Section 9 before continu
 **Process health skill:** read `{FRAMEWORK_ROOT}/skills/process-health.md` when the engineer invokes it to audit how well the AI-DLC process is functioning.
 **Compact-docs skill:** read `{FRAMEWORK_ROOT}/skills/compact-docs.md` when the engineer invokes it.
 **Root-cause-analysis skill:** read `{FRAMEWORK_ROOT}/skills/root-cause-analysis.md` when the engineer invokes it, or when an incident is marked Resolved and no RCA has been run on it.
+**Notifications skill:** read `{FRAMEWORK_ROOT}/skills/notifications.md` when a lifecycle event in Section 10 is reached (elaboration sign-off required, bolt complete, UAT sign-off required, intent implemented, incident/hotfix started, circuit breaker tripped, dependency audit due), or when the engineer asks to send, configure, or silence notifications. Sending is best-effort — send and continue; never block a step on it. Skip if Section 10 is set to disabled or the engineer silenced notifications this session.
 **Bug bolt:** read `{FRAMEWORK_ROOT}/skills/bug-bolt.md` when the engineer says "fix a bug", "there's a bug in X", or "bug: [description]". Do not run a full mob elaboration — follow the bug bolt workflow directly.
 **Hotfix bolt:** read `{FRAMEWORK_ROOT}/skills/hotfix-bolt.md` when the engineer says "hotfix", "production issue", "prod is down", or "emergency fix for X". Skip elaboration — begin hotfix intake immediately.
 **NFR bolt:** read `{FRAMEWORK_ROOT}/skills/nfr-bolt.md` when the engineer says "improve performance", "harden security", "accessibility improvements", "NFR bolt for X", or "non-functional work on X". Do not create a new intent — follow the NFR bolt workflow.
@@ -642,6 +646,35 @@ The archive threshold is read by the `compact-docs` skill at runtime. If this se
 The dependency audit dates are read and written by the `dependency-audit` skill. The `Next dependency audit` date is checked at the start of every session — if today is on or after that date, the AI prompts the engineer to run the audit before any other work begins. Set this value during onboarding by asking the engineer:
 
 > "When would you like to schedule the first dependency and security audit? The recommended interval is once a month."
+
+### Section 10 — Notifications
+
+Records whether the project sends Slack notifications and which lifecycle events fire them. The behaviour lives in `{FRAMEWORK_ROOT}/skills/notifications.md`; this section is the per-project switchboard. Omit this section (or set it to disabled) if the team opted out during onboarding.
+
+The question of whether the team wants notifications is asked in Step 4, when the notifications skill is installed — not during the structured interview. Write this section then. If the master rule file is being written before that point, write it with **Status: Disabled** and update it in Step 4.
+
+```markdown
+## 10. Notifications
+
+**Status:** Enabled / Disabled
+**Endpoint:** Slack incoming webhook, read from the `SLACK_WEBHOOK_URL` environment variable — never commit a webhook URL.
+**Harness hooks:** `.claude/settings.json` Notification (and optionally Stop) — Claude Code only. On Cursor / Copilot record "not available"; those tools get the lifecycle layer only, and only when the agent can run terminal commands.
+**Send command:** `scripts/notify.sh '<message>'` — run from the repository root, single-quoted argument, approved in the AI tool's command allowlist so sends do not prompt. The script takes raw text and builds the JSON itself.
+
+Lifecycle events that notify (see `{FRAMEWORK_ROOT}/skills/notifications.md` for message format):
+
+| Event | Priority |
+|---|---|
+| Elaboration sign-off required | high |
+| Bolt complete → retro due | normal |
+| UAT sign-off required | high |
+| Intent implemented | normal |
+| Incident logged / hotfix started | high |
+| Circuit breaker tripped | high |
+| Dependency audit due | high |
+```
+
+Add or remove events from the table to tune what the project is alerted on. Read and applied by the notifications skill; if this section is absent, notifications are treated as disabled. Keep the two sign-off events even in Claude Code projects that install the harness hooks — the `Notification` hook fires on permission requests and after about a minute of idle prompt, not at the instant the AI asks for sign-off, so removing them leaves only a delayed ping.
 
 ---
 
@@ -768,6 +801,20 @@ The root-cause-analysis skill applies structured 5-Whys analysis to resolved inc
 Can operate on a single file or across a batch to surface cross-cutting patterns and recurring vulnerabilities.
 
 Copy this file verbatim from `process-onboarding-agent/skills/root-cause-analysis.md` to `{FRAMEWORK_ROOT}/skills/root-cause-analysis.md`. No customisation is needed.
+
+### `skills/notifications.md`
+
+The notifications skill sends Slack alerts at the delivery moments that need a human, on two layers: deterministic `.claude/settings.json` hooks for generic "needs attention / done" pings (Claude Code only), and agent-driven, event-specific notifications for framework moments (elaboration sign-off, bolt complete, UAT sign-off, incident/hotfix, circuit breaker, dependency audit due). The incoming-webhook URL is read from the `SLACK_WEBHOOK_URL` environment variable — no webhook URL is ever written into a committed file. Sending is best-effort and never blocks a step.
+
+Copy this file verbatim from `process-onboarding-agent/skills/notifications.md` to `{FRAMEWORK_ROOT}/skills/notifications.md`. No customization of the skill file is needed — per-project settings (event set, enabled/disabled) live in the master rule file Notifications section, and the endpoint lives in an environment variable.
+
+**During onboarding:** run the *Onboarding setup* steps inside the skill, in the order given there — ask whether the team wants notifications; walk them through setting `SLACK_WEBHOOK_URL` (never have them paste a webhook into a committed file); create `scripts/notify.sh` **at the repository root**; approve that command in the tool's allowlist so sends do not prompt; install the `.claude/settings.json` hooks for Claude Code projects (skip for Cursor / Copilot — they have no hook mechanism, and the hooks call the same script, so the script must exist first); populate the master rule file Notifications section (Section 10); then send one test notification and confirm it arrived *without* a permission prompt. The skill's *What each AI tool gets* table states what Cursor and Copilot teams do and do not receive — walk through it with them so no one expects a ping their tool cannot send.
+
+**Wire into the master rule file Section 6** by adding one routing line:
+
+```markdown
+**Notifications skill:** read `{FRAMEWORK_ROOT}/skills/notifications.md` when a lifecycle event in Section 10 is reached, or when the engineer asks to send, configure, or silence notifications. Sending is best-effort — send and continue. Skip if Section 10 is disabled or notifications are silenced for the session.
+```
 
 ### `skills/solution-shaping.md`
 

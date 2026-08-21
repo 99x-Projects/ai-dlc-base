@@ -159,6 +159,18 @@ Evaluates improvements or learnings from a retro or incident and classifies each
 
 ---
 
+**Notifications** (`notifications.md`) `◈ Needs config`
+
+Sends Slack alerts at the delivery moments that need a human — sign-off required, work complete, incident, repeated failure. Two layers: deterministic `.claude/settings.json` hooks for generic "needs attention / done" pings (Claude Code only), and agent-driven, event-specific notifications you can wire into any process.
+
+- **When to invoke:** when you want to be pinged instead of watching a session — e.g. long-running work, async review, or on-call
+- **How to invoke:** `"Read [skill-path]/notifications.md and send a notification: [message]."` for an ad-hoc ping, or wire the send command into your own workflow moments
+- **Standalone use:** the setup, send script, and harness-hook sections work on their own. The *Lifecycle events* section and the `[<ProjectName>]` message prefix reference the full framework's master rule file (Sections 1 and 10) — without it, pick your own moments to send at and drop the project prefix.
+- **What you get:** Slack messages in the channel your incoming webhook posts to, at the events you choose
+- **Configuration needed:** set the `SLACK_WEBHOOK_URL` environment variable — never paste a webhook URL into a committed file. Install `scripts/notify.sh` and approve it in your tool's command allowlist so sends do not prompt for permission. The `.claude/settings.json` hook layer applies to Claude Code only; the agent-driven layer works on Cursor and Copilot in agent mode, but not in Copilot completions or inline chat, which cannot run commands. The skill's tool-support table spells out what each tool gets.
+
+---
+
 ### MAINTENANCE & HEALTH
 
 **Dependency Audit** (`dependency-audit.md`) `◈ Needs config`

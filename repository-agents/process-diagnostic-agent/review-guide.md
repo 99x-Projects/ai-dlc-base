@@ -80,6 +80,7 @@ Every finding must be classified before it goes into the report.
 | **Review Behavior (Section 7)** | Routes to `skills/review-checklist.md` with a mandatory-run instruction | Checklist embedded inline | Missing |
 | **Reference Map (Section 8)** | Complete routing table covering all common needs | Partial | Missing |
 | **Process Configuration (Section 9)** | Archive threshold set; `Next dependency audit` date populated | Section present but one or both values not set | Missing section |
+| **Notifications (Section 10)** *(optional)* | Status set; event table present; send script approved in the tool's allowlist; no webhook URL committed anywhere — only the `SLACK_WEBHOOK_URL` reference | Section present but events not tuned, sends prompt on every notification, or the section is missing from the mirror rule file the team's tool actually loads | Section absent (treated as disabled — not a finding unless the team asked for notifications) |
 
 **Common findings:**
 - Master rule file is a wall of text rather than a routing table — AI loads it but cannot act on it efficiently

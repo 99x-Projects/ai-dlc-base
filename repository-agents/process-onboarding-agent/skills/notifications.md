@@ -1,6 +1,6 @@
 # Skill: Notifications
 
-**Purpose:** Send Slack notifications to the team at the moments in the delivery loop that need a human — so nobody has to sit watching a session. Notifications operate on two independent layers:
+**Purpose:** Send Slack notifications to the engineer at the moments in the delivery loop that need a human — so nobody has to sit watching a session. This is a **local, per-engineer setup**: each person creates their own Slack channel and their own webhook, on their own machine, and is notified about their own sessions. It is not a team broadcast channel, and no webhook URL is ever shared or committed. Notifications operate on two independent layers:
 
 1. **Harness layer (deterministic, Claude Code only).** Hooks in the project's `.claude/settings.json` fire on the AI tool's own events — `Notification` (the AI is waiting on the engineer) and `Stop` (a turn finished). These run automatically, regardless of what work is happening. They carry a generic message.
 2. **Lifecycle layer (agent-driven, all tools).** The experience agent sends a rich, event-specific notification at framework moments — bolt complete, UAT sign-off required, incident logged, and so on. There is no harness event for "a bolt closed," so these are sent by the agent running the configured send command via its shell tool at the point the workflow reaches that moment.
@@ -41,9 +41,10 @@ Notifications are sent to whatever endpoint is present in the environment. **Not
 | `SLACK_WEBHOOK_URL` | Slack incoming webhook | `https://hooks.slack.com/services/T…/B…/…` |
 
 Rules:
-- Each engineer, CI runner, or environment sets its own variable (in their shell profile, `.envrc`, or CI secrets store). Leave it unset and notifications become a silent no-op — safe by default.
+- **This is per engineer, per machine.** Each person points their own webhook at their own Slack channel and sets the variable locally (shell profile, `.envrc`, or CI secrets store for a runner). There is no project-wide endpoint, no shared URL, and nothing to distribute — a teammate who never sets the variable simply gets no notifications.
+- Leave the variable unset and notifications become a silent no-op — safe by default.
 - Never echo the full webhook URL back to the engineer or into any artifact. Refer to it as "the configured Slack webhook."
-- If the team keeps the endpoint in a file instead of the environment, it must be gitignored (e.g. `.claude/settings.local.json`) and never committed. The environment variable is the default and recommended path.
+- If an engineer keeps the endpoint in a file instead of the environment, it must be gitignored (e.g. `.claude/settings.local.json`) and never committed. The environment variable is the default and recommended path.
 
 ---
 
@@ -57,7 +58,7 @@ This is the one part of the framework the AI cannot do for the engineer, because
 
 | Task | Who | Why |
 |---|---|---|
-| Create the Slack app and incoming webhook (Step 1) | **Engineer** | A browser flow under their own Slack login. The AI has no browser and no Slack session. |
+| Create their own channel, Slack app, and incoming webhook (Step 1) | **Engineer** | A browser flow under their own Slack login, in their own workspace. The AI has no browser and no Slack session. |
 | Put `SLACK_WEBHOOK_URL` in a shell profile, `.envrc`, or `settings.local.json` (Step 2) | **Engineer** | The AI would have to be told the URL to write it, which puts the credential in the conversation. |
 | Verify with a test send (Step 3) | **AI** | Reads the variable from its own environment; never sees the value. |
 | CI / shared-runner secrets (Step 4) | **Engineer** | Another credential, another web UI. |
@@ -70,15 +71,16 @@ This is the one part of the framework the AI cannot do for the engineer, because
 
 Present Steps 1 and 2 as a short checklist the engineer can follow at their own pace, then stop and wait for them to say it is done. Pick up at Step 3. If they are not ready — no time, no app-install permission, waiting on an admin — record `Status: Disabled` in Section 10, tell them it can be enabled later by running these same steps, and move on. Never block onboarding on it.
 
-### Step 1 — Obtain the Slack webhook URL
+### Step 1 — Create your channel and webhook
 
-*The engineer does this — see* Who does what *above.*
+*The engineer does this — see* Who does what *above.* This is a personal setup: your own channel, your own webhook, notifying you about your own sessions. Teammates do not share either.
 
-1. Go to <https://api.slack.com/apps> and click **Create New App → From scratch** (or open an existing app). Pick the target workspace.
-2. Open **Incoming Webhooks** and toggle it **On**.
-3. Click **Add New Webhook to Workspace**, choose the channel to post to, and **Allow**.
+1. In Slack, create the channel you want to be notified in. A private channel with only you in it is the normal choice; name it for yourself (`#ai-dlc-alice`) so it is obvious what it is. Do not point this at a team channel unless the whole team has agreed to the noise.
+2. Go to <https://api.slack.com/apps> and click **Create New App → From scratch** (or open an existing app). Pick the target workspace.
+3. Open **Incoming Webhooks** and toggle it **On**.
+4. Click **Add New Webhook to Workspace**, choose the channel you just created, and **Allow**.
    - Many workspaces restrict who may install apps. If this step needs approval, the request goes to a workspace admin and you wait for them — that is normal, not a misconfiguration. Tell the AI to leave notifications disabled for now and come back to it once approval lands.
-4. Copy the generated URL — its shape is `https://hooks.slack.com/services/<WORKSPACE_ID>/<WEBHOOK_ID>/<TOKEN>`, three path segments after `/services/`. This whole URL is a secret; treat it like a password. The channel is fixed at webhook creation time — to notify a different channel, create a second webhook.
+5. Copy the generated URL — its shape is `https://hooks.slack.com/services/<WORKSPACE_ID>/<WEBHOOK_ID>/<TOKEN>`, three path segments after `/services/`. This whole URL is a secret; treat it like a password. The channel is fixed at webhook creation time — to notify a different channel, create a second webhook.
 
 > Deliberately no realistic-looking example above, and do not add one. A dummy webhook URL whose path segments imitate the real format (a `T…` workspace id, a `B…` webhook id, a long alphanumeric token) matches GitHub's secret-scanning pattern for Slack webhooks, so push protection rejects the commit — in this repo and in every project that copies this file. Keep placeholders in `<ANGLE_BRACKET>` form.
 
@@ -119,15 +121,17 @@ A `slack ok` line and the message arriving in the Slack channel confirms setup.
 
 ### New teammates joining later
 
-The variable is per machine, so notifications do not follow a person into the team — a new engineer gets nothing until they set it on their own machine. And because an unset variable is a deliberate silent no-op, **nothing warns them**: their sessions simply never notify, and they have no reason to suspect the feature exists.
+This is a **personal, per-machine setup, not a team channel.** Each engineer has their own Slack channel and their own webhook pointing at it, so the notifications they get are about the work in *their* session, on *their* machine. Nobody shares a webhook URL, and nothing about it is committed or centrally configured.
 
-So a joining engineer does not repeat Step 1. The webhook belongs to the channel, not to a person — one webhook is shared by the whole team:
+That has one consequence worth stating up front: a new engineer gets no notifications until they set this up themselves, and because an unset variable is a deliberate silent no-op, **nothing warns them**. Their sessions simply never notify, and they have no reason to suspect the feature exists.
 
-1. Get the existing webhook URL from wherever the team keeps shared secrets (password manager, vault, CI secrets store). Ask a teammate; do not create a second webhook for the same channel, and do not send the URL over Slack or email.
-2. Do Step 2 only — put it in their own shell profile or `.envrc`.
-3. Do Step 3 to confirm a test message arrives.
+So a joining engineer runs the **full sequence from Step 1**, exactly as the first engineer did:
 
-Create a *new* webhook only when the team wants a different channel. If the team keeps no shared secret store, say so plainly during onboarding: the URL will end up copied between people ad hoc, and it should be rotated whenever someone leaves.
+1. Create their own channel to be notified in — a private channel, or a channel with just them in it. Naming it for themselves (`#ai-dlc-alice`) keeps it obvious.
+2. Create their own Slack app and incoming webhook pointing at that channel (Step 1 above).
+3. Set `SLACK_WEBHOOK_URL` on their own machine (Step 2), and confirm with a test send (Step 3).
+
+**Never hand a webhook URL to a teammate**, and never ask one for theirs. It is a personal credential like an SSH key: if two people share it, one person's session noise lands in the other's channel, and revoking it cuts off both. There is no shared secret store to keep, because there is no shared secret.
 
 The `new-engineer-induction` skill prompts for this automatically, so a joining engineer is asked rather than left to discover it.
 
@@ -162,7 +166,7 @@ MSG
 
 **One rendering rule, not an escaping rule:** Slack parses `&`, `<`, and `>` in message text as markup. If a message would contain them literally (e.g. an intent named `orders <v2>`), replace `&` with `&amp;`, `<` with `&lt;`, and `>` with `&gt;` first. Do this *before* prepending any `<!here>` or emoji prefix, so the prefix itself is not escaped. Note also that `*` and `_` in a name will render as bold/italic — harmless, but say so if a team asks why a unit name looks odd.
 
-High-priority events prefix the message with `:rotating_light: ` so they stand out in the channel; normal events have no prefix. If the team wants a channel-wide alert on high-priority events, add `<!here> ` after the prefix — ask before enabling it, it is noisy.
+High-priority events prefix the message with `:rotating_light: ` so they stand out in the channel; normal events have no prefix. Do not add `<!here>` or `<!channel>`: the destination is the engineer's own channel, so there is nobody else to alert — it only produces a "you can't mention" notice or a needless badge. (The exception is a project that has deliberately pointed a webhook at a shared channel, which is not the default setup.)
 
 ---
 
@@ -183,7 +187,7 @@ Examples:
 
 `<ProjectName>` is read from Section 1 of the master rule file.
 
-**Keep sensitive detail out of the message.** A webhook posts into a Slack channel that may have a wider audience than the delivery team — name the intent, unit, or incident, but do not paste customer data, credentials, stack traces, or log excerpts. The detail belongs in the incident or unit file, which the message points to implicitly.
+**Keep sensitive detail out of the message.** The destination is the engineer's own channel, so the audience is normally just them — but the message still leaves the machine, crosses Slack's servers, and stays in that channel's history and their phone's notification shade. Name the intent, unit, or incident; do not paste customer data, credentials, stack traces, or log excerpts. The detail belongs in the incident or unit file, which the message points to implicitly.
 
 ---
 
@@ -211,13 +215,15 @@ Sending is best-effort and must never interrupt the workflow: send the notificat
 
 The onboarding agent performs these steps when the engineer opts into notifications:
 
-**1. Ask whether the team wants notifications.**
+**1. Ask whether the engineer wants notifications.**
 
-> "Do you want Slack notifications for delivery moments that need a human — bolt complete, UAT sign-off, incidents, and so on? (You can skip this and add it later.)"
+> "Do you want Slack notifications for delivery moments that need a human — bolt complete, UAT sign-off, incidents, and so on? It's a personal setup: your own channel, your own webhook, on this machine. Each teammate does their own, and nothing gets committed. (You can skip this and add it later.)"
+
+Section 10 records whether *this project* fires the lifecycle events at all; each engineer's own environment variable decides whether they personally receive them. So enabling Section 10 does not switch anything on for anyone else, and a teammate who never sets the variable is unaffected.
 
 If the engineer declines, record "Notifications: disabled" in the master rule file Notifications section and stop here.
 
-**2. Hand the engineer Steps 1 and 2 of *Setting the environment variable* and wait — these two are theirs, not yours (see *Who does what*). Never ask them to paste the webhook URL into the conversation or into a committed file.** Then: create the incoming webhook (Step 1), persist `SLACK_WEBHOOK_URL` in the shell profile or a gitignored `.envrc` for the correct platform (Step 2), and verify with a test send (Step 3). Each teammate does this on their own machine; CI runners use the secrets store (Step 4). If the variable is left unset, notifications are simply skipped.
+**2. Hand the engineer Steps 1 and 2 of *Setting the environment variable* and wait — these two are theirs, not yours (see *Who does what*). Never ask them to paste the webhook URL into the conversation or into a committed file.** Then: they create their own channel and incoming webhook pointing at it (Step 1), persist `SLACK_WEBHOOK_URL` in their shell profile or a gitignored `.envrc` for the correct platform (Step 2), and you verify with a test send (Step 3). Every teammate repeats this on their own machine with their own channel — see *New teammates joining later*. If the variable is left unset, notifications are simply skipped.
 
 **3. Install the send script.** Every send — both layers — goes through this one script, so JSON encoding lives in exactly one place and the command can be allowlisted once. Create it at **`scripts/notify.sh`, at the repository root** — not under `{FRAMEWORK_ROOT}`, and not under `.claude/`; it must be tool-neutral and reachable at a stable relative path.
 

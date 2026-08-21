@@ -148,13 +148,16 @@ Read Section 10 (Notifications) of the master rule file. If it is absent or `Sta
 
 If it is **Enabled**, this engineer will get no notifications until they set the endpoint variable on their own machine, and nothing will tell them: an unset `SLACK_WEBHOOK_URL` is a deliberate silent no-op, so their sessions will simply never notify. Do not let them discover that weeks later.
 
-> "This project sends Slack notifications at moments that need a human — bolt complete, UAT sign-off, incidents. They're per machine, so you won't get any until you set one environment variable. It takes two minutes and it's the only setup step I can't do for you."
+> "This project sends Slack notifications at moments that need a human — bolt complete, UAT sign-off, incidents. It's a personal setup: your own Slack channel, your own webhook, on your own machine — you'll be notified about your sessions, not everyone's. Nothing is shared and nothing is committed. Takes a few minutes, and it's the only setup step I can't do for you."
 
-Then hand them the steps — do not attempt any of it yourself, and do not ask them to paste the webhook URL into this conversation:
+Then hand them the steps — do not attempt any of it yourself, do not ask them to paste the webhook URL into this conversation, and do not suggest they get a URL from a teammate:
 
-1. Get the project's existing Slack webhook URL from the team's shared secret store (password manager, vault) or from a teammate. Do **not** create a new Slack app — the webhook belongs to the channel and is shared by the team.
-2. Add `export SLACK_WEBHOOK_URL="…"` to their shell profile (`~/.zshrc` or `~/.bashrc`), or a gitignored `.envrc` if the team uses direnv, then reload it.
-3. Tell you when it is done, and you will send a test notification to confirm it arrives.
+1. Create a Slack channel to be notified in — private, or just them in it. Something self-evident like `#ai-dlc-[their-name]`.
+2. Create their own Slack app and incoming webhook pointing at that channel: <https://api.slack.com/apps> → **Create New App → From scratch** → **Incoming Webhooks** on → **Add New Webhook to Workspace** → pick the channel → **Allow**. Copy the URL; it is a secret. (If the workspace requires admin approval to install apps, they wait for an admin — that is normal.)
+3. Add `export SLACK_WEBHOOK_URL="…"` to their shell profile (`~/.zshrc` or `~/.bashrc`), or a gitignored `.envrc` if they use direnv, then reload it.
+4. Tell you when it is done, and you will send a test notification to confirm it arrives.
+
+The webhook is a personal credential, like an SSH key — teammates never swap them. Two people on one webhook means one person's session noise lands in the other's channel.
 
 Point them at `{FRAMEWORK_ROOT}/skills/notifications.md` — the *New teammates joining later* section — for the full detail, including the GUI-launch caveat if they start their AI tool from the Dock or Start menu rather than a terminal.
 

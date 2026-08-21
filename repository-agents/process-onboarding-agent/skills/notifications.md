@@ -51,11 +51,31 @@ Rules:
 
 Each engineer (and each CI runner) does this once. Nothing here is committed.
 
+### Who does what
+
+This is the one part of the framework the AI cannot do for the engineer, because it involves a credential. Unlike every other skill — where the engineer only answers questions — notifications needs two actions taken outside the repo. Be explicit about that instead of stalling or improvising:
+
+| Task | Who | Why |
+|---|---|---|
+| Create the Slack app and incoming webhook (Step 1) | **Engineer** | A browser flow under their own Slack login. The AI has no browser and no Slack session. |
+| Put `SLACK_WEBHOOK_URL` in a shell profile, `.envrc`, or `settings.local.json` (Step 2) | **Engineer** | The AI would have to be told the URL to write it, which puts the credential in the conversation. |
+| Verify with a test send (Step 3) | **AI** | Reads the variable from its own environment; never sees the value. |
+| CI / shared-runner secrets (Step 4) | **Engineer** | Another credential, another web UI. |
+| Create `scripts/notify.sh`, allowlist it, write `.claude/settings.json`, write Section 10 and the Section 6 routing line | **AI** | Ordinary file work — these hold only the *name* of the variable. |
+| Send notifications from then on | **AI** | The point of the skill. |
+
+**Never ask the engineer to paste the webhook URL into the conversation**, and never offer to edit their shell profile for them. If they paste it anyway, do not repeat it back, do not write it to any file, and tell them it is now in the session transcript and should be rotated in Slack (**Incoming Webhooks → remove the webhook, add a new one**).
+
+Hand the engineer Steps 1 and 2 as instructions to follow, wait, then continue from Step 3. If they are not ready to create a webhook now, record `Status: Disabled` in Section 10, tell them the skill can be enabled later by running these steps, and move on — do not block onboarding on it.
+
 ### Step 1 — Obtain the Slack webhook URL
+
+*The engineer does this — see* Who does what *above.*
 
 1. Go to <https://api.slack.com/apps> and click **Create New App → From scratch** (or open an existing app). Pick the target workspace.
 2. Open **Incoming Webhooks** and toggle it **On**.
 3. Click **Add New Webhook to Workspace**, choose the channel to post to, and **Allow**.
+   - Many workspaces restrict who may install apps. If this step needs approval, the request goes to a workspace admin and setup pauses until they approve it — that is normal, not a misconfiguration. Ask the engineer whether they can install apps before starting, and if not, record `Status: Disabled` in Section 10 and revisit once approval lands.
 4. Copy the generated URL — its shape is `https://hooks.slack.com/services/<WORKSPACE_ID>/<WEBHOOK_ID>/<TOKEN>`, three path segments after `/services/`. This whole URL is a secret; treat it like a password. The channel is fixed at webhook creation time — to notify a different channel, create a second webhook.
 
 > Deliberately no realistic-looking example above, and do not add one. A dummy webhook URL whose path segments imitate the real format (a `T…` workspace id, a `B…` webhook id, a long alphanumeric token) matches GitHub's secret-scanning pattern for Slack webhooks, so push protection rejects the commit — in this repo and in every project that copies this file. Keep placeholders in `<ANGLE_BRACKET>` form.
@@ -181,7 +201,7 @@ The onboarding agent performs these steps when the engineer opts into notificati
 
 If the engineer declines, record "Notifications: disabled" in the master rule file Notifications section and stop here.
 
-**2. Walk the engineer through setting the endpoint variable — never ask them to paste the webhook URL into a committed file.** Follow the *Setting the environment variable* section above: create the incoming webhook (Step 1), persist `SLACK_WEBHOOK_URL` in the shell profile or a gitignored `.envrc` for the correct platform (Step 2), and verify with a test send (Step 3). Each teammate does this on their own machine; CI runners use the secrets store (Step 4). If the variable is left unset, notifications are simply skipped.
+**2. Hand the engineer Steps 1 and 2 of *Setting the environment variable* and wait — these two are theirs, not yours (see *Who does what*). Never ask them to paste the webhook URL into the conversation or into a committed file.** Then: create the incoming webhook (Step 1), persist `SLACK_WEBHOOK_URL` in the shell profile or a gitignored `.envrc` for the correct platform (Step 2), and verify with a test send (Step 3). Each teammate does this on their own machine; CI runners use the secrets store (Step 4). If the variable is left unset, notifications are simply skipped.
 
 **3. Install the send script.** Every send — both layers — goes through this one script, so JSON encoding lives in exactly one place and the command can be allowlisted once. Create it at **`scripts/notify.sh`, at the repository root** — not under `{FRAMEWORK_ROOT}`, and not under `.claude/`; it must be tool-neutral and reachable at a stable relative path.
 

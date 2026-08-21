@@ -64,9 +64,11 @@ This is the one part of the framework the AI cannot do for the engineer, because
 | Create `scripts/notify.sh`, allowlist it, write `.claude/settings.json`, write Section 10 and the Section 6 routing line | **AI** | Ordinary file work — these hold only the *name* of the variable. |
 | Send notifications from then on | **AI** | The point of the skill. |
 
+**Do no part of the Slack side yourself.** Do not create or configure a Slack app, do not call the Slack API, do not open or ask anyone to open a browser on your behalf, and do not ask whether the engineer has permission to install apps — that is theirs to deal with, not yours to gate. Your entire role in Steps 1 and 2 is to present the instructions, then wait.
+
 **Never ask the engineer to paste the webhook URL into the conversation**, and never offer to edit their shell profile for them. If they paste it anyway, do not repeat it back, do not write it to any file, and tell them it is now in the session transcript and should be rotated in Slack (**Incoming Webhooks → remove the webhook, add a new one**).
 
-Hand the engineer Steps 1 and 2 as instructions to follow, wait, then continue from Step 3. If they are not ready to create a webhook now, record `Status: Disabled` in Section 10, tell them the skill can be enabled later by running these steps, and move on — do not block onboarding on it.
+Present Steps 1 and 2 as a short checklist the engineer can follow at their own pace, then stop and wait for them to say it is done. Pick up at Step 3. If they are not ready — no time, no app-install permission, waiting on an admin — record `Status: Disabled` in Section 10, tell them it can be enabled later by running these same steps, and move on. Never block onboarding on it.
 
 ### Step 1 — Obtain the Slack webhook URL
 
@@ -75,7 +77,7 @@ Hand the engineer Steps 1 and 2 as instructions to follow, wait, then continue f
 1. Go to <https://api.slack.com/apps> and click **Create New App → From scratch** (or open an existing app). Pick the target workspace.
 2. Open **Incoming Webhooks** and toggle it **On**.
 3. Click **Add New Webhook to Workspace**, choose the channel to post to, and **Allow**.
-   - Many workspaces restrict who may install apps. If this step needs approval, the request goes to a workspace admin and setup pauses until they approve it — that is normal, not a misconfiguration. Ask the engineer whether they can install apps before starting, and if not, record `Status: Disabled` in Section 10 and revisit once approval lands.
+   - Many workspaces restrict who may install apps. If this step needs approval, the request goes to a workspace admin and you wait for them — that is normal, not a misconfiguration. Tell the AI to leave notifications disabled for now and come back to it once approval lands.
 4. Copy the generated URL — its shape is `https://hooks.slack.com/services/<WORKSPACE_ID>/<WEBHOOK_ID>/<TOKEN>`, three path segments after `/services/`. This whole URL is a secret; treat it like a password. The channel is fixed at webhook creation time — to notify a different channel, create a second webhook.
 
 > Deliberately no realistic-looking example above, and do not add one. A dummy webhook URL whose path segments imitate the real format (a `T…` workspace id, a `B…` webhook id, a long alphanumeric token) matches GitHub's secret-scanning pattern for Slack webhooks, so push protection rejects the commit — in this repo and in every project that copies this file. Keep placeholders in `<ANGLE_BRACKET>` form.
@@ -114,6 +116,20 @@ echo "${SLACK_WEBHOOK_URL:+slack set}"
   --data '{"text":"AI-DLC notifications test"}' "$SLACK_WEBHOOK_URL" && echo " slack ok"
 ```
 A `slack ok` line and the message arriving in the Slack channel confirms setup.
+
+### New teammates joining later
+
+The variable is per machine, so notifications do not follow a person into the team — a new engineer gets nothing until they set it on their own machine. And because an unset variable is a deliberate silent no-op, **nothing warns them**: their sessions simply never notify, and they have no reason to suspect the feature exists.
+
+So a joining engineer does not repeat Step 1. The webhook belongs to the channel, not to a person — one webhook is shared by the whole team:
+
+1. Get the existing webhook URL from wherever the team keeps shared secrets (password manager, vault, CI secrets store). Ask a teammate; do not create a second webhook for the same channel, and do not send the URL over Slack or email.
+2. Do Step 2 only — put it in their own shell profile or `.envrc`.
+3. Do Step 3 to confirm a test message arrives.
+
+Create a *new* webhook only when the team wants a different channel. If the team keeps no shared secret store, say so plainly during onboarding: the URL will end up copied between people ad hoc, and it should be rotated whenever someone leaves.
+
+The `new-engineer-induction` skill prompts for this automatically, so a joining engineer is asked rather than left to discover it.
 
 ### Step 4 — CI and shared runners (optional)
 

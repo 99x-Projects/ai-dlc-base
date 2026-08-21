@@ -142,6 +142,26 @@ Point to the relevant files:
 
 ---
 
+## Step 6b — Set Up Notifications on This Machine
+
+Read Section 10 (Notifications) of the master rule file. If it is absent or `Status: Disabled`, say one sentence — that the project does not use delivery notifications — and move on.
+
+If it is **Enabled**, this engineer will get no notifications until they set the endpoint variable on their own machine, and nothing will tell them: an unset `SLACK_WEBHOOK_URL` is a deliberate silent no-op, so their sessions will simply never notify. Do not let them discover that weeks later.
+
+> "This project sends Slack notifications at moments that need a human — bolt complete, UAT sign-off, incidents. They're per machine, so you won't get any until you set one environment variable. It takes two minutes and it's the only setup step I can't do for you."
+
+Then hand them the steps — do not attempt any of it yourself, and do not ask them to paste the webhook URL into this conversation:
+
+1. Get the project's existing Slack webhook URL from the team's shared secret store (password manager, vault) or from a teammate. Do **not** create a new Slack app — the webhook belongs to the channel and is shared by the team.
+2. Add `export SLACK_WEBHOOK_URL="…"` to their shell profile (`~/.zshrc` or `~/.bashrc`), or a gitignored `.envrc` if the team uses direnv, then reload it.
+3. Tell you when it is done, and you will send a test notification to confirm it arrives.
+
+Point them at `{FRAMEWORK_ROOT}/skills/notifications.md` — the *New teammates joining later* section — for the full detail, including the GUI-launch caveat if they start their AI tool from the Dock or Start menu rather than a terminal.
+
+Record the outcome on the quick-reference card: either "notifications configured and tested" or "notifications not yet configured — see `skills/notifications.md`", so an unfinished setup is visible rather than forgotten.
+
+---
+
 ## Step 7 — Produce the Quick-Reference Card
 
 Write a quick-reference card to `process-onboarding-agent/guidelines/[engineer-name-slug]-quick-ref.md`. Use the engineer's name from Step 1 to personalise it. Populate every section from the project's actual files — not generic placeholders.
@@ -232,6 +252,16 @@ Full glossary: `process-onboarding-agent/guidelines/domain-glossary.md`
 | `process-onboarding-agent/guidelines/domain-glossary.md` | Business term definitions |
 | `process-onboarding-agent/guidelines/edge-cases.md` | Known failure modes |
 | `process-onboarding-agent/ops/inception/dependency-map.md` | Intent dependency map |
+
+---
+
+## My Machine Setup
+
+| Item | Status |
+|---|---|
+| Slack notifications (`SLACK_WEBHOOK_URL`) | [configured and tested / not configured — see `skills/notifications.md`] |
+
+*Omit this section if the project has no Notifications section, or has it disabled.*
 
 ---
 

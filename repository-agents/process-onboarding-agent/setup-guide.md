@@ -810,11 +810,7 @@ Copy this file verbatim from `process-onboarding-agent/skills/notifications.md` 
 
 **During onboarding:** run the *Onboarding setup* steps inside the skill, in the order given there — ask whether the engineer wants notifications (it is a personal setup — their own channel, their own webhook, this machine only; each teammate repeats it, so the `new-engineer-induction` skill prompts joiners); hand them the two credential steps (create the channel and webhook, set `SLACK_WEBHOOK_URL`) and wait, since those are the only framework steps the AI cannot perform — never ask them to paste a webhook URL into the conversation or a committed file; create `scripts/notify.sh` **at the repository root**; approve that command in the tool's allowlist so sends do not prompt; install the `.claude/settings.json` hooks for Claude Code projects (skip for Cursor / Copilot — they have no hook mechanism, and the hooks call the same script, so the script must exist first); populate the master rule file Notifications section (Section 10); then send one test notification and confirm it arrived *without* a permission prompt. The skill's *What each AI tool gets* table states what Cursor and Copilot teams do and do not receive — walk through it with them so no one expects a ping their tool cannot send.
 
-**Wire into the master rule file Section 6** by adding one routing line:
-
-```markdown
-**Notifications skill:** read `{FRAMEWORK_ROOT}/skills/notifications.md` when a lifecycle event in Section 10 is reached, or when the engineer asks to send, configure, or silence notifications. Sending is best-effort — send and continue. Skip if Section 10 is disabled or notifications are silenced for the session.
-```
+**Section 6 routing line:** already written as part of the Section 6 template in Step 2 — do not add a second one. Verify it is present, and write Section 10 here.
 
 ### `skills/solution-shaping.md`
 
@@ -872,7 +868,7 @@ The AI must read this file before planning a bolt and flag: (1) any prerequisite
 
 ### `skills/new-engineer-induction.md`
 
-The new-engineer-induction skill runs when an engineer joins an AI-DLC project for the first time. It reads the project's actual master rule file, domain glossary, quality gate, and backlog — then explains each section in plain language, demonstrates the quality gate with a project-specific example, optionally runs a practice elaboration for two units, and produces a personalized quick-reference card written to `{FRAMEWORK_ROOT}/guidelines/[engineer-name-slug]-quick-ref.md`.
+The new-engineer-induction skill runs when an engineer joins an AI-DLC project for the first time. It reads the project's actual master rule file, domain glossary, quality gate, and backlog — then explains each section in plain language, demonstrates the quality gate with a project-specific example, optionally runs a practice elaboration for two units, prompts the engineer to set up notifications on this machine if Section 10 is enabled (the endpoint is per engineer, so a joiner gets nothing until they do), and produces a personalized quick-reference card written to `{FRAMEWORK_ROOT}/guidelines/[engineer-name-slug]-quick-ref.md`.
 
 The session takes 30–45 minutes. Engineers who want a faster version say "quick tour" to skip the practice elaboration.
 
@@ -1167,7 +1163,7 @@ A table of every file written during onboarding, grouped by folder.
 
 | File | Status | Notes |
 |---|---|---|
-| `CLAUDE.md` (or tool equivalent) | Created | Sections 1–8 populated |
+| `CLAUDE.md` (or tool equivalent) | Created | Sections 1–10 populated |
 | `{FRAMEWORK_ROOT}/rules/...` | Created | … |
 | *(etc.)* | | |
 

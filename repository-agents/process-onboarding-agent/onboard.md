@@ -137,11 +137,12 @@ Once all nine questions are answered, execute Steps 1–9 of the setup guide in 
 2. Write the master rule file (all 10 sections) using interview answers for Sections 1–5 and Section 9. Section 10 (Notifications) is settled later, when the notifications skill's setup conversation runs during **setup guide Step 4** — until then, write it as `Status: Disabled`. **Replace every `{FRAMEWORK_ROOT}` placeholder in the templates with the actual resolved path** (e.g. `docs/process/intent-execution-framework`). The master rule file must contain real paths — never the literal string `{FRAMEWORK_ROOT}`.
 3. Write all `rules/` files using interview answers and guide defaults.
 4. Copy all pre-built skills files from `process-onboarding-agent/skills/` into `{FRAMEWORK_ROOT}/skills/` verbatim (do not modify their content). Also copy `process-onboarding-agent/rules/engagement.md` to `{FRAMEWORK_ROOT}/rules/engagement.md` and all `process-onboarding-agent/ops/` template files into `{FRAMEWORK_ROOT}/ops/`.
-5. Write all `guidelines/` files (domain glossary pre-populated from interview question 6; others as stubs).
-6. Write `Instructions2FDE.md` at `{FRAMEWORK_ROOT}/Instructions2FDE.md`.
-7. Write `{FRAMEWORK_ROOT}/README.md`.
-8. Create the backlog and the first intent from interview question 8.
-9. Create mirror files for any additional tools the engineer wants to support.
+5. Run the skills that need a setup conversation of their own — copying a skill file installs the *file*, not the configuration. Currently this means the notifications skill: run the *Onboarding setup* steps inside `{FRAMEWORK_ROOT}/skills/notifications.md` (setup guide Step 4), then write Section 10 with the answers. If the engineer declines or is not ready, leave Section 10 as `Status: Disabled` and carry on — never block onboarding on it.
+6. Write all `guidelines/` files (domain glossary pre-populated from interview question 6; others as stubs).
+7. Write `Instructions2FDE.md` at `{FRAMEWORK_ROOT}/Instructions2FDE.md`.
+8. Write `{FRAMEWORK_ROOT}/README.md`.
+9. Create the backlog and the first intent from interview question 8.
+10. Create mirror files for any additional tools the engineer wants to support.
 
 ### Step 5-F — Deliver the completion report and hand off
 

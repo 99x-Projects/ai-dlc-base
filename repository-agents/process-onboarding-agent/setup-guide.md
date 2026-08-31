@@ -666,6 +666,8 @@ Document your stack's patterns and anti-patterns. Key sections:
 
 **Critically:** add anti-patterns discovered through actual failures — e.g. framework methods that look correct but have unit-testing limitations. These turn retro findings into permanent rules.
 
+**Concurrent sessions — reserve numbers + serialise shared files.** If your project ever runs two agent sessions against one working tree, add a standing rule: two sessions collide on unit/bolt numbers and on shared cross-cutting files (schema/data-model, the migration journal, a shared domain module), and the interleaved uncommitted state often can't be split cleanly (interactive `git add -p` is unavailable). Mitigate — at elaboration sign-off, reserve a contiguous unit-number block plus the bolt number and record them immediately, then re-check right before creating files (numbers move mid-work); serialise edits to shared data-layer files (one stream at a time — migration journals are linear). Better still: run concurrent streams on separate git worktrees/branches and merge, so shared-file interleaving can't happen.
+
 ### `rules/security.md`
 
 Two sections:

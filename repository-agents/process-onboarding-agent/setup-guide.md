@@ -294,7 +294,7 @@ Resolve all conflicts with the engineer before writing any Phase M2 files. Then 
 
 ### Phase M2 — Repository Overlay
 
-Create the governance layer on top of the existing codebase. All four artefacts must exist before the first Bolt runs.
+Create the governance layer on top of the existing codebase. All five artefacts must exist before the first Bolt runs.
 
 #### M2.1 — Master Rule File
 
@@ -332,6 +332,15 @@ Create `{FRAMEWORK_ROOT}/guidelines/entry-points.md` containing the approved lis
 #### M2.4 — Coding Conventions File
 
 Create `{FRAMEWORK_ROOT}/rules/code-standards.md` (or populate it if it already exists) entirely from the patterns extracted in M1.2. Every AI session must match the style of the existing codebase — this file is the authoritative source injected into each session.
+
+#### M2.5 — Seed Codebase Findings
+
+Copy `_template.md` and `README.md` verbatim from `process-onboarding-agent/ops/inception/codebase-findings/` to `{FRAMEWORK_ROOT}/ops/inception/codebase-findings/`. Then, for each segment analyzed in Phase M1, create one finding file from `_template.md` (e.g. `payments-service.md`) populated from that segment's M1.1–M1.4 output:
+- **Summary** — from the segment's architecture mapping (M1.1)
+- **Findings** — one dated entry per segment, attributed to `Initial archaeology (M1)` rather than an intent slug, covering the patterns extracted (M1.2), due diligence findings (M1.3), and debt classification (M1.4)
+- **Open Questions** — anything M1 flagged with low confidence or could not resolve from code alone
+
+Add one row per segment to the index table in `README.md`. This turns the archaeology output — which would otherwise live only in this onboarding session — into the persistent starting point every future brownfield intent checks before re-analyzing the same code.
 
 ---
 
@@ -374,6 +383,7 @@ Add both forms to the master rule file Section 6 (AI-DLC Workflow) and to `{FRAM
 - [ ] `{FRAMEWORK_ROOT}/guidelines/forbidden-zones.md` created and referenced in the master rule file
 - [ ] `{FRAMEWORK_ROOT}/guidelines/entry-points.md` created
 - [ ] `{FRAMEWORK_ROOT}/rules/code-standards.md` populated from extracted patterns
+- [ ] `{FRAMEWORK_ROOT}/ops/inception/codebase-findings/` seeded with one file per M1 segment, indexed in `README.md`
 - [ ] Test coverage gate verified for first target module
 - [ ] Feature flag approach confirmed with team
 - [ ] Default AC for existing-code Bolts added to the master rule file and `code-standards.md`
@@ -465,6 +475,9 @@ Create this directory tree at the root of your repository:
         README.md
       elaborations/          ← one folder per intent; one file per session
         _template.md
+      codebase-findings/     ← one file per module/area; reverse-engineering findings from existing code, accumulated across intents
+        _template.md
+        README.md
     build/
       backlog.md             ← master status of all units
       units/                 ← one file per atomic unit of work
@@ -592,6 +605,7 @@ If the engineer defers, ask for the new date and update Section 9 before continu
 
 **Solution shaping:** at the start of every mob elaboration, check the intent for a `## Solution Shape` section. If it is absent and the intent introduces a new capability, a potentially reusable surface, or an expensive-to-reverse decision, ask the engineer once whether to run `{FRAMEWORK_ROOT}/skills/solution-shaping.md` first or proceed straight to design. The engineer decides — run it, skip it, or invoke it directly at any time; never block on it. Skip the prompt entirely for plainly small, feature-specific intents.
 **Full elaboration protocol (including design session):** read `{FRAMEWORK_ROOT}/skills/mob-elab-prompts.md` before every elaboration session. The design session runs as Phase 0 of elaboration — it is not invoked separately.
+**Codebase findings:** before analyzing existing code to understand a new intent's dependencies on prior implementation, check `{FRAMEWORK_ROOT}/ops/inception/codebase-findings/README.md` for an existing file on that module/area; after any such analysis, record or update the finding there. This is part of the mandatory elaboration protocol above, not a separate skill.
 **Bolt risk assessment:** read `{FRAMEWORK_ROOT}/skills/bolt-risk-assessment.md` after elaboration sign-off and before the first unit in a bolt executes. No unit may begin execution without a signed-off risk assessment in the bolt file.
 **UAT skill:** read `{FRAMEWORK_ROOT}/skills/uat.md` when all units under an intent are marked Done, or when the engineer invokes it directly. Prompt the engineer to run UAT before setting intent status to Implemented.
 **Progress digest skill:** read `{FRAMEWORK_ROOT}/skills/progress-digest.md` when the engineer asks for a stakeholder update, progress summary, or digest for an intent.
@@ -725,6 +739,7 @@ The mob elaboration reference. Must include:
   The quality gate, ACs, and sign-off requirements are identical in both modes — Mode B compresses the back-and-forth into a document review cycle, it does not skip any step.
 
 - **Phase 0 — Design Session:** read `{FRAMEWORK_ROOT}/skills/design-session.md` and run it at the opening of every session before proposing any units. The design session scopes the intent's API surface, data model, and architectural patterns, then produces binding constraints that govern every unit and AC in the session. For simple intents with nothing new to design, Phase 0 concludes quickly and flows straight into unit decomposition. If the intent carries a `## Solution Shape` section (recorded by `{FRAMEWORK_ROOT}/skills/solution-shaping.md` before elaboration), Phase 0 treats those decisions as binding context and designs within them.
+- **Codebase findings check (brownfield dependency analysis):** whenever Phase 0 or unit decomposition requires understanding existing code — because the intent depends on, integrates with, or is constrained by a prior implementation — first check `{FRAMEWORK_ROOT}/ops/inception/codebase-findings/README.md` for a file already covering that module/area. If one exists, read it as a starting point and verify it still matches the current code before relying on it; findings go stale as code changes. After analyzing any module/area not yet documented there, or finding something that contradicts an existing entry, write or update the corresponding file (append a new dated entry, never overwrite prior ones) before finishing Phase 0, and update the index in `README.md`. This step is mandatory whenever code analysis of an existing module occurs — findings from reading the codebase must never live only in the session's memory.
 - The mandatory interactive protocol (turn structure + never-do rules)
 - Facilitation prompts for: proposing units, proposing ACs, edge case check, observability check (success signal / failure signal / alert threshold per unit), generating implementation scaffold, reviewing output
 - **Post sign-off — Dependency Map update:** after the engineer confirms sign-off on the unit summary table and before writing any files, read `{FRAMEWORK_ROOT}/ops/inception/dependency-map.md` and update it: record any prerequisites this intent has on other intents, and any shared interfaces (API contracts, data entities) that cross intent boundaries. Add a row to the Update Log. If a dependency on an incomplete intent is found, flag it to the engineer before proceeding.
@@ -824,6 +839,12 @@ A single file that records which intents depend on which others, and which API c
 Copy this file verbatim from `process-onboarding-agent/ops/inception/dependency-map.md` to `{FRAMEWORK_ROOT}/ops/inception/dependency-map.md`. It contains the empty table structure and update log — the AI populates it as intents are elaborated.
 
 The AI must read this file before planning a bolt and flag: (1) any prerequisite intent not yet Implemented, (2) any units in the planned bolt that touch a shared interface owned by a different intent.
+
+### `ops/inception/codebase-findings/`
+
+One file per module, service, or area of the existing codebase — the accumulated record of what the AI has learned by reading that code. Exists so reverse-engineering done for one intent is never repeated for the next, particularly on brownfield/mature projects where new intents routinely depend on undocumented prior implementation.
+
+Copy `_template.md` and `README.md` verbatim from `process-onboarding-agent/ops/inception/codebase-findings/` to `{FRAMEWORK_ROOT}/ops/inception/codebase-findings/`. The folder starts with only these two files — individual finding files (e.g. `payments-service.md`) are created by the AI the first time it analyzes that module, per the `mob-elab-prompts.md` protocol above. `README.md` contains the index table the AI checks before repeating any code analysis; keep the index in sync whenever a finding file is created or updated.
 
 ### `skills/new-engineer-induction.md`
 
@@ -1172,7 +1193,7 @@ This is the final and mandatory step. After the report is presented, the agent m
 - [ ] `rules/` files written (prompt-quality-gate, code-standards, security, architecture)
 - [ ] `skills/` files written (mob-elab-prompts, review-checklist)
 - [ ] `guidelines/` files written (domain-glossary, edge-cases, acceptance-patterns, dev-setup)
-- [ ] Ops templates written (intent, unit, bolt, retro, incident, improvement)
+- [ ] Ops templates written (intent, unit, bolt, retro, incident, improvement, codebase-findings)
 - [ ] `Instructions2FDE.md` written
 - [ ] `{FRAMEWORK_ROOT}/README.md` written
 

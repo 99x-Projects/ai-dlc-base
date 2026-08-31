@@ -47,7 +47,8 @@ Before asking any questions or taking any action, present the following overview
 >   - Rules files (prompt quality gate, code standards, security, architecture, engagement)
 >   - Skills files (elaboration prompts, review checklist, UAT, bolt risk assessment, and more)
 >   - Guidelines files (domain glossary, edge cases, acceptance patterns, dev setup)
->   - Ops templates (intents, units, bolts, retros, incidents, improvements)
+>   - Ops templates (intents, units, bolts, retros, incidents, improvements, codebase findings)
+>   - A **codebase findings** registry (`ops/inception/codebase-findings/`) — one file per module/area, recording what the AI learns from reading existing code so that reverse-engineering the same module twice never happens across intents
 > - A **completion report** listing every file created and flagging anything that needs your review before the first feature bolt runs
 > - **`process-estimation-agent/`** already in your project root and ready to use — once mob elaboration produces units, invoke it in Mode 2 to get bolt-level estimates and a release milestone map
 >
@@ -182,6 +183,7 @@ Phases to execute:
 3. Create `{FRAMEWORK_ROOT}/guidelines/entry-points.md` — ask the engineer: *"Which modules or features should AI-DLC Bolts start with?"* Record their answer as the initial entry points list.
 4. Create `{FRAMEWORK_ROOT}/rules/code-standards.md` from extracted patterns.
 5. Create the full `{FRAMEWORK_ROOT}/` folder structure with all remaining files and templates. Copy all pre-built skills files from `process-onboarding-agent/skills/` into `{FRAMEWORK_ROOT}/skills/` verbatim. Also copy `process-onboarding-agent/rules/engagement.md` to `{FRAMEWORK_ROOT}/rules/engagement.md` and all `process-onboarding-agent/ops/` template files into `{FRAMEWORK_ROOT}/ops/`.
+6. Seed `{FRAMEWORK_ROOT}/ops/inception/codebase-findings/` with one finding file per segment analyzed in Phase M1 (per setup-guide.md M2.5), so the archaeology already performed for this onboarding session is not lost — future intents touching the same code check these files before re-analyzing it.
 
 ### Step 5-M — Blast radius controls (Phase M3)
 

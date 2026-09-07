@@ -47,7 +47,8 @@ Before asking any questions or taking any action, present the following overview
 >   - Rules files (prompt quality gate, code standards, security, architecture, engagement)
 >   - Skills files (elaboration prompts, review checklist, UAT, bolt risk assessment, and more)
 >   - Guidelines files (domain glossary, edge cases, acceptance patterns, dev setup)
->   - Ops templates (intents, units, bolts, retros, incidents, improvements)
+>   - Ops templates (intents, units, bolts, retros, incidents, improvements, codebase findings)
+>   - A **codebase findings** registry (`ops/inception/codebase-findings/`) — one file per module/area, recording what the AI learns from reading existing code so that reverse-engineering the same module twice never happens across intents
 > - A **completion report** listing every file created and flagging anything that needs your review before the first feature bolt runs
 > - **`process-estimation-agent/`** already in your project root and ready to use — once mob elaboration produces units, invoke it in Mode 2 to get bolt-level estimates and a release milestone map
 >
@@ -179,12 +180,13 @@ Phases to execute:
 
 ### Step 4-M — Repository overlay (Phase M2)
 
-1. Write the master rule file populated from archaeology output (Sections 1–5 from what you found; Sections 6–8 from guide defaults; Section 9 as in the guide; Section 10 as `Status: Disabled` — it is settled by item 6 below, once the notifications skill's setup conversation has run). **Replace every `{FRAMEWORK_ROOT}` placeholder in the templates with the actual resolved path** (e.g. `docs/process/intent-execution-framework`). The master rule file must contain real paths — never the literal string `{FRAMEWORK_ROOT}`.
+1. Write the master rule file populated from archaeology output (Sections 1–5 from what you found; Sections 6–8 from guide defaults; Section 9 as in the guide; Section 10 as `Status: Disabled` — it is settled by item 7 below, once the notifications skill's setup conversation has run). **Replace every `{FRAMEWORK_ROOT}` placeholder in the templates with the actual resolved path** (e.g. `docs/process/intent-execution-framework`). The master rule file must contain real paths — never the literal string `{FRAMEWORK_ROOT}`.
 2. Create `{FRAMEWORK_ROOT}/guidelines/forbidden-zones.md` — ask the engineer: *"Which files, modules, or patterns must the AI never modify without senior engineer approval?"* Record their answer as the initial forbidden zones list.
 3. Create `{FRAMEWORK_ROOT}/guidelines/entry-points.md` — ask the engineer: *"Which modules or features should AI-DLC Bolts start with?"* Record their answer as the initial entry points list.
 4. Create `{FRAMEWORK_ROOT}/rules/code-standards.md` from extracted patterns.
 5. Create the full `{FRAMEWORK_ROOT}/` folder structure with all remaining files and templates. Copy all pre-built skills files from `process-onboarding-agent/skills/` into `{FRAMEWORK_ROOT}/skills/` verbatim. Also copy `process-onboarding-agent/rules/engagement.md` to `{FRAMEWORK_ROOT}/rules/engagement.md` and all `process-onboarding-agent/ops/` template files into `{FRAMEWORK_ROOT}/ops/`.
-6. Run the skills that require a setup conversation of their own — copying a skill file installs the *file*, not the configuration. Currently this means the notifications skill: run the *Onboarding setup* steps inside `{FRAMEWORK_ROOT}/skills/notifications.md` (see setup guide Step 4, `skills/notifications.md`), then write Section 10 of the master rule file with the answers. If the engineer declines notifications, leave Section 10 as `Status: Disabled`.
+6. Seed `{FRAMEWORK_ROOT}/ops/inception/codebase-findings/` with one finding file per segment analyzed in Phase M1 (per setup-guide.md M2.5), so the archaeology already performed for this onboarding session is not lost — future intents touching the same code check these files before re-analyzing it.
+7. Run the skills that require a setup conversation of their own — copying a skill file installs the *file*, not the configuration. Currently this means the notifications skill: run the *Onboarding setup* steps inside `{FRAMEWORK_ROOT}/skills/notifications.md` (see setup guide Step 4, `skills/notifications.md`), then write Section 10 of the master rule file with the answers. If the engineer declines notifications, leave Section 10 as `Status: Disabled`.
 
 ### Step 5-M — Blast radius controls (Phase M3)
 

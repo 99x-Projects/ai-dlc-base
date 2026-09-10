@@ -146,20 +146,22 @@ Point to the relevant files:
 
 Read Section 10 (Notifications) of the master rule file. If it is absent or `Status: Disabled`, say one sentence — that the project does not use delivery notifications — and move on.
 
-If it is **Enabled**, this engineer will get no notifications until they set the endpoint variable on their own machine, and nothing will tell them: an unset `SLACK_WEBHOOK_URL` is a deliberate silent no-op, so their sessions will simply never notify. Do not let them discover that weeks later.
+If it is **Enabled**, this engineer gets nothing until they set it up on their own machine, and nothing will tell them: an absent endpoint is a deliberate silent no-op, so their sessions simply never notify. Do not let them discover that weeks later.
 
-> "This project sends Slack notifications at moments that need a human — bolt complete, UAT sign-off, incidents. It's a personal setup: your own Slack channel, your own webhook, on your own machine — you'll be notified about your sessions, not everyone's. Nothing is shared and nothing is committed. Takes a few minutes, and it's the only setup step I can't do for you."
+> "This project sends Slack notifications — every time I stop (finished, asked you something, or waiting for your next prompt), when I need your approval, and at delivery moments like bolt complete or UAT sign-off. It's a personal setup: your own Slack channel, your own webhook, on your own machine. Nothing is shared and nothing is committed. Takes a few minutes, and it's the only setup step I can't do for you."
 
 Then hand them the steps — do not attempt any of it yourself, do not ask them to paste the webhook URL into this conversation, and do not suggest they get a URL from a teammate:
 
 1. Create a Slack channel to be notified in — private, or just them in it. Something self-evident like `#ai-dlc-[their-name]`.
 2. Create their own Slack app and incoming webhook pointing at that channel: <https://api.slack.com/apps> → **Create New App → From scratch** → **Incoming Webhooks** on → **Add New Webhook to Workspace** → pick the channel → **Allow**. Copy the URL; it is a secret. (If the workspace requires admin approval to install apps, they wait for an admin — that is normal.)
-3. Add `export SLACK_WEBHOOK_URL="…"` to their shell profile (`~/.zshrc` or `~/.bashrc`), or a gitignored `.envrc` if they use direnv, then reload it.
+3. Put it in a gitignored `scripts/notify.env` at the repo root, as one line: `SLACK_WEBHOOK_URL="<their URL>"`. This is the recommended route on every OS and shell — an environment variable in a shell profile works too, but only if it is in a file a *non-interactive* shell reads, which is `~/.zshenv` on zsh and nothing at all on bash.
 4. Tell you when it is done, and you will send a test notification to confirm it arrives.
+
+**Then check whether this project's hooks are shared or per engineer.** The turn-ended and needs-attention pings come from the AI tool's hook config (`.claude/settings.json`, `.cursor/hooks.json`, or `.github/hooks/notify.json`). If that path is committed, they already have them. If the tool's config directory is **gitignored** in this project — Section 10 says which — then hooks *and* the send-command allowlist are per engineer, and this joiner has neither. Walk them through adding both from the *Onboarding setup* steps in `{FRAMEWORK_ROOT}/skills/notifications.md`, or they will get the lifecycle notifications and none of the turn-ended ones, with nothing to indicate why.
 
 The webhook is a personal credential, like an SSH key — teammates never swap them. Two people on one webhook means one person's session noise lands in the other's channel.
 
-Point them at `{FRAMEWORK_ROOT}/skills/notifications.md` — the *New teammates joining later* section — for the full detail, including the GUI-launch caveat if they start their AI tool from the Dock or Start menu rather than a terminal.
+Point them at `{FRAMEWORK_ROOT}/skills/notifications.md` for the full detail, including the GUI-launch caveat if they start their AI tool from the Dock or Start menu rather than a terminal.
 
 Record the outcome on the quick-reference card: either "notifications configured and tested" or "notifications not yet configured — see `skills/notifications.md`", so an unfinished setup is visible rather than forgotten.
 
@@ -262,7 +264,8 @@ Full glossary: `process-onboarding-agent/guidelines/domain-glossary.md`
 
 | Item | Status |
 |---|---|
-| Slack notifications (`SLACK_WEBHOOK_URL`) | [configured and tested / not configured — see `skills/notifications.md`] |
+| Slack notifications — endpoint | [configured and tested / not configured — see `skills/notifications.md`] |
+| Slack notifications — hooks + allowlist | [shared via committed config / added locally / not set up] |
 
 *Omit this section if the project has no Notifications section, or has it disabled.*
 

@@ -36,11 +36,13 @@ The event names and config files differ; the role does not. All three call the s
 |---|---|---|---|
 | Hook config | `.claude/settings.json` | `.cursor/hooks.json` (or `~/.cursor/hooks.json`) | `.github/hooks/*.json` (or `~/.copilot/hooks/`) |
 | Turn ended — work done, question asked, awaiting your next prompt | `Stop` | `stop` | `agentStop` |
-| Needs permission / attention | `Notification` | `beforeShellExecution` | `permissionRequest`, `notification` |
-| Session over | — | `sessionEnd` | `sessionEnd` |
+| Needs permission / attention | `PermissionRequest` (a specific request) or `Notification` (idle prompt) | `beforeShellExecution` | `permissionRequest`, `notification` |
+| Session over | `SessionEnd` (matcher: `clear`, `resume`, `logout`, `prompt_input_exit`, `other`) | `sessionEnd` | `sessionEnd` |
 | Subagent finished | `SubagentStop` | `subagentStop` | `subagentStop` |
 | Lifecycle layer (framework events) | Yes | Yes, in agent mode | Agent mode only — completions and inline chat cannot run commands |
 | Stop the send prompting | `permissions.allow` in `.claude/settings.json` | agent terminal-command allowlist in Cursor Settings | VS Code Copilot terminal auto-approve |
+
+**Only the first two rows are installed by default.** Session-over and subagent-finished exist on all three tools but are not part of the default set: when a session ends you are almost always the one who ended it, so the ping tells you nothing you did not just do. Install them only for headless or cloud runs, where a session can end without anyone watching. Claude Code's event list is larger than these four (it includes `TaskCompleted`, `TeammateIdle`, `PostCompact` and others) — check its docs if a project wants something more specific.
 
 Per-tool gotchas:
 

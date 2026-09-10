@@ -2,14 +2,14 @@
 
 **Purpose:** Send Slack notifications to the engineer at the moments in the delivery loop that need a human — so nobody has to sit watching a session. This is a **local, per-engineer setup**: each person creates their own Slack channel and their own webhook, on their own machine, and is notified about their own sessions. It is not a team broadcast channel, and no webhook URL is ever shared or committed. Notifications operate on two independent layers:
 
-1. **Harness layer (deterministic, Claude Code only).** Hooks in the project's `.claude/settings.json` fire on the AI tool's own events — `Notification` (the AI is waiting on the engineer) and `Stop` (a turn finished). These run automatically, regardless of what work is happening. They carry a generic message.
+1. **Harness layer (deterministic).** Hooks in the tool's own config fire on the tool's lifecycle events — a turn ending (work done, question asked, awaiting the next prompt) and needing attention (permission request, idle prompt). All three supported tools have these; the event names and config file differ. They run automatically regardless of what work is happening, so they cannot be forgotten — but they carry a generic message, because a hook does not know what a bolt is.
 2. **Lifecycle layer (agent-driven, all tools).** The experience agent sends a rich, event-specific notification at framework moments — bolt complete, UAT sign-off required, incident logged, and so on. There is no harness event for "a bolt closed," so these are sent by the agent running the configured send command via its shell tool at the point the workflow reaches that moment.
 
-Use the harness layer for "attention/done" pings and the lifecycle layer for "this delivery moment needs you." Both read the same environment variable — no credentials are ever written into a committed file.
+Use the harness layer for "attention/done" pings and the lifecycle layer for "this delivery moment needs you." Both send through the same script and resolve the same endpoint — no credentials are ever written into a committed file.
 
 **Trigger:** The harness layer fires automatically once installed. The lifecycle layer fires automatically from the master rule file routing lines (see *Lifecycle events* below). An engineer can also say "send a notification that …" to fire an ad-hoc one, or "turn notifications off for this session" to suppress both layers until the session ends.
 
-**Dependency classification:** Needs config — the send command and hooks work as-is, but each environment must set the endpoint variable below before anything is sent.
+**Dependency classification:** Needs config — the send command and hooks work as-is, but each engineer must supply their own endpoint (Step 2) before anything is sent.
 
 ---
 
@@ -20,7 +20,7 @@ Anyone editing this file — human or AI — must keep all six of these true. Th
 1. **One webhook per engineer, pointing at their own channel.** No shared URL, no shared secret store, no project-wide endpoint. The single exception is a CI/cron runner, which gets its own webhook on a team channel (Step 4).
 2. **The AI never touches Slack.** It does not create apps, call the Slack API, ask for the URL, or gate on whether the engineer may install apps. It presents instructions and waits.
 3. **`Status: Disabled` is an exact token.** `new-engineer-induction.md` string-matches it. Never write "Notifications: disabled" or any other spelling.
-4. **`.gitignore` before the URL exists.** `.envrc` and `.claude/settings.local.json` are gitignored by the AI up front — this is the only remaining path by which a webhook URL could be committed.
+4. **`.gitignore` before the URL exists.** `scripts/notify.env`, `.envrc` and `.claude/settings.local.json` are gitignored by the AI up front — these are the only files that may ever hold the URL, and the only remaining path by which it could be committed.
 5. **The script escapes, the caller does not.** `scripts/notify.sh` takes raw text and builds the JSON itself. Never reintroduce hand-escaping rules for the agent to follow.
 6. **Every send exits 0.** An unset variable, an empty message, a missing `jq`/`python3`, a failed or timed-out request — all are silent no-ops. A notification must never break the step it reports on.
 
@@ -28,20 +28,39 @@ Anyone editing this file — human or AI — must keep all six of these true. Th
 
 ## What each AI tool gets
 
-The harness layer is a Claude Code feature. The lifecycle layer works anywhere the AI can run a terminal command, which is most but not all tools. Tell the team which row they are on before configuring anything — a Cursor or Copilot team should not expect the deterministic "the AI is waiting on you" ping.
+**All three supported tools have lifecycle hooks.** Claude Code has had them longest; Cursor added them in 1.7 and GitHub Copilot's are in preview, so treat the two newer ones as more likely to move — *verified September 2026, re-check before relying on an exact event name.*
 
-| Tool | Harness layer (`Notification` / `Stop` hooks) | Lifecycle layer (framework events) | How to stop it prompting |
+The event names and config files differ; the role does not. All three call the same `scripts/notify.sh`, which is why the send script is deliberately tool-neutral and not under `.claude/`.
+
+| | **Claude Code** | **Cursor** | **GitHub Copilot** |
 |---|---|---|---|
-| **Claude Code** | Yes — hooks in `.claude/settings.json` fire automatically | Yes | `permissions.allow` entry in `.claude/settings.json` |
-| **Cursor** | No — no equivalent hook mechanism | Yes, in agent mode (it can run terminal commands) | Add `scripts/notify.sh` to the agent terminal-command allowlist in Cursor Settings |
-| **GitHub Copilot** | No — no equivalent hook mechanism | Only in **agent mode**; completions and plain inline chat cannot run commands, so nothing is sent | Allow the command in VS Code's Copilot terminal auto-approve settings |
+| Hook config | `.claude/settings.json` | `.cursor/hooks.json` (or `~/.cursor/hooks.json`) | `.github/hooks/*.json` (or `~/.copilot/hooks/`) |
+| Turn ended — work done, question asked, awaiting your next prompt | `Stop` | `stop` | `agentStop` |
+| Needs permission / attention | `Notification` | `beforeShellExecution` | `permissionRequest`, `notification` |
+| Session over | — | `sessionEnd` | `sessionEnd` |
+| Subagent finished | `SubagentStop` | `subagentStop` | `subagentStop` |
+| Lifecycle layer (framework events) | Yes | Yes, in agent mode | Agent mode only — completions and inline chat cannot run commands |
+| Stop the send prompting | `permissions.allow` in `.claude/settings.json` | agent terminal-command allowlist in Cursor Settings | VS Code Copilot terminal auto-approve |
 
-Two things to be explicit about with non-Claude-Code teams:
+Per-tool gotchas:
 
-- **No deterministic ping.** Without the harness layer, every notification depends on the agent reaching the routing line and choosing to act on it. It is best-effort by construction — reliable enough for milestones, not a substitute for an alert you must not miss.
-- **The routing line has to be in *their* rule file.** The lifecycle layer is driven by the master rule file, so Section 6's routing line and Section 10 must exist in the mirror the tool actually loads — `.cursorrules` or `.github/copilot-instructions.md`, not just `CLAUDE.md`. See the setup guide's mirror-file step; a stale mirror silently disables notifications for that tool.
+- **Cursor CLI is not the Cursor IDE.** Community reports say the CLI omits `stop`, `afterAgentResponse` and `beforeSubmitPrompt` while the IDE emits them. A headless `cursor-agent` run may notify nothing. Verify with a test send rather than assuming.
+- **Copilot takes separate commands per platform** — a hook entry has both `bash` and `powershell` keys. That makes it the only one of the three with cross-platform dispatch built into the format.
+- **Copilot's cloud agent reads only `.github/hooks/*.json`** from the cloned repo, not user-level config.
+- **Copilot needs agent mode** for the lifecycle layer at all; completions and plain inline chat cannot run a command.
 
-Environment variables are often *easier* on these tools, because an interactive integrated terminal loads the shell profile, so `SLACK_WEBHOOK_URL` from `~/.zshrc` is visible. Do not rely on it: some agent integrations run commands through a non-interactive shell (`zsh -c`), which does not source `~/.zshrc`. The GUI-launch problem described below applies to any tool started from a Dock or Start-menu icon — including Claude Code's own shell tool, not just its hooks. Verify with a test send rather than assuming.
+### Why there are still two layers
+
+Not because some tools lack hooks — they all have them now. The layers answer different questions:
+
+- **The harness layer is deterministic but semantically blind.** The tool fires it, so it cannot be forgotten; but a hook has no idea what a *bolt* is. It knows a turn ended, not that a bolt closed and a retro is due.
+- **The lifecycle layer is semantic but best-effort.** It knows exactly which delivery moment was reached, because the agent reached it — which is also why it depends on the agent noticing the routing line.
+
+Use both. Neither substitutes for the other.
+
+One thing that still needs saying to Cursor and Copilot teams: **the routing line has to be in *their* rule file.** The lifecycle layer is driven by the master rule file, so the Section 6 routing line and Section 10 must exist in the mirror the tool actually loads — `.cursorrules` or `.github/copilot-instructions.md`, not just `CLAUDE.md`. A stale mirror silently disables the lifecycle layer for that tool.
+
+Environment variables are often *easier* on these tools, because an interactive integrated terminal loads the shell profile. Do not rely on it: some agent integrations run commands through a non-interactive shell, which reads no startup file on bash and a different one on every platform. That is why Step 2 Option A (`scripts/notify.env`) is the recommended setup for every tool.
 
 ---
 
@@ -57,7 +76,7 @@ Rules:
 - **This is per engineer, per machine.** Each person points their own webhook at their own Slack channel and sets the variable locally (shell profile or `.envrc`). There is no project-wide endpoint, no shared URL, and nothing to distribute — a teammate who never sets the variable simply gets no notifications. A CI or cron runner is the one exception, and it gets its own webhook rather than borrowing anyone's (Step 4).
 - Leave the variable unset and notifications become a silent no-op — safe by default.
 - Never echo the full webhook URL back to the engineer or into any artifact. Refer to it as "the configured Slack webhook."
-- If an engineer keeps the endpoint in a file instead of the environment, it must be gitignored (e.g. `.claude/settings.local.json`) and never committed. The environment variable is the default and recommended path.
+- The endpoint is normally kept in a gitignored `scripts/notify.env`, which the send script reads directly — this is the only setup that behaves identically on macOS, Windows and Linux. An environment variable takes precedence over the file when both are present, which is how CI supplies it.
 
 ---
 
@@ -72,10 +91,10 @@ This is the one part of the framework the AI cannot do for the engineer, because
 | Task | Who | Why |
 |---|---|---|
 | Create their own channel, Slack app, and incoming webhook (Step 1) | **Engineer** | A browser flow under their own Slack login, in their own workspace. The AI has no browser and no Slack session. |
-| Put `SLACK_WEBHOOK_URL` in a shell profile, `.envrc`, or `settings.local.json` (Step 2) | **Engineer** | The AI would have to be told the URL to write it, which puts the credential in the conversation. |
+| Write the endpoint into `scripts/notify.env` (or set the variable — Step 2) | **Engineer** | The AI would have to be told the URL to write it, which puts the credential in the conversation. |
 | Verify with a test send (Step 3) | **AI** | Reads the variable from its own environment; never sees the value. |
 | CI / shared-runner secrets (Step 4) | **Engineer** | Another credential, another web UI. |
-| Add `.envrc` and `.claude/settings.local.json` to `.gitignore` | **AI** | The one file edit that prevents a leak. Do it up front, before the engineer has a URL to put anywhere — not after. |
+| Add `scripts/notify.env`, `.envrc` and `.claude/settings.local.json` to `.gitignore` | **AI** | The one file edit that prevents a leak. Do it up front, before the engineer has a URL to put anywhere — not after. |
 | Create `scripts/notify.sh`, allowlist it, write `.claude/settings.json`, write Section 10 and the Section 6 routing line | **AI** | Ordinary file work — these hold only the *name* of the variable. |
 | Send notifications from then on | **AI** | The point of the skill. |
 
@@ -98,44 +117,81 @@ Present Steps 1 and 2 as a short checklist the engineer can follow at their own 
 
 > Deliberately no realistic-looking example above, and do not add one. A dummy webhook URL whose path segments imitate the real format (a `T…` workspace id, a `B…` webhook id, a long alphanumeric token) matches GitHub's secret-scanning pattern for Slack webhooks, so push protection rejects the commit — in this repo and in every project that copies this file. Keep placeholders in `<ANGLE_BRACKET>` form.
 
-### Step 2 — Set the variable so it persists
+### Step 2 — Tell the script where to send
 
-**macOS / Linux — zsh** (default on modern macOS): add to `~/.zshrc`
-```bash
-export SLACK_WEBHOOK_URL="<YOUR_WEBHOOK_URL>"
+Two ways. The first works identically on macOS, Windows and Linux and needs no shell knowledge — prefer it, and offer the second only to engineers who ask for it.
+
+#### Option A (recommended) — `scripts/notify.env`
+
+Create a file next to the send script containing one line:
+
+```sh
+SLACK_WEBHOOK_URL="<YOUR_WEBHOOK_URL>"
 ```
-Then reload: `source ~/.zshrc`
 
-**macOS / Linux — bash:** same `export` line in `~/.bashrc` (or `~/.bash_profile`), then `source ~/.bashrc`.
+That is the whole setup. The script reads this file when the variable is not already in the environment. It is gitignored (the AI adds it in onboarding step 2), so it is never committed.
 
-**Per-project instead of global** — use [direnv](https://direnv.net): put the `export` line in a `.envrc` at the repo root, run `direnv allow`, and **add `.envrc` to `.gitignore`**. The variable loads only inside that project directory.
+**Why this is the default:** an AI tool runs commands in a *non-interactive* shell, and that shell reads a different startup file on every platform — or, on bash, none at all:
 
-**Windows — PowerShell:** `setx SLACK_WEBHOOK_URL "<YOUR_WEBHOOK_URL>"`, then open a new terminal so the value is picked up.
+| Platform / shell | What a non-interactive shell reads |
+|---|---|
+| macOS / Linux, **zsh** | `~/.zshenv` only (**not** `~/.zshrc` — that is interactive-only) |
+| Linux / Git Bash, **bash** | **nothing.** Non-interactive bash reads no startup file. `BASH_ENV` would have to already be in the environment to be read. |
+| Windows PowerShell / cmd | the user environment from the registry (`setx`) |
 
-> Do **not** put this `export` line in any file that gets committed (not the master rule file, not `.claude/settings.json`, not a checked-in `.env`). Shell profiles and gitignored `.envrc` files stay on the machine.
+So "put an export in your shell profile" is wrong on two of the three rows, and the failure is silent — the engineer's terminal works while the AI's shell sees nothing. The env file sidesteps all of it.
 
-**If the AI tool is launched from a GUI** (a desktop app, or an IDE started from the Dock or Start menu), it does not load your shell profile, so `SLACK_WEBHOOK_URL` will be unset and every send silently no-ops.
+#### Option B — an environment variable, if the engineer prefers it
 
-- **Any tool:** launch it from a terminal where the variable is already set. This is the simplest fix and the only one that needs no extra file.
-- **Any tool, OS-level:** set the variable where GUI apps can see it — `launchctl setenv SLACK_WEBHOOK_URL "…"` on macOS (per login session; add it to a login item to persist), or the user environment variables dialog / `setx` on Windows.
-- **Claude Code only:** put it in a **gitignored** `.claude/settings.local.json`:
-  ```json
-  { "env": { "SLACK_WEBHOOK_URL": "<YOUR_WEBHOOK_URL>" } }
-  ```
-  `settings.local.json` holds the real URL — it is the only artifact in this design that does. **Add `.claude/settings.local.json` to `.gitignore` before writing the URL into it**, then verify with `git check-ignore .claude/settings.local.json` (it must echo the path back). Never put the URL in `settings.json`. Do not offer this option on Cursor or Copilot projects: `env` in that file is a Claude Code setting, so those tools never read it — the engineer would be writing a live credential to disk for no benefit.
+Correct per platform. Get this wrong and it appears to work in a terminal while every AI-driven send silently no-ops.
+
+- **macOS / Linux, zsh:** add `export SLACK_WEBHOOK_URL="<YOUR_WEBHOOK_URL>"` to **`~/.zshenv`** — not `~/.zshrc`. `.zshenv` is read on every zsh invocation; `.zshrc` only for interactive ones. Then `chmod 600 ~/.zshenv`.
+- **Linux, bash or mixed shells:** put it in `~/.config/environment.d/notifications.conf` as `SLACK_WEBHOOK_URL=<YOUR_WEBHOOK_URL>` (systemd user environment, inherited by GUI apps and their children after the next login). `~/.profile` covers login shells only.
+- **macOS, shell-agnostic:** `launchctl setenv SLACK_WEBHOOK_URL "<YOUR_WEBHOOK_URL>"` makes it visible to GUI-launched apps, but it is lost on reboot unless installed as a LaunchAgent.
+- **Windows:** `setx SLACK_WEBHOOK_URL "<YOUR_WEBHOOK_URL>"`, then open a new terminal. This is user-level and shell-agnostic, so it covers PowerShell, cmd and Git Bash. Note the send script is POSIX `sh`, so **running** it needs Git Bash or WSL.
+- **Per-project instead of global:** [direnv](https://direnv.net) with the export in a gitignored `.envrc`. Convenient in a terminal, but direnv hooks the *interactive* shell, so an AI tool's shell will usually not see it. Use Option A instead.
+
+> Never put the URL in any file that gets committed — not the master rule file, not `.claude/settings.json`, not a checked-in `.env`. `scripts/notify.env`, `.envrc`, and `.claude/settings.local.json` are all gitignored; nothing else may hold it.
+
+#### Claude Code only — `.claude/settings.local.json`
+
+If the team is on Claude Code and would rather keep it in tool config than a script-adjacent file:
+
+```json
+{ "env": { "SLACK_WEBHOOK_URL": "<YOUR_WEBHOOK_URL>" } }
+```
+
+Gitignored, and it reaches every shell Claude Code spawns. Do not offer this on Cursor or Copilot projects: `env` there is a Claude Code setting, so those tools never read it and the engineer would be writing a live credential to disk for nothing.
 
 ### Step 3 — Verify
 
-Open a new terminal (so the profile is loaded) and confirm the variable is visible and the endpoint works:
-```bash
-# Confirm the variable is set (does not print the URL)
-echo "${SLACK_WEBHOOK_URL:+slack set}"
+Run this from the repository root. It exercises whichever route Step 2 used, and it checks the **HTTP status**, not the exit code:
 
-# Send a test message
-[ -n "$SLACK_WEBHOOK_URL" ] && curl -sf --max-time 5 -X POST -H 'Content-Type: application/json' \
-  --data '{"text":"AI-DLC notifications test"}' "$SLACK_WEBHOOK_URL" && echo " slack ok"
+```sh
+scripts/notify.sh 'AI-DLC notifications test'
 ```
-A `slack ok` line and the message arriving in the Slack channel confirms setup.
+
+If nothing arrives, the script says why on stderr — either no endpoint was found, or `jq`/`python3` is missing. It always exits 0, so **never treat exit 0 as proof of delivery**: a failed or timed-out request exits 0 too, by design, because a notification must never break the step it reports on.
+
+To confirm delivery rather than infer it, ask Slack directly:
+
+```sh
+[ -f scripts/notify.env ] && . scripts/notify.env
+curl -s -o /dev/null -w 'HTTP %{http_code}\n' --max-time 5 \
+  -X POST -H 'Content-Type: application/json' \
+  --data '{"text":"AI-DLC notifications test 2"}' "$SLACK_WEBHOOK_URL"
+```
+
+`HTTP 200` (body `ok`) means Slack accepted it. Anything else — `403`, `404`, a timeout — means the webhook is wrong or revoked, not that the script is broken.
+
+**The check that actually matters:** run the send from a *non-interactive* shell, because that is what the AI tool uses. If Step 2 Option A was used this cannot fail, which is the point of preferring it. If the engineer chose Option B, verify it explicitly:
+
+```sh
+zsh -c 'scripts/notify.sh "non-interactive test"'    # zsh users
+bash -c 'scripts/notify.sh "non-interactive test"'   # bash users
+```
+
+An `SLACK_WEBHOOK_URL not set` here while the plain terminal works is the classic symptom: the export is in an interactive-only startup file (`~/.zshrc`, or `~/.bashrc` on bash). Move it to `~/.zshenv`, or switch to Option A.
 
 ### Step 4 — CI and shared runners (optional, and the one shared exception)
 
@@ -232,7 +288,14 @@ The agent sends a lifecycle notification when it reaches any of these moments. T
 
 Sending is best-effort and must never interrupt the workflow: send the notification, then continue the step. Do not wait for or report the curl result unless the engineer asked for an ad-hoc send.
 
-**Expect some overlap with the harness layer, and keep the lifecycle events anyway.** Claude Code's `Notification` hook does *not* fire the moment the AI asks a prose question — it fires on a tool-permission request, and when the prompt has been idle for about a minute. So at an elaboration or UAT sign-off the lifecycle event is the notification that actually arrives on time; the hook may add a second, vaguer ping a minute later if the engineer does not respond. Two messages at those moments is the correct trade — do not remove the sign-off events from Section 10 to avoid it, or the only ping left is the delayed one.
+**Expect overlap with the harness layer, and keep both.** With the turn-ended hook installed, asking for sign-off *is* the end of a turn, so the harness fires there too — you will get two messages at a sign-off moment. That is the correct trade, not a defect to tune away:
+
+- The **harness** message is instant and generic: "finished its turn — waiting for you." It cannot be missed, and it cannot tell you what for.
+- The **lifecycle** message says *which* delivery moment and *what is needed*: "UAT sign-off required — intent 'Checkout v2' has all units Done."
+
+Delete the lifecycle sign-off events and you keep only the ping that does not say why. Delete the turn-ended hook and you depend on the agent remembering. Neither is worth the saving of one Slack line.
+
+The attention hook (`Notification` / `beforeShellExecution` / `permissionRequest`) is different again — it fires on a permission request or an idle prompt, not when a question is asked, so it rarely doubles up with anything.
 
 ---
 
@@ -248,7 +311,7 @@ Section 10 records whether *this project* fires the lifecycle events at all; eac
 
 If the engineer declines, write Section 10 with **`Status: Disabled`** — that exact token, since `new-engineer-induction.md` matches on it — and stop here.
 
-**2. Close the leak paths first, before the engineer has a URL in hand.** Add `.envrc` and `.claude/settings.local.json` to the project's `.gitignore` (create the file if there is none), and confirm with `git check-ignore .envrc .claude/settings.local.json`. This is yours to do, and doing it now means there is no window in which a webhook URL could land in a tracked file.
+**2. Close the leak paths first, before the engineer has a URL in hand.** Add `scripts/notify.env`, `.envrc` and `.claude/settings.local.json` to the project's `.gitignore` (create the file if there is none), and confirm with `git check-ignore scripts/notify.env .envrc .claude/settings.local.json`. This is yours to do, and doing it now means there is no window in which a webhook URL could land in a tracked file.
 
 **3. Hand the engineer Steps 1 and 2 of *Setting the environment variable* and wait — these two are theirs, not yours (see *Who does what*). Never ask them to paste the webhook URL into the conversation or into a committed file.** Then: they create their own channel and incoming webhook pointing at it (Step 1), persist `SLACK_WEBHOOK_URL` in their shell profile or a gitignored `.envrc` for the correct platform (Step 2), and you verify with a test send (Step 3). Every teammate repeats this on their own machine with their own channel — see *New teammates joining later*. If the variable is left unset, notifications are simply skipped.
 
@@ -258,7 +321,17 @@ If the engineer declines, write Section 10 with **`Status: Disabled`** — that 
 #!/bin/sh
 # Usage: scripts/notify.sh 'message text'   (or pipe the message on stdin)
 # Takes RAW text — the caller does not escape anything for JSON.
-[ -n "$SLACK_WEBHOOK_URL" ] || { echo "SLACK_WEBHOOK_URL not set — notification skipped" >&2; exit 0; }
+# Endpoint resolution, in order:
+#   1. SLACK_WEBHOOK_URL already in the environment (CI, or an engineer who set it there)
+#   2. scripts/notify.env next to this script — gitignored, one line, works on every OS/shell
+# The file exists because a non-interactive shell (which is what an AI tool spawns) reads no
+# startup file on bash, and a different one on every platform. Reading it here removes the
+# whole problem: no shell configuration anywhere, same behaviour on macOS, Windows and Linux.
+if [ -z "$SLACK_WEBHOOK_URL" ]; then
+  env_file="$(dirname "$0")/notify.env"
+  [ -f "$env_file" ] && . "$env_file"
+fi
+[ -n "$SLACK_WEBHOOK_URL" ] || { echo "SLACK_WEBHOOK_URL not set (no environment variable, no scripts/notify.env) — notification skipped" >&2; exit 0; }
 
 if [ "$#" -gt 0 ]; then
   msg="$*"                      # join all args, so a forgotten quote truncates nothing
@@ -303,32 +376,60 @@ Then `chmod +x scripts/notify.sh` and commit it — it contains no secret, only 
 
 If the team declines to allowlist anything, notifications still work — they just prompt before each send. Say so plainly rather than leaving it as a surprise.
 
-**6. Install the harness layer (Claude Code only).** Create or merge into `.claude/settings.json` at the repo root. Both the hook and the allow rule from step 5 belong in this one file:
+**6. Install the harness layer.** Every supported tool has hooks — install them, do not offer them. Two events by default: **turn ended** and **needs attention**. The turn-ended hook is the one engineers actually want: it fires when the agent finishes work, asks a question, or stops for the next prompt, which is the whole point of not watching a session.
 
+Use the config file for the team's tool (see *What each AI tool gets*). Prefix every message with the project name so a person watching several repos can tell them apart.
+
+**Claude Code** — `.claude/settings.json`, merged with the `allow` entry from step 5:
 ```json
 {
-  "permissions": {
-    "allow": ["Bash(scripts/notify.sh:*)"]
-  },
+  "permissions": { "allow": ["Bash(scripts/notify.sh:*)"] },
   "hooks": {
+    "Stop": [
+      { "hooks": [ { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/scripts/notify.sh ':white_check_mark: [<ProjectName>] Claude finished its turn — waiting for you.'" } ] }
+    ],
     "Notification": [
-      {
-        "hooks": [
-          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/scripts/notify.sh 'Claude Code needs your attention'" }
-        ]
-      }
+      { "hooks": [ { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/scripts/notify.sh ':bell: [<ProjectName>] Claude needs your attention — permission request or idle prompt.'" } ] }
     ]
   }
 }
 ```
 
+**Cursor** — `.cursor/hooks.json`:
+```json
+{
+  "version": 1,
+  "hooks": {
+    "stop": [ { "command": "scripts/notify.sh ':white_check_mark: [<ProjectName>] Cursor finished its turn — waiting for you.'" } ],
+    "beforeShellExecution": [ { "command": "scripts/notify.sh ':bell: [<ProjectName>] Cursor is asking to run a command.'" } ]
+  }
+}
+```
+
+**GitHub Copilot** — `.github/hooks/notify.json`:
+```json
+{
+  "version": 1,
+  "hooks": {
+    "agentStop": [ { "type": "command",
+      "bash": "scripts/notify.sh ':white_check_mark: [<ProjectName>] Copilot finished its turn — waiting for you.'",
+      "powershell": "sh scripts/notify.sh ':white_check_mark: [<ProjectName>] Copilot finished its turn — waiting for you.'" } ],
+    "permissionRequest": [ { "type": "command",
+      "bash": "scripts/notify.sh ':bell: [<ProjectName>] Copilot needs your approval.'",
+      "powershell": "sh scripts/notify.sh ':bell: [<ProjectName>] Copilot needs your approval.'" } ]
+  }
+}
+```
+
 Notes:
-- **If `.claude/settings.json` already exists, merge into it** — add the `Notification` array and the `allow` entry to what is there. Never write either block as a fresh file over the top of the other; step 5 and step 6 both touch this file.
-- **The hook spells the path differently from the call sites, on purpose.** Hook commands do not run with a guaranteed working directory, so a bare `scripts/notify.sh` dies with "No such file or directory" — silently, since the hook swallows failures — for anyone who starts a session in a subdirectory. `$CLAUDE_PROJECT_DIR` always resolves to the repo root. The call sites keep the bare relative form because that is what the allowlist matches, and hooks are not governed by `permissions.allow` at all.
-- The hook calls the same script rather than its own inline `curl`, so there is one implementation to maintain and the hook inherits the timeout and payload encoding. It therefore depends on step 4 having run — do step 4 first.
-- To also ping when a turn finishes, add the same `hooks` array under a `"Stop"` key — but `Stop` fires at the end of **every** turn, not just at the end of a piece of work. Offer it; do not install it by default.
-- For Cursor and GitHub Copilot there is no equivalent hook mechanism — skip this step entirely and record "Harness hooks: not available (Cursor / Copilot)" in Section 10. See *What each AI tool gets* above.
-- `.claude/settings.json` contains no secrets (only the variable reference), so it is safe to commit. Do **not** commit `.claude/settings.local.json` or any other file holding the actual URL.
+
+- **Merge, never overwrite.** If the tool's config file already exists, add these keys to what is there. For Claude Code, step 5 and step 6 both touch `.claude/settings.json`; for Cursor and Copilot the file may already hold unrelated hooks.
+- **Turn-ended fires on every turn.** That is the intent — it is the event that replaces watching the session — but say the number out loud during onboarding: a forty-turn session is forty messages. If the team finds it too much, drop the turn-ended hook and keep the attention hook, which fires only when the agent is actually blocked on them.
+- **Claude Code needs `$CLAUDE_PROJECT_DIR`; the others take a repo-relative path.** Hook commands have no guaranteed working directory, and Claude Code is the one with an explicit variable for the project root. Cursor resolves a project hook's relative path from the project root; Copilot accepts a `cwd` key if you need to pin it. Get this wrong and the hook dies with "No such file or directory" — silently, because hook failures are swallowed.
+- **Hooks are not governed by the send-command allowlist.** `permissions.allow` (or the equivalent) covers the agent's own shell tool, not the harness. That is why the hook path and the call-site path are spelled differently on purpose.
+- Hooks call the same `scripts/notify.sh`, so they inherit the timeout, the payload encoding, and the silent-no-op behaviour. Step 4 must have run first.
+- **If `.claude/` (or the tool's config directory) is gitignored in this project**, the hooks cannot be shared — they become per-engineer setup like the endpoint. Record that in Section 10 and add it to the induction steps, or a new teammate silently gets nothing.
+- None of these files contain a secret — only the script path and message text — so they are safe to commit wherever the project's ignore rules allow it.
 
 **7. Wire the lifecycle layer into the master rule file** (Section 6 routing line and Section 10 — see the setup guide).
 

@@ -494,7 +494,7 @@ Create this directory tree at the root of your repository:
         _template.md
 ```
 
-**Files created outside `{FRAMEWORK_ROOT}`.** Almost everything this framework creates lives under `{FRAMEWORK_ROOT}`. The notifications skill is the exception: if the team enables it in Step 4, two artifacts are created at the **repository root** instead — `scripts/notify.sh` (the send script) and `.claude/settings.json` (hooks and the command allowlist, Claude Code only). Both must be at the root, not nested under `{FRAMEWORK_ROOT}`, or the allowlist rule will not match and the hooks will not load.
+**Files created outside `{FRAMEWORK_ROOT}`.** Almost everything this framework creates lives under `{FRAMEWORK_ROOT}`. The notifications skill is the exception: if the team enables it in Step 4, two artifacts are created at the **repository root** instead — `scripts/notify.sh` (the send script) and the AI tool's hook config (`.claude/settings.json`, `.cursor/hooks.json`, or `.github/hooks/notify.json`). Both must be at the root, not nested under `{FRAMEWORK_ROOT}`, or the allowlist rule will not match and the hooks will not load.
 
 ---
 
@@ -672,23 +672,25 @@ The question of whether the team wants notifications is asked in Step 4, when th
 
 **Status:** Enabled / Disabled
 **Endpoint:** Slack incoming webhook, read from the `SLACK_WEBHOOK_URL` environment variable — never commit a webhook URL. Per engineer, not per project: each teammate has their own channel and their own webhook on their own machine, so this section says the events fire, not who receives them. A teammate who has not set the variable simply gets nothing.
-**Harness hooks:** `.claude/settings.json` Notification (and optionally Stop) — Claude Code only. On Cursor / Copilot record "not available"; those tools get the lifecycle layer only, and only when the agent can run terminal commands.
+**Harness hooks:** installed by default — turn-ended and needs-attention. Record the tool and its config file: Claude Code `.claude/settings.json` (`Stop`, `Notification`), Cursor `.cursor/hooks.json` (`stop`, `beforeShellExecution`), Copilot `.github/hooks/notify.json` (`agentStop`, `permissionRequest`). If that config directory is gitignored in this project, note that hooks are per engineer rather than shared.
 **Send command:** `scripts/notify.sh '<message>'` — run from the repository root, single-quoted argument, approved in the AI tool's command allowlist so sends do not prompt. The script takes raw text and builds the JSON itself.
 
-Lifecycle events that notify (see `{FRAMEWORK_ROOT}/skills/notifications.md` for message format):
+Events that notify (see `{FRAMEWORK_ROOT}/skills/notifications.md` for message format):
 
-| Event | Priority |
-|---|---|
-| Elaboration sign-off required | high |
-| Bolt complete → retro due | normal |
-| UAT sign-off required | high |
-| Intent implemented | normal |
-| Incident logged / hotfix started | high |
-| Circuit breaker tripped | high |
-| Dependency audit due | high |
+| Event | Priority | Layer |
+|---|---|---|
+| Turn ended — work done, question asked, or awaiting the next prompt | normal | harness |
+| Attention needed — permission request or idle prompt | high | harness |
+| Elaboration sign-off required | high | lifecycle |
+| Bolt complete → retro due | normal | lifecycle |
+| UAT sign-off required | high | lifecycle |
+| Intent implemented | normal | lifecycle |
+| Incident logged / hotfix started | high | lifecycle |
+| Circuit breaker tripped | high | lifecycle |
+| Dependency audit due | high | lifecycle |
 ```
 
-Add or remove events from the table to tune what the project is alerted on. Read and applied by the notifications skill; if this section is absent, notifications are treated as disabled. Keep the two sign-off events even in Claude Code projects that install the harness hooks — the `Notification` hook fires on permission requests and after about a minute of idle prompt, not at the instant the AI asks for sign-off, so removing them leaves only a delayed ping.
+Add or remove events from the table to tune what the project is alerted on. Read and applied by the notifications skill; if this section is absent, notifications are treated as disabled. Keep the two sign-off events even though the turn-ended hook also fires there. The harness message is instant but generic ("finished its turn"); the lifecycle message says which moment and what is needed. Removing the lifecycle events leaves only the ping that cannot say why.
 
 ---
 
@@ -821,7 +823,7 @@ Copy this file verbatim from `process-onboarding-agent/skills/root-cause-analysi
 
 ### `skills/notifications.md`
 
-The notifications skill sends Slack alerts at the delivery moments that need a human, on two layers: deterministic `.claude/settings.json` hooks for generic "needs attention / done" pings (Claude Code only), and agent-driven, event-specific notifications for framework moments (elaboration sign-off, bolt complete, UAT sign-off, incident/hotfix, circuit breaker, dependency audit due). The incoming-webhook URL is read from the `SLACK_WEBHOOK_URL` environment variable — no webhook URL is ever written into a committed file. Sending is best-effort and never blocks a step.
+The notifications skill sends Slack alerts at the delivery moments that need a human, on two layers: deterministic tool hooks for turn-ended and needs-attention pings (Claude Code, Cursor and Copilot all support these, with different event names and config files), and agent-driven, event-specific notifications for framework moments (elaboration sign-off, bolt complete, UAT sign-off, incident/hotfix, circuit breaker, dependency audit due). The incoming-webhook URL is read from the `SLACK_WEBHOOK_URL` environment variable — no webhook URL is ever written into a committed file. Sending is best-effort and never blocks a step.
 
 Copy this file verbatim from `process-onboarding-agent/skills/notifications.md` to `{FRAMEWORK_ROOT}/skills/notifications.md`. No customization of the skill file is needed — per-project settings (event set, enabled/disabled) live in the master rule file Notifications section, and the endpoint lives in an environment variable.
 

@@ -20,6 +20,22 @@ Read the improvement file in full before beginning the evaluation.
 
 ---
 
+## Step 1.5 — Ask Whether the Improvement Can Be a CHECK Rather Than a Sentence
+
+Before classifying, ask of each improvement: **could this be enforced by something that runs, instead of something someone must remember?**
+
+A retro's natural output is prose — a rule appended to the code standards, a bullet in a checklist. Prose is necessary (it carries the reasoning) and it is **not a mitigation**: it only fires if the next person reads it, recognises their situation in it, and acts. Where the invariant is mechanically decidable, the durable form is a **test, a lint rule, or a gate step**, with the prose kept as the explanation of why the check exists.
+
+For each improvement, record one of:
+
+- **Check landed** — name the test/lint rule/gate step, and confirm it has been seen to FAIL against the defect it prevents (a guard never observed red is not a guard).
+- **Check possible, not landed** — say why (usually cost or scope), and raise it as an action so it is a decision rather than an omission.
+- **Prose only — not mechanically decidable** — the honest answer for judgement-shaped lessons. Most process improvements land here, and that is fine; the point is to have asked.
+
+A prose-only improvement whose invariant *was* mechanically decidable is the failure mode this step catches.
+
+---
+
 ## Step 2 — Classify: Generic or Project-Specific
 
 For each improvement, determine whether it is **generic** (beneficial to all AI-DLC projects) or **project-specific** (only relevant to this project's stack, domain, or conventions).

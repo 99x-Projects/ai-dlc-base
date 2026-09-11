@@ -827,7 +827,18 @@ The notifications skill sends Slack alerts at the delivery moments that need a h
 
 Copy this file verbatim from `process-onboarding-agent/skills/notifications.md` to `{FRAMEWORK_ROOT}/skills/notifications.md`. No customization of the skill file is needed — per-project settings (event set, enabled/disabled) live in the master rule file Notifications section, and the endpoint lives in an environment variable.
 
-**During onboarding:** run the *Onboarding setup* steps inside the skill, in the order given there — ask whether the engineer wants notifications (it is a personal setup — their own channel, their own webhook, this machine only; each teammate repeats it, so the `new-engineer-induction` skill prompts joiners); hand them the two credential steps (create the channel and webhook, set `SLACK_WEBHOOK_URL`) and wait, since those are the only framework steps the AI cannot perform — never ask them to paste a webhook URL into the conversation or a committed file; create `scripts/notify.sh` **at the repository root**; approve that command in the tool's allowlist so sends do not prompt; install the turn-ended and needs-attention hooks in the tool's own hook config — `.claude/settings.json`, `.cursor/hooks.json`, or `.github/hooks/notify.json` (all three tools support hooks; they call the same script, so the script must exist first); populate the master rule file Notifications section (Section 10); then send one test notification and confirm it arrived *without* a permission prompt. The skill's *What each AI tool gets* table states what Cursor and Copilot teams do and do not receive — walk through it with them so no one expects a ping their tool cannot send.
+**During onboarding:** run the *Onboarding setup* steps inside the skill, in the order given there. The order matters — each step depends on an earlier one:
+
+1. Ask whether the engineer wants notifications. It is a personal setup: their own channel, their own webhook, this machine only. Each teammate repeats it, which is why `new-engineer-induction` prompts joiners.
+2. Add `scripts/notify.env`, `.envrc` and `.claude/settings.local.json` to `.gitignore` **before** any webhook URL exists, and confirm with `git check-ignore`.
+3. Create `scripts/notify.sh` at the **repository root** — everything else calls it, so it comes first.
+4. Approve that command in the tool's allowlist so sends do not prompt.
+5. Hand the engineer the two credential steps — create the channel and webhook, then write `scripts/notify.env` — and wait. These are the only framework steps the AI cannot perform. Never ask them to paste a webhook URL into the conversation or a committed file. When they confirm, verify with a test send.
+6. Install the turn-ended and needs-attention hooks in the tool's own hook config — `.claude/settings.json`, `.cursor/hooks.json`, or `.github/hooks/notify.json`. All three tools support hooks, and they call the script from step 3.
+7. Populate the master rule file Notifications section (Section 10).
+8. Send one test notification and confirm it arrived *without* a permission prompt.
+
+The skill's *What each AI tool gets* table lists the hook event names and config file per tool — walk through it with the team so nobody expects a ping their tool does not send.
 
 **Section 6 routing line:** already written as part of the Section 6 template in Step 2 — do not add a second one. Verify it is present, and write Section 10 here.
 

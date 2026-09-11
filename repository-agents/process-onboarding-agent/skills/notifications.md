@@ -94,10 +94,10 @@ This is the one part of the framework the AI cannot do for the engineer, because
 |---|---|---|
 | Create their own channel, Slack app, and incoming webhook (Step 1) | **Engineer** | A browser flow under their own Slack login, in their own workspace. The AI has no browser and no Slack session. |
 | Write the endpoint into `scripts/notify.env` (or set the variable — Step 2) | **Engineer** | The AI would have to be told the URL to write it, which puts the credential in the conversation. |
-| Verify with a test send (Step 3) | **AI** | Reads the variable from its own environment; never sees the value. |
+| Verify with a test send (Step 3) | **AI** | Runs the script, which resolves the endpoint itself; the AI never sees the value. |
 | CI / shared-runner secrets (Step 4) | **Engineer** | Another credential, another web UI. |
 | Add `scripts/notify.env`, `.envrc` and `.claude/settings.local.json` to `.gitignore` | **AI** | The one file edit that prevents a leak. Do it up front, before the engineer has a URL to put anywhere — not after. |
-| Create `scripts/notify.sh`, allowlist it, write `.claude/settings.json`, write Section 10 and the Section 6 routing line | **AI** | Ordinary file work — these hold only the *name* of the variable. |
+| Create `scripts/notify.sh`, allowlist it, install the hooks in the tool's hook config, write Section 10 and the Section 6 routing line | **AI** | Ordinary file work — none of these hold the URL, only a reference to it. |
 | Send notifications from then on | **AI** | The point of the skill. |
 
 **Do no part of the Slack side yourself.** Do not create or configure a Slack app, do not call the Slack API, do not open or ask anyone to open a browser on your behalf, and do not ask whether the engineer has permission to install apps — that is theirs to deal with, not yours to gate. Your entire role in Steps 1 and 2 is to present the instructions, then wait.
@@ -229,7 +229,7 @@ The `new-engineer-induction` skill prompts for this automatically, so a joining 
 
 ## The send command
 
-Every send — both layers — goes through one script, `scripts/notify.sh` (installed during onboarding; see *Onboarding setup*, step 4). The script builds the JSON payload itself, so **the agent never escapes anything for JSON**:
+Every send — both layers — goes through one script, `scripts/notify.sh` (installed during onboarding; see *Onboarding setup*, step 3). The script builds the JSON payload itself, so **the agent never escapes anything for JSON**:
 
 ```bash
 scripts/notify.sh 'Message text, exactly as it should appear in Slack'
@@ -315,9 +315,7 @@ If the engineer declines, write Section 10 with **`Status: Disabled`** — that 
 
 **2. Close the leak paths first, before the engineer has a URL in hand.** Add `scripts/notify.env`, `.envrc` and `.claude/settings.local.json` to the project's `.gitignore` (create the file if there is none), and confirm with `git check-ignore scripts/notify.env .envrc .claude/settings.local.json`. This is yours to do, and doing it now means there is no window in which a webhook URL could land in a tracked file.
 
-**3. Hand the engineer Steps 1 and 2 of *Setting the environment variable* and wait — these two are theirs, not yours (see *Who does what*). Never ask them to paste the webhook URL into the conversation or into a committed file.** Then: they create their own channel and incoming webhook pointing at it (Step 1), persist `SLACK_WEBHOOK_URL` in their shell profile or a gitignored `.envrc` for the correct platform (Step 2), and you verify with a test send (Step 3). Every teammate repeats this on their own machine with their own channel — see *New teammates joining later*. If the variable is left unset, notifications are simply skipped.
-
-**4. Install the send script.** Every send — both layers — goes through this one script, so JSON encoding lives in exactly one place and the command can be allowlisted once. Create it at **`scripts/notify.sh`, at the repository root** — not under `{FRAMEWORK_ROOT}`, and not under `.claude/`; it must be tool-neutral and reachable at a stable relative path.
+**3. Install the send script.** Every send — both layers — goes through this one script, so JSON encoding lives in exactly one place and the command can be allowlisted once. Create it at **`scripts/notify.sh`, at the repository root** — not under `{FRAMEWORK_ROOT}`, and not under `.claude/`; it must be tool-neutral and reachable at a stable relative path.
 
 ```bash
 #!/bin/sh
@@ -366,7 +364,7 @@ Then `chmod +x scripts/notify.sh` and commit it — it contains no secret, only 
 - **No message is a no-op, not an error.** Called with no argument and nothing piped in, it says so on stderr and exits 0 rather than hanging on `cat` waiting for input that never comes.
 - If the project already keeps scripts under another name (`bin/`, `tools/`), put it there instead and use that exact path everywhere — the allowlist rule and Section 10 must match it character for character.
 
-**5. Stop the send prompting for permission.** The lifecycle layer runs the script through the AI's shell/terminal tool, so by default the tool asks the engineer to approve every notification — which defeats the point of being notified. Approve it once, per tool:
+**4. Stop the send prompting for permission.** The lifecycle layer runs the script through the AI's shell/terminal tool, so by default the tool asks the engineer to approve every notification — which defeats the point of being notified. Approve it once, per tool:
 
 - **Claude Code** — add the allow rule to `.claude/settings.json` (see the combined file in step 6; do not write it as a separate file that overwrites the hooks block):
   ```json
@@ -378,11 +376,17 @@ Then `chmod +x scripts/notify.sh` and commit it — it contains no secret, only 
 
 If the team declines to allowlist anything, notifications still work — they just prompt before each send. Say so plainly rather than leaving it as a surprise.
 
+**5. Hand the engineer Steps 1 and 2 of *Setting the environment variable* and wait — these two are theirs, not yours (see *Who does what*). Never ask them to paste the webhook URL into the conversation or into a committed file.** They create their own Slack channel and an incoming webhook pointing at it (Step 1), then tell the script where to send by writing `scripts/notify.env` — or, if they prefer, by setting `SLACK_WEBHOOK_URL` in a file a non-interactive shell actually reads (Step 2).
+
+Stop here and wait for them to say it is done. Do not proceed while the endpoint is missing: every send would be a silent no-op and the remaining steps would look like they worked.
+
+When they confirm, run *Setting the environment variable* Step 3 yourself to verify — the send script exists by now, which is why this step comes after installing it. Every teammate repeats this on their own machine with their own channel; see *New teammates joining later*.
+
 **6. Install the harness layer.** Every supported tool has hooks — install them, do not offer them. Two events by default: **turn ended** and **needs attention**. The turn-ended hook is the one engineers actually want: it fires when the agent finishes work, asks a question, or stops for the next prompt, which is the whole point of not watching a session.
 
 Use the config file for the team's tool (see *What each AI tool gets*). Prefix every message with the project name so a person watching several repos can tell them apart.
 
-**Claude Code** — `.claude/settings.json`, merged with the `allow` entry from step 5:
+**Claude Code** — `.claude/settings.json`, merged with the `allow` entry from step 4:
 ```json
 {
   "permissions": { "allow": ["Bash(scripts/notify.sh:*)"] },
@@ -425,11 +429,11 @@ Use the config file for the team's tool (see *What each AI tool gets*). Prefix e
 
 Notes:
 
-- **Merge, never overwrite.** If the tool's config file already exists, add these keys to what is there. For Claude Code, step 5 and step 6 both touch `.claude/settings.json`; for Cursor and Copilot the file may already hold unrelated hooks.
+- **Merge, never overwrite.** If the tool's config file already exists, add these keys to what is there. For Claude Code, step 4 and step 6 both touch `.claude/settings.json`; for Cursor and Copilot the file may already hold unrelated hooks.
 - **Turn-ended fires on every turn.** That is the intent — it is the event that replaces watching the session — but say the number out loud during onboarding: a forty-turn session is forty messages. If the team finds it too much, drop the turn-ended hook and keep the attention hook, which fires only when the agent is actually blocked on them.
 - **Claude Code needs `$CLAUDE_PROJECT_DIR`; the others take a repo-relative path.** Hook commands have no guaranteed working directory, and Claude Code is the one with an explicit variable for the project root. Cursor resolves a project hook's relative path from the project root; Copilot accepts a `cwd` key if you need to pin it. Get this wrong and the hook dies with "No such file or directory" — silently, because hook failures are swallowed.
 - **Hooks are not governed by the send-command allowlist.** `permissions.allow` (or the equivalent) covers the agent's own shell tool, not the harness. That is why the hook path and the call-site path are spelled differently on purpose.
-- Hooks call the same `scripts/notify.sh`, so they inherit the timeout, the payload encoding, and the silent-no-op behaviour. Step 4 must have run first.
+- Hooks call the same `scripts/notify.sh`, so they inherit the timeout, the payload encoding, and the silent-no-op behaviour. Step 3 must have run first.
 - **If `.claude/` (or the tool's config directory) is gitignored in this project**, the hooks cannot be shared — they become per-engineer setup like the endpoint. Record that in Section 10 and add it to the induction steps, or a new teammate silently gets nothing.
 - None of these files contain a secret — only the script path and message text — so they are safe to commit wherever the project's ignore rules allow it.
 
@@ -441,7 +445,7 @@ Notes:
 scripts/notify.sh ':rotating_light: [<ProjectName>] Notifications configured — test of unit '\''apply-coupon'\'' (Sev-1) "quoted".'
 ```
 
-Ask the engineer to confirm the message arrived in the Slack channel and that it was sent **without a permission prompt**. If it prompted, step 5 did not take effect.
+Ask the engineer to confirm the message arrived in the Slack channel and that it was sent **without a permission prompt**. If it prompted, step 4 did not take effect.
 
 ---
 

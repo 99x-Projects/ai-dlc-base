@@ -66,6 +66,7 @@ The output is a fully configured `intent-execution-framework/` folder (placed in
 - Suggests running **Root Cause Analysis** when an incident is resolved
 - Routes **bolt-type variants** based on natural language: "fix a bug in X" → bug bolt (abbreviated workflow, no elaboration, mandatory RCA if recurring); "hotfix" / "prod is down" → hotfix bolt (emergency intake, minimal ACs, retro within 24 hours); "improve performance of X" / "NFR bolt" → NFR bolt (measurable threshold ACs, before/after baseline, no new intent created)
 - Responds to engineer-triggered skills: `compact-docs`, `root-cause-analysis`, `progress-digest` (stakeholder summaries), `new-engineer-induction` (onboards a new team member with a personalized quick-reference card)
+- Sends **Slack notifications** at delivery moments that need a human — elaboration sign-off, bolt complete, UAT sign-off, incident/hotfix, circuit breaker, dependency audit due — plus deterministic tool hooks that ping whenever the agent stops or needs attention (supported on Claude Code, Cursor and Copilot, each with its own config file); a local per-engineer setup — each teammate has their own channel and webhook, and the URL is read from an environment variable so it is never shared or committed
 
 The experience agent compounds in quality over time — every retro tightens the rules, every RCA surfaces deeper gaps, knowledge promotion propagates improvements across teams, and every bolt is safer than the last.
 
@@ -119,7 +120,7 @@ The output is a comprehensive Review Report containing: a domain-by-domain score
 
 **How it works:**
 - Runs a five-question discovery interview about the team's current process, AI touchpoints, common failure modes, stakeholder communication, and capability gaps
-- Presents the full skills catalogue (15 skills grouped by delivery moment) with a dependency classification for each: **Standalone** (invoke directly), **Needs config** (one small configuration at invocation), or **Framework-only** (requires the full framework)
+- Presents the full skills catalogue (16 skills grouped by delivery moment) with a dependency classification for each: **Standalone** (invoke directly), **Needs config** (one small configuration at invocation), or **Framework-only** (requires the full framework)
 - Flags skills most relevant to the team's answers with a ★ Recommended marker
 - Engineer selects skills; agent warns before installing any Framework-only skills
 - Copies selected skill files to the team's chosen path

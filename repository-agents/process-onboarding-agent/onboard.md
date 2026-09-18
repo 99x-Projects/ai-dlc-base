@@ -97,6 +97,7 @@ Use `FRAMEWORK_ROOT` as the base path for every framework file created during th
    - `process-onboarding-agent/skills/process-health.md`
    - `process-onboarding-agent/skills/dependency-audit.md`
    - `process-onboarding-agent/skills/knowledge-promotion.md`
+   - `process-onboarding-agent/skills/notifications.md`
    - `process-onboarding-agent/skills/process-visualization.md`
    - `process-onboarding-agent/skills/new-engineer-induction.md`
    - `process-onboarding-agent/setup-guide.md`
@@ -134,14 +135,15 @@ Run the nine-question interview defined in `process-onboarding-agent/setup-guide
 
 Once all nine questions are answered, execute Steps 1–9 of the setup guide in order. Create all files under `FRAMEWORK_ROOT`:
 1. Create the full `{FRAMEWORK_ROOT}/` folder structure with all template files.
-2. Write the master rule file (all 9 sections) using interview answers for Sections 1–5 and Section 9. **Replace every `{FRAMEWORK_ROOT}` placeholder in the templates with the actual resolved path** (e.g. `docs/process/intent-execution-framework`). The master rule file must contain real paths — never the literal string `{FRAMEWORK_ROOT}`.
+2. Write the master rule file (all 10 sections) using interview answers for Sections 1–5 and Section 9. Section 10 (Notifications) is settled later, when the notifications skill's setup conversation runs during **setup guide Step 4** — until then, write it as `Status: Disabled`. **Replace every `{FRAMEWORK_ROOT}` placeholder in the templates with the actual resolved path** (e.g. `docs/process/intent-execution-framework`). The master rule file must contain real paths — never the literal string `{FRAMEWORK_ROOT}`.
 3. Write all `rules/` files using interview answers and guide defaults.
 4. Copy all pre-built skills files from `process-onboarding-agent/skills/` into `{FRAMEWORK_ROOT}/skills/` verbatim (do not modify their content). Also copy `process-onboarding-agent/rules/engagement.md` to `{FRAMEWORK_ROOT}/rules/engagement.md` and all `process-onboarding-agent/ops/` template files into `{FRAMEWORK_ROOT}/ops/`.
-5. Write all `guidelines/` files (domain glossary pre-populated from interview question 6; others as stubs).
-6. Write `Instructions2FDE.md` at `{FRAMEWORK_ROOT}/Instructions2FDE.md`.
-7. Write `{FRAMEWORK_ROOT}/README.md`.
-8. Create the backlog and the first intent from interview question 8.
-9. Create mirror files for any additional tools the engineer wants to support.
+5. Run the skills that need a setup conversation of their own — copying a skill file installs the *file*, not the configuration. Currently this means the notifications skill: run the *Onboarding setup* steps inside `{FRAMEWORK_ROOT}/skills/notifications.md` (setup guide Step 4), then write Section 10 with the answers. If the engineer declines or is not ready, leave Section 10 as `Status: Disabled` and carry on — never block onboarding on it.
+6. Write all `guidelines/` files (domain glossary pre-populated from interview question 6; others as stubs).
+7. Write `Instructions2FDE.md` at `{FRAMEWORK_ROOT}/Instructions2FDE.md`.
+8. Write `{FRAMEWORK_ROOT}/README.md`.
+9. Create the backlog and the first intent from interview question 8.
+10. Create mirror files for any additional tools the engineer wants to support.
 
 ### Step 5-F — Deliver the completion report and hand off
 
@@ -178,12 +180,13 @@ Phases to execute:
 
 ### Step 4-M — Repository overlay (Phase M2)
 
-1. Write the master rule file populated from archaeology output (Sections 1–5 from what you found; Sections 6–8 from guide defaults). **Replace every `{FRAMEWORK_ROOT}` placeholder in the templates with the actual resolved path** (e.g. `docs/process/intent-execution-framework`). The master rule file must contain real paths — never the literal string `{FRAMEWORK_ROOT}`.
+1. Write the master rule file populated from archaeology output (Sections 1–5 from what you found; Sections 6–8 from guide defaults; Section 9 as in the guide; Section 10 as `Status: Disabled` — it is settled by item 7 below, once the notifications skill's setup conversation has run). **Replace every `{FRAMEWORK_ROOT}` placeholder in the templates with the actual resolved path** (e.g. `docs/process/intent-execution-framework`). The master rule file must contain real paths — never the literal string `{FRAMEWORK_ROOT}`.
 2. Create `{FRAMEWORK_ROOT}/guidelines/forbidden-zones.md` — ask the engineer: *"Which files, modules, or patterns must the AI never modify without senior engineer approval?"* Record their answer as the initial forbidden zones list.
 3. Create `{FRAMEWORK_ROOT}/guidelines/entry-points.md` — ask the engineer: *"Which modules or features should AI-DLC Bolts start with?"* Record their answer as the initial entry points list.
 4. Create `{FRAMEWORK_ROOT}/rules/code-standards.md` from extracted patterns.
 5. Create the full `{FRAMEWORK_ROOT}/` folder structure with all remaining files and templates. Copy all pre-built skills files from `process-onboarding-agent/skills/` into `{FRAMEWORK_ROOT}/skills/` verbatim. Also copy `process-onboarding-agent/rules/engagement.md` to `{FRAMEWORK_ROOT}/rules/engagement.md` and all `process-onboarding-agent/ops/` template files into `{FRAMEWORK_ROOT}/ops/`.
 6. Seed `{FRAMEWORK_ROOT}/ops/inception/codebase-findings/` with one finding file per segment analyzed in Phase M1 (per setup-guide.md M2.5), so the archaeology already performed for this onboarding session is not lost — future intents touching the same code check these files before re-analyzing it.
+7. Run the skills that require a setup conversation of their own — copying a skill file installs the *file*, not the configuration. Currently this means the notifications skill: run the *Onboarding setup* steps inside `{FRAMEWORK_ROOT}/skills/notifications.md` (see setup guide Step 4, `skills/notifications.md`), then write Section 10 of the master rule file with the answers. If the engineer declines notifications, leave Section 10 as `Status: Disabled`.
 
 ### Step 5-M — Blast radius controls (Phase M3)
 

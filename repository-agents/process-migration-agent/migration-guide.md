@@ -33,6 +33,7 @@ project-root/
       process-health.md        ← template (pre-built)
       dependency-audit.md      ← template (pre-built)
       knowledge-promotion.md   ← template (pre-built)
+      notifications.md         ← template (pre-built)
       new-engineer-induction.md ← template (pre-built)
       bug-bolt.md              ← template (pre-built)
       hotfix-bolt.md           ← template (pre-built)
@@ -124,6 +125,7 @@ Before migrating, understand which files are which:
 - `ai-dlc/skills/process-health.md`
 - `ai-dlc/skills/dependency-audit.md`
 - `ai-dlc/skills/knowledge-promotion.md`
+- `ai-dlc/skills/notifications.md`
 - `ai-dlc/skills/new-engineer-induction.md`
 - `ai-dlc/skills/bug-bolt.md`
 - `ai-dlc/skills/hotfix-bolt.md`
@@ -302,10 +304,15 @@ Files to refresh:
 | `process-onboarding-agent/skills/process-health.md` | `{NEW_FRAMEWORK_ROOT}/skills/process-health.md` |
 | `process-onboarding-agent/skills/dependency-audit.md` | `{NEW_FRAMEWORK_ROOT}/skills/dependency-audit.md` |
 | `process-onboarding-agent/skills/knowledge-promotion.md` | `{NEW_FRAMEWORK_ROOT}/skills/knowledge-promotion.md` |
+| `process-onboarding-agent/skills/notifications.md` | `{NEW_FRAMEWORK_ROOT}/skills/notifications.md` |
 | `process-onboarding-agent/skills/new-engineer-induction.md` | `{NEW_FRAMEWORK_ROOT}/skills/new-engineer-induction.md` |
 | `process-onboarding-agent/skills/bug-bolt.md` | `{NEW_FRAMEWORK_ROOT}/skills/bug-bolt.md` |
 | `process-onboarding-agent/skills/hotfix-bolt.md` | `{NEW_FRAMEWORK_ROOT}/skills/hotfix-bolt.md` |
 | `process-onboarding-agent/skills/nfr-bolt.md` | `{NEW_FRAMEWORK_ROOT}/skills/nfr-bolt.md` |
+
+The table above lists the pre-built skills as of this guide's last update. Treat it as a checklist, not a closed set: refresh **every** `*.md` under `process-onboarding-agent/skills/` in the new base repo. If the base repo contains a skill the table does not mention, copy it across anyway and note it in the migration report — the base repo is the source of truth, not this list.
+
+**Skills that need a setup conversation, not just a file copy.** Copying a skill file installs the *file*, not the configuration. After refreshing, check for skills whose behaviour is driven by a master rule file section that a migrated project will not have. Currently that means **notifications**: if the project's master rule file has no Section 10, offer to run the *Onboarding setup* steps inside `{NEW_FRAMEWORK_ROOT}/skills/notifications.md` and write Section 10 from the answers. If the engineer declines, write Section 10 with `Status: Disabled` — or leave it absent, which is treated as disabled — and note it in the migration report so it is a visible choice rather than an oversight.
 
 Also refresh the engagement rule:
 

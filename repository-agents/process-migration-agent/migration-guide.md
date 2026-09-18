@@ -305,6 +305,7 @@ Files to refresh:
 | `process-onboarding-agent/skills/dependency-audit.md` | `{NEW_FRAMEWORK_ROOT}/skills/dependency-audit.md` |
 | `process-onboarding-agent/skills/knowledge-promotion.md` | `{NEW_FRAMEWORK_ROOT}/skills/knowledge-promotion.md` |
 | `process-onboarding-agent/skills/notifications.md` | `{NEW_FRAMEWORK_ROOT}/skills/notifications.md` |
+| `process-onboarding-agent/skills/ai-hub-metrics.md` | `{NEW_FRAMEWORK_ROOT}/skills/ai-hub-metrics.md` |
 | `process-onboarding-agent/skills/new-engineer-induction.md` | `{NEW_FRAMEWORK_ROOT}/skills/new-engineer-induction.md` |
 | `process-onboarding-agent/skills/bug-bolt.md` | `{NEW_FRAMEWORK_ROOT}/skills/bug-bolt.md` |
 | `process-onboarding-agent/skills/hotfix-bolt.md` | `{NEW_FRAMEWORK_ROOT}/skills/hotfix-bolt.md` |
@@ -312,7 +313,12 @@ Files to refresh:
 
 The table above lists the pre-built skills as of this guide's last update. Treat it as a checklist, not a closed set: refresh **every** `*.md` under `process-onboarding-agent/skills/` in the new base repo. If the base repo contains a skill the table does not mention, copy it across anyway and note it in the migration report — the base repo is the source of truth, not this list.
 
-**Skills that need a setup conversation, not just a file copy.** Copying a skill file installs the *file*, not the configuration. After refreshing, check for skills whose behaviour is driven by a master rule file section that a migrated project will not have. Currently that means **notifications**: if the project's master rule file has no Section 10, offer to run the *Onboarding setup* steps inside `{NEW_FRAMEWORK_ROOT}/skills/notifications.md` and write Section 10 from the answers. If the engineer declines, write Section 10 with `Status: Disabled` — or leave it absent, which is treated as disabled — and note it in the migration report so it is a visible choice rather than an oversight.
+**Skills that need a setup conversation, not just a file copy.** Copying a skill file installs the *file*, not the configuration. After refreshing, check for skills whose behaviour is driven by a master rule file section that a migrated project will not have. Currently that means two skills, each gated on its own section being present:
+
+- **notifications** — if the project's master rule file has no Section 10, offer to run the *Onboarding setup* steps inside `{NEW_FRAMEWORK_ROOT}/skills/notifications.md` and write Section 10 from the answers. If the engineer declines, write Section 10 with `Status: Disabled` — or leave it absent, which is treated as disabled — and note it in the migration report so it is a visible choice rather than an oversight.
+- **ai-hub-metrics** — if the project's master rule file has no Section 11, this project predates the skill entirely (it is a newer addition to the base repo than notifications). Offer to run the *Onboarding setup* steps inside `{NEW_FRAMEWORK_ROOT}/skills/ai-hub-metrics.md` and write Section 11 from the answers — the skill's own setup ends by showing the engineer a status summary card, which doubles as their confirmation that the integration is live. If the engineer declines or is not ready (it needs a Workflow modeled in AI Hub first), write Section 11 with `Status: Disabled` — or leave it absent — and note it in the migration report.
+
+Both sections are project-level switchboards (whether events fire at all), not project-specific data, so writing them from scratch during migration is correct — there is nothing in the old structure to preserve for either. They differ in who the credential belongs to: notifications is per-engineer (each teammate sets their own `SLACK_WEBHOOK_URL`, so Section 10 being `Enabled` gets a migrated teammate nothing until they personally configure it), while ai-hub-metrics is project-wide (one shared credential covers everyone once Section 11 is `Enabled`). Also add the Section 6 routing line for each skill if it is missing from the migrated master rule file (compare against the templates in `process-onboarding-agent/setup-guide.md` Section 6) — an old master rule file predating a skill will not have its routing line, and a copied skill file with no routing line never fires.
 
 Also refresh the engagement rule:
 
@@ -406,6 +412,8 @@ AGENT 1 — ONBOARDING AGENT
   Generated files moved:  [list each file]
   Operational data moved: [N] intents, [N] units, [N] bolts, [N] retros, ...
   Template skills refreshed: [list each skill]
+  Notifications (Section 10): Enabled / Disabled — [set up this session / already configured / declined]
+  AI Hub Metrics (Section 11): Enabled / Disabled — [set up this session / already configured / declined]
   Old bootstrap removed:  ai-dlc/ ✓
 
 AGENT 2 — EXPERIENCE AGENT

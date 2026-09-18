@@ -54,6 +54,17 @@ Each tool loads its master rule file automatically at the start of every session
 
 ---
 
+## Optional Integrations
+
+Opt-in skills that connect the framework to an external service. Both are `◈ Needs config` — installed as part of onboarding (or adopted standalone, see *Installing skills for a bespoke process*), disabled by default, and controlled entirely through environment variables — no credential is ever committed.
+
+| Integration | What it does | Skill file |
+|---|---|---|
+| **Notifications** | Slack alerts at delivery moments that need a human — sign-off required, bolt complete, incident. Per-engineer setup: your own channel, your own webhook. | [`notifications.md`](repository-agents/process-onboarding-agent/skills/notifications.md) |
+| **AI Hub Metrics** | Pushes usage and activity events to [99x AI Hub](https://ai-hub.99x.io) — tokens, cost, model, and who participated (human, agent, or both) — for team-wide visibility into AI-assisted delivery work. Project-wide setup: one team, one workflow, one shared credential. Say "enable AI Hub metrics" / "disable AI Hub metrics" any time to switch it on or off. | [`ai-hub-metrics.md`](repository-agents/process-onboarding-agent/skills/ai-hub-metrics.md) |
+
+---
+
 ## Getting Started
 
 ### Onboarding a new project

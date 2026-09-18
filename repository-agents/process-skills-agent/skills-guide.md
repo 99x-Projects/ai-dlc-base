@@ -171,6 +171,20 @@ Sends Slack alerts at the delivery moments that need a human — sign-off requir
 
 ---
 
+### OBSERVABILITY & METRICS
+
+**AI Hub Metrics** (`ai-hub-metrics.md`) `◈ Needs config`
+
+Pushes usage and activity events to [99x AI Hub](https://ai-hub.99x.io) at delivery moments that mark real progress — attributing each event to the actors who did the work (human, AI, or both) and, when tracked separately, tokens/cost/model. This is a **project-wide** integration (one Team, one Workflow, one shared credential in AI Hub), not a per-engineer setup like notifications.
+
+- **When to invoke:** when the team wants AI-assisted delivery work visible in a shared usage dashboard — tokens, cost, model, and who participated, across the team
+- **How to invoke:** `"Read [skill-path]/ai-hub-metrics.md and push an AI Hub event for [unit/bolt/intent]."` for an ad-hoc push, or wire the send command into your own workflow moments
+- **What you get:** activity events in the AI Hub workflow's event list, correlated to a unit/bolt/intent and attributed to its actors; setup finishes with a status summary card so the team knows what is being pushed, where, and how to turn it on or off without re-reading the skill file
+- **Configuration needed:** someone with AI Hub access must first create a Team, register actors, model a Workflow with node activities, and create a Team API key (a browser flow, some steps may need admin approval) — then set `AI_HUB_BASE_URL`, `AI_HUB_API_KEY` (or `AI_HUB_PAT`), `AI_HUB_NODE_ID`, and optionally `AI_HUB_NODE_ACTIVITY_ID` in the environment or a gitignored `scripts/ai-hub.env`. Never paste the API key into a chat or a committed file. The AI does the rest: installs `scripts/ai-hub-push.sh`, gets it approved in your tool's command allowlist, and sends the test push. AI Hub's own documentation does not publish a fixed API host — confirm it against your own instance rather than assuming a default.
+- **Switch:** once installed, say "enable AI Hub metrics" or "disable AI Hub metrics" at any time to turn the whole integration on or off; "turn off AI Hub metrics for this session" pauses it without changing that persistent setting.
+
+---
+
 ### MAINTENANCE & HEALTH
 
 **Dependency Audit** (`dependency-audit.md`) `◈ Needs config`

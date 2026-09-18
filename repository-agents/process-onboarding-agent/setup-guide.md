@@ -462,6 +462,7 @@ Create this directory tree at the root of your repository:
     compact-docs.md          ← engineer-triggered skill to archive old operational documents
     root-cause-analysis.md   ← skill to analyse incidents and improvements for design, technology, and process gaps
     notifications.md         ← Slack alerts at delivery moments that need a human
+    ai-hub-metrics.md        ← pushes usage/activity events to 99x AI Hub
   guidelines/
     domain-glossary.md       ← canonical business terms used in code and prompts
     edge-cases.md            ← known failure modes to check before generating code
@@ -494,7 +495,7 @@ Create this directory tree at the root of your repository:
         _template.md
 ```
 
-**Files created outside `{FRAMEWORK_ROOT}`.** Almost everything this framework creates lives under `{FRAMEWORK_ROOT}`. The notifications skill is the exception: if the team enables it in Step 4, two artifacts are created at the **repository root** instead — `scripts/notify.sh` (the send script) and the AI tool's hook config (`.claude/settings.json`, `.cursor/hooks.json`, or `.github/hooks/notify.json`). Both must be at the root, not nested under `{FRAMEWORK_ROOT}`, or the allowlist rule will not match and the hooks will not load.
+**Files created outside `{FRAMEWORK_ROOT}`.** Almost everything this framework creates lives under `{FRAMEWORK_ROOT}`. The notifications and AI Hub metrics skills are the exceptions: if the team enables either in Step 4, artifacts are created at the **repository root** instead — `scripts/notify.sh` / `scripts/ai-hub-push.sh` (the send scripts) and the AI tool's hook or allowlist config (`.claude/settings.json`, `.cursor/hooks.json`, or `.github/hooks/notify.json`). These must be at the root, not nested under `{FRAMEWORK_ROOT}`, or the allowlist rule will not match and the scripts will not load.
 
 ---
 
@@ -621,6 +622,7 @@ If the engineer defers, ask for the new date and update Section 9 before continu
 **Compact-docs skill:** read `{FRAMEWORK_ROOT}/skills/compact-docs.md` when the engineer invokes it.
 **Root-cause-analysis skill:** read `{FRAMEWORK_ROOT}/skills/root-cause-analysis.md` when the engineer invokes it, or when an incident is marked Resolved and no RCA has been run on it.
 **Notifications skill:** read `{FRAMEWORK_ROOT}/skills/notifications.md` when a lifecycle event in Section 10 is reached (elaboration sign-off required, bolt complete, UAT sign-off required, intent implemented, incident/hotfix started, circuit breaker tripped, dependency audit due), or when the engineer asks to send, configure, or silence notifications. Sending is best-effort — send and continue; never block a step on it. Skip if Section 10 is set to disabled or the engineer silenced notifications this session.
+**AI Hub metrics skill:** read `{FRAMEWORK_ROOT}/skills/ai-hub-metrics.md` when a lifecycle event in Section 11 is reached (unit marked Done, bolt complete, UAT sign-off recorded, intent implemented), or when the engineer asks to push, enable, disable, configure, or silence AI Hub metrics, or check its status. "Enable"/"disable" edit Section 11's `Status` field directly (project-wide, takes effect immediately) — do not confuse with "silence for this session," which is non-persistent and leaves Section 11 untouched. Pushing is best-effort — push and continue; never block a step on it. Skip if Section 11 is set to disabled or the engineer silenced AI Hub metrics this session.
 **Bug bolt:** read `{FRAMEWORK_ROOT}/skills/bug-bolt.md` when the engineer says "fix a bug", "there's a bug in X", or "bug: [description]". Do not run a full mob elaboration — follow the bug bolt workflow directly.
 **Hotfix bolt:** read `{FRAMEWORK_ROOT}/skills/hotfix-bolt.md` when the engineer says "hotfix", "production issue", "prod is down", or "emergency fix for X". Skip elaboration — begin hotfix intake immediately.
 **NFR bolt:** read `{FRAMEWORK_ROOT}/skills/nfr-bolt.md` when the engineer says "improve performance", "harden security", "accessibility improvements", "NFR bolt for X", or "non-functional work on X". Do not create a new intent — follow the NFR bolt workflow.
@@ -691,6 +693,31 @@ Events that notify (see `{FRAMEWORK_ROOT}/skills/notifications.md` for message f
 ```
 
 Add or remove events from the table to tune what the project is alerted on. Read and applied by the notifications skill; if this section is absent, notifications are treated as disabled. Keep the two sign-off events even though the turn-ended hook also fires there. The harness message is instant but generic ("finished its turn"); the lifecycle message says which moment and what is needed. Removing the lifecycle events leaves only the ping that cannot say why.
+
+### Section 11 — AI Hub Metrics
+
+Records whether the project pushes usage/activity events to 99x AI Hub and which lifecycle events push them. The behaviour lives in `{FRAMEWORK_ROOT}/skills/ai-hub-metrics.md`; this section is the per-project switchboard. Omit this section (or set it to disabled) if the team opted out during onboarding.
+
+The question of whether the team wants AI Hub metrics is asked in Step 4, when the ai-hub-metrics skill is installed — not during the structured interview. Write this section then. If the master rule file is being written before that point, write it with **Status: Disabled** and update it in Step 4.
+
+```markdown
+## 11. AI Hub Metrics
+
+**Status:** Enabled / Disabled
+**Endpoint & credential:** read from `AI_HUB_BASE_URL`, `AI_HUB_API_KEY` (or `AI_HUB_PAT`), `AI_HUB_NODE_ID`, and `AI_HUB_NODE_ACTIVITY_ID` — never commit any of these. Project-wide, not per engineer: one Team, one Workflow, and one shared credential cover the whole project.
+**Send command:** `scripts/ai-hub-push.sh --correlation-id '<id>' --actor '<name>' [...]` — run from the repository root, approved in the AI tool's command allowlist so pushes do not prompt. The script builds the JSON event payload itself.
+
+Events that push (see `{FRAMEWORK_ROOT}/skills/ai-hub-metrics.md` for the correlationId/actor mapping):
+
+| Event | Priority | `correlationId` |
+|---|---|---|
+| Unit marked Done | normal | unit id |
+| Bolt complete | normal | bolt id |
+| UAT sign-off recorded | normal | intent id |
+| Intent implemented | normal | intent id |
+```
+
+Add or remove events from the table to tune what the project reports to AI Hub. Read and applied by the ai-hub-metrics skill; if this section is absent, AI Hub metrics are treated as disabled.
 
 ---
 
@@ -841,6 +868,27 @@ Copy this file verbatim from `process-onboarding-agent/skills/notifications.md` 
 The skill's *What each AI tool gets* table lists the hook event names and config file per tool — walk through it with the team so nobody expects a ping their tool does not send.
 
 **Section 6 routing line:** already written as part of the Section 6 template in Step 2 — do not add a second one. Verify it is present, and write Section 10 here.
+
+### `skills/ai-hub-metrics.md`
+
+The ai-hub-metrics skill pushes usage/activity events to 99x AI Hub at delivery moments that mark real progress (unit Done, bolt complete, UAT sign-off, intent implemented), attributing each event to the actors who did the work and, when tracked separately, tokens/cost/model. Unlike notifications, this is a **project-wide** integration — one Team, one Workflow, one shared credential — not per engineer. The credential and workflow ids are read from environment variables; none are ever written into a committed file. Pushing is best-effort and never blocks a step.
+
+Copy this file verbatim from `process-onboarding-agent/skills/ai-hub-metrics.md` to `{FRAMEWORK_ROOT}/skills/ai-hub-metrics.md`. No customization of the skill file is needed — per-project settings (event set, enabled/disabled) live in the master rule file AI Hub Metrics section, and the endpoint/credential/workflow ids live in environment variables.
+
+**During onboarding:** run the *Onboarding setup* steps inside the skill, in the order given there:
+
+1. Ask whether the project wants AI Hub metrics. It is a project-wide setup — one team, one workflow, one shared credential.
+2. Add `scripts/ai-hub.env`, `.envrc`, and `.claude/settings.local.json` to `.gitignore` **before** any credential exists (these may already be gitignored from the notifications skill — do not duplicate entries).
+3. Create `scripts/ai-hub-push.sh` at the **repository root** — everything else calls it, so it comes first.
+4. Approve that command in the tool's allowlist so pushes do not prompt.
+5. Hand the engineer Step 1 (model the workflow, mint a team API key) and Step 2 (write `scripts/ai-hub.env`) of the skill's *Who does what* — and wait. These are the only steps the AI cannot perform. Never ask them to paste the API key into the conversation or a committed file. When they confirm, verify with a test push.
+6. Populate the master rule file AI Hub Metrics section (Section 11).
+7. Send one test push and confirm it appears in the AI Hub workflow's event list *without* a permission prompt.
+8. Present the skill's *Status summary* card to the engineer — what is being pushed, where it goes, and the exact phrases to enable, disable, or silence it. This is the hand-off moment: the engineer should not have to re-read the skill file later just to know how to turn it off.
+
+**Section 6 routing line:** already written as part of the Section 6 template in Step 2 — do not add a second one. Verify it is present, and write Section 11 here.
+
+**The enable/disable switch is conversational, not just a file edit.** Once installed, "enable AI Hub metrics" / "disable AI Hub metrics" flips Section 11's `Status` field directly and is project-wide — it takes effect for every engineer's next session, unlike notifications' per-engineer setup. Keep this distinct from "turn off AI Hub metrics for this session," which is non-persistent and does not touch Section 11. See the skill's *Enabling and disabling* section for the exact behavior in each case.
 
 ### `skills/solution-shaping.md`
 
@@ -1199,7 +1247,7 @@ A table of every file written during onboarding, grouped by folder.
 
 | File | Status | Notes |
 |---|---|---|
-| `CLAUDE.md` (or tool equivalent) | Created | Sections 1–10 populated |
+| `CLAUDE.md` (or tool equivalent) | Created | Sections 1–11 populated |
 | `{FRAMEWORK_ROOT}/rules/...` | Created | … |
 | *(etc.)* | | |
 

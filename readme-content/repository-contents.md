@@ -23,6 +23,7 @@ This repo is the **base template** — the source of truth that gets copied into
 | `repository-agents/process-onboarding-agent/skills/dependency-audit.md` | Monthly dependency and security posture audit. Reads manifests, classifies findings by severity, and creates remediation bolts for high/critical issues. Scheduled via Section 9 of the master rule file. |
 | `repository-agents/process-onboarding-agent/skills/knowledge-promotion.md` | Cross-project learning protocol. Runs as the final step of every retro; classifies each improvement as generic (to be contributed back to this base repo) or project-specific. |
 | `repository-agents/process-onboarding-agent/skills/notifications.md` | Slack notifications for delivery moments that need a human. A local, per-engineer setup — each teammate creates their own channel and webhook on their own machine; nothing is shared. Two layers: deterministic tool hooks (Claude Code, Cursor and Copilot) that fire whenever the agent stops or needs attention, and agent-driven, event-specific alerts (bolt complete, UAT sign-off, incident, circuit breaker, audit due) for any tool that can run a terminal command. Sends go through a tool-neutral `scripts/notify.sh`; the webhook URL comes from the `SLACK_WEBHOOK_URL` env var — no webhook URL is ever committed. |
+| `repository-agents/process-onboarding-agent/skills/ai-hub-metrics.md` | Pushes delivery activity events to 99x AI Hub so AI-assisted work is visible in one dashboard. Project-level, not per engineer: one Team, one Workflow, and one shared credential cover the whole project. Fires at unit Done, bolt complete, UAT sign-off, and intent Implemented; optional `tokens`/`costUsd`/`model` dimensions are passed only when the project has a real source for them. Endpoint, credential, and workflow IDs come from a gitignored `scripts/ai-hub.env` — nothing is ever committed. |
 | `repository-agents/process-onboarding-agent/skills/process-visualization.md` | Retro-time delivery reconstruction. Mines git history (or falls back to recorded artifact dates) to render Mermaid diagrams of how a bolt actually got delivered, plus a plan-vs-actual deviation table; offered at the start of every retro. |
 | `repository-agents/process-onboarding-agent/skills/new-engineer-induction.md` | New engineer onboarding session. Walks a new team member through the project's framework using actual project files; prompts them to set up notifications on their own machine if the project uses them; produces a personalized quick-reference card. |
 | `repository-agents/process-onboarding-agent/skills/bug-bolt.md` | Lightweight bolt workflow for fixing a specific, reproducible bug. Triggered by "fix a bug in X". Skips design session and elaboration; replaces them with a four-question intake, recurrence check, and a single focused unit. Runs RCA automatically if the bug is recurring. |
@@ -76,6 +77,7 @@ The onboarding agent first asks where your process documentation lives, then ins
         dependency-audit.md
         knowledge-promotion.md
         notifications.md
+        ai-hub-metrics.md
         process-visualization.md
         new-engineer-induction.md
         bug-bolt.md

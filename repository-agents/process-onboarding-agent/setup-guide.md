@@ -435,7 +435,7 @@ For fresh projects the agent cannot read a codebase to populate the master rule 
 
 Once all nine questions are answered, the agent has enough to:
 - Create the folder structure (Step 1)
-- Write the master rule file with Sections 1–5, Section 8, and Process Configuration fully populated, and Section 10 (Notifications) as `Status: Disabled` until Step 4 settles it
+- Write the master rule file with Sections 1–5, Section 8, and Process Configuration fully populated, and Sections 10 (Notifications) and 11 (AI Hub Metrics) as `Status: Disabled` until Step 4 settles them
 - Write an initial first intent file from the answer to question 8
 - Flag Sections 6 and 7 (workflow and review) as pre-populated from the guide defaults
 
@@ -1293,7 +1293,7 @@ This is the final and mandatory step. After the report is presented, the agent m
 
 **Framework files**
 - [ ] Folder structure created (`{FRAMEWORK_ROOT}/` tree from Step 1)
-- [ ] Master rule file written with all 8 sections (Step 2)
+- [ ] Master rule file written with all 11 sections (Step 2)
 - [ ] `rules/` files written (prompt-quality-gate, code-standards, security, architecture)
 - [ ] `skills/` files written (mob-elab-prompts, review-checklist)
 - [ ] `guidelines/` files written (domain-glossary, edge-cases, acceptance-patterns, dev-setup)

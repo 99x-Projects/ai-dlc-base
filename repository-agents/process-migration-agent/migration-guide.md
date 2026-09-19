@@ -33,6 +33,8 @@ project-root/
       process-health.md        ← template (pre-built)
       dependency-audit.md      ← template (pre-built)
       knowledge-promotion.md   ← template (pre-built)
+      ai-hub-metrics.md        ← template (pre-built)
+      process-visualization.md ← template (pre-built)
       notifications.md         ← template (pre-built)
       new-engineer-induction.md ← template (pre-built)
       bug-bolt.md              ← template (pre-built)
@@ -125,6 +127,8 @@ Before migrating, understand which files are which:
 - `ai-dlc/skills/process-health.md`
 - `ai-dlc/skills/dependency-audit.md`
 - `ai-dlc/skills/knowledge-promotion.md`
+- `ai-dlc/skills/ai-hub-metrics.md`
+- `ai-dlc/skills/process-visualization.md`
 - `ai-dlc/skills/notifications.md`
 - `ai-dlc/skills/new-engineer-induction.md`
 - `ai-dlc/skills/bug-bolt.md`
@@ -304,6 +308,7 @@ Files to refresh:
 | `process-onboarding-agent/skills/process-health.md` | `{NEW_FRAMEWORK_ROOT}/skills/process-health.md` |
 | `process-onboarding-agent/skills/dependency-audit.md` | `{NEW_FRAMEWORK_ROOT}/skills/dependency-audit.md` |
 | `process-onboarding-agent/skills/knowledge-promotion.md` | `{NEW_FRAMEWORK_ROOT}/skills/knowledge-promotion.md` |
+| `process-onboarding-agent/skills/process-visualization.md` | `{NEW_FRAMEWORK_ROOT}/skills/process-visualization.md` |
 | `process-onboarding-agent/skills/notifications.md` | `{NEW_FRAMEWORK_ROOT}/skills/notifications.md` |
 | `process-onboarding-agent/skills/ai-hub-metrics.md` | `{NEW_FRAMEWORK_ROOT}/skills/ai-hub-metrics.md` |
 | `process-onboarding-agent/skills/new-engineer-induction.md` | `{NEW_FRAMEWORK_ROOT}/skills/new-engineer-induction.md` |

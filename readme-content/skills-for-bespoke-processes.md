@@ -47,7 +47,7 @@ Skills are classified by dependency so teams can make informed choices:
 
 **Step 1 — Process discovery interview.** Five questions about how your team currently works, where AI assistance already helps, common failure modes, stakeholder communication, and what gap you want to fill. The agent uses your answers to flag relevant skills with a ★ Recommended marker.
 
-**Step 2 — Skills catalogue.** The full catalogue of 17 skills, grouped by delivery moment (Planning & Design, Quality & Acceptance, Incident & Root Cause, Retrospective & Review, Communication & Reporting, Maintenance & Health, New Team Members, Workflow Shortcuts), with dependency classification for each.
+**Step 2 — Skills catalogue.** The full catalogue of 18 skills, grouped by delivery moment (Product & Engineering Foundations, Planning & Design, Quality & Acceptance, Incident & Root Cause, Retrospective & Review, Communication & Reporting, Observability & Metrics, Maintenance & Health, New Team Members, Workflow Shortcuts), with dependency classification for each.
 
 **Step 3 — Selection.** You choose which skills to install. The agent warns before installing any ◇ Framework-only skills.
 

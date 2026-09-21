@@ -458,11 +458,23 @@ Create this directory tree at the root of your repository:
   skills/
     mob-elab-prompts.md      ← interactive protocol and prompts for elaboration sessions
     review-checklist.md      ← structured lens for reviewing AI output
-    unit-template.md         ← how to write a unit (reference doc)
     compact-docs.md          ← engineer-triggered skill to archive old operational documents
     root-cause-analysis.md   ← skill to analyse incidents and improvements for design, technology, and process gaps
+    solution-shaping.md      ← decides generic-vs-specific, simplest-viable approach, and extend-vs-build-vs-buy before design begins
+    design-session.md        ← Phase 0 of elaboration — locks API contracts and data model decisions before units are proposed
+    bolt-risk-assessment.md  ← blast radius, rollback, and feature flag assessment before a bolt's first unit executes
+    progress-digest.md       ← plain-language stakeholder progress summary for a feature intent
+    uat.md                   ← acceptance testing protocol; blocks an intent from closing without sign-off
+    process-health.md        ← quantitative report on how well the AI-DLC process is functioning
+    dependency-audit.md      ← scheduled audit of third-party dependencies by severity
+    knowledge-promotion.md   ← classifies retro improvements as generic (promote to base repo) or project-specific
     notifications.md         ← Slack alerts at delivery moments that need a human
     ai-hub-metrics.md        ← pushes usage/activity events to 99x AI Hub
+    process-visualization.md ← reconstructs how a bolt actually got delivered as Mermaid diagrams
+    new-engineer-induction.md ← walks a new team member through the project's framework
+    bug-bolt.md               ← lightweight bolt workflow for fixing a specific, reproducible bug
+    hotfix-bolt.md            ← emergency bolt for production incidents
+    nfr-bolt.md               ← non-functional quality attribute bolt (performance, security, accessibility)
     product-engineering-essentials.md  ← optional ten-pillar checklist of product/engineering foundations
   guidelines/
     domain-glossary.md       ← canonical business terms used in code and prompts

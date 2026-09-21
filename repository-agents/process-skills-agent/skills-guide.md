@@ -32,7 +32,7 @@ Ask the following five questions one at a time. Wait for each answer before cont
 
 5. > "Is there a specific capability gap you were hoping AI-DLC skills might fill — something your current process does not do well?"
 
-   *Recording for:* direct signal on where to focus the recommendation.
+   *Recording for:* direct signal on where to focus the recommendation, and product-engineering-essentials relevance if the gap sounds foundational (e.g. "we don't really know what's documented and what isn't", "we're not sure what we're missing").
 
 After all five questions are answered, summarise your understanding back to the engineer in two or three sentences before moving to Step 2. Give them a chance to correct anything before you present the catalogue.
 
@@ -52,6 +52,19 @@ Use this dependency classification key at the top of the catalogue:
 ◈ Needs config    — works after one small piece of information is provided (explained below)
 ◇ Framework-only  — requires the full AI-DLC framework to be installed first
 ```
+
+---
+
+### PRODUCT & ENGINEERING FOUNDATIONS
+
+**Product Engineering Essentials** (`product-engineering-essentials.md`) `◆ Standalone`
+
+Checks how much foundational product-engineering groundwork the repository actually has in place, across ten pillars: product vision & problem definition, user & domain understanding, product requirements & scope, UX/product design foundation, architecture & technical foundation, development standards & engineering practices, DevOps & environment foundation, quality engineering foundation, security/compliance & operational readiness, and the product delivery & feedback loop. Reads the real repository — docs, CI config, infra, test structure, whatever exists — and marks each item In place / Partial / Missing / N/A with evidence, never inferring a status from a file's mere existence. Produces a checklist report, not a score, since the pillars are not equally weighted or equally urgent for every project. **Not a gate** — nothing blocks on it; it exists purely to make gaps visible so a team chooses deliberately rather than by accident.
+
+- **When to invoke:** any time the team wants a shared, evidence-based picture of what foundational product/engineering artifacts exist and which are missing — often useful early, but equally useful mid-project as a sanity check before scaling up
+- **How to invoke:** `"Read [skill-path]/product-engineering-essentials.md and run the essentials check on this repository."` — can be scoped to specific pillars instead of all ten
+- **What you get:** a per-pillar checklist with status and evidence for every item, a summary table, notable gaps flagged with reasoning, and a suggested (non-mandatory) focus
+- **Adapts to your process:** works on any repository, with or without the full AI-DLC framework installed — it reads generic repo signals (README, CI config, docs, test structure) when framework-specific files (`rules/`, `guidelines/`) aren't present
 
 ---
 

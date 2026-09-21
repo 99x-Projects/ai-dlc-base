@@ -22,7 +22,7 @@ Skills are classified by dependency so teams can make informed choices:
 | **◈ Needs config** | Works after one small piece of information is provided at invocation (e.g. archive threshold, output path) |
 | **◇ Framework-only** | Requires the full AI-DLC framework to be installed first |
 
-**Standalone and needs-config skills** (usable immediately): Solution Shaping, Design Session, Risk Assessment, UAT Sign-off, Root Cause Analysis, Process Visualization, Progress Digest, Knowledge Promotion, Dependency Audit, Compact Docs, and Process Health.
+**Standalone and needs-config skills** (usable immediately): Solution Shaping, Design Session, Risk Assessment, UAT Sign-off, Root Cause Analysis, Process Visualization, Progress Digest, Knowledge Promotion, Dependency Audit, Compact Docs, Process Health, Hotfix Workflow, Notifications, and AI Hub Metrics.
 
 **Framework-only skills** (Bug Bolt, NFR Bolt, New Engineer Induction) can be installed as reference material for future use if your team plans to adopt AI-DLC fully later.
 

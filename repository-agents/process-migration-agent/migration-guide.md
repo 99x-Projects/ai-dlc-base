@@ -308,9 +308,9 @@ Files to refresh:
 | `process-onboarding-agent/skills/process-health.md` | `{NEW_FRAMEWORK_ROOT}/skills/process-health.md` |
 | `process-onboarding-agent/skills/dependency-audit.md` | `{NEW_FRAMEWORK_ROOT}/skills/dependency-audit.md` |
 | `process-onboarding-agent/skills/knowledge-promotion.md` | `{NEW_FRAMEWORK_ROOT}/skills/knowledge-promotion.md` |
+| `process-onboarding-agent/skills/ai-hub-metrics.md` | `{NEW_FRAMEWORK_ROOT}/skills/ai-hub-metrics.md` |
 | `process-onboarding-agent/skills/process-visualization.md` | `{NEW_FRAMEWORK_ROOT}/skills/process-visualization.md` |
 | `process-onboarding-agent/skills/notifications.md` | `{NEW_FRAMEWORK_ROOT}/skills/notifications.md` |
-| `process-onboarding-agent/skills/ai-hub-metrics.md` | `{NEW_FRAMEWORK_ROOT}/skills/ai-hub-metrics.md` |
 | `process-onboarding-agent/skills/new-engineer-induction.md` | `{NEW_FRAMEWORK_ROOT}/skills/new-engineer-induction.md` |
 | `process-onboarding-agent/skills/bug-bolt.md` | `{NEW_FRAMEWORK_ROOT}/skills/bug-bolt.md` |
 | `process-onboarding-agent/skills/hotfix-bolt.md` | `{NEW_FRAMEWORK_ROOT}/skills/hotfix-bolt.md` |

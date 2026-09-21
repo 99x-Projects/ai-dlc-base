@@ -463,6 +463,7 @@ Create this directory tree at the root of your repository:
     root-cause-analysis.md   ← skill to analyse incidents and improvements for design, technology, and process gaps
     notifications.md         ← Slack alerts at delivery moments that need a human
     ai-hub-metrics.md        ← pushes usage/activity events to 99x AI Hub
+    product-engineering-essentials.md  ← optional ten-pillar checklist of product/engineering foundations
   guidelines/
     domain-glossary.md       ← canonical business terms used in code and prompts
     edge-cases.md            ← known failure modes to check before generating code
@@ -615,6 +616,7 @@ If the engineer defers, ask for the new date and update Section 9 before continu
 **Progress digest skill:** read `{FRAMEWORK_ROOT}/skills/progress-digest.md` when the engineer asks for a stakeholder update, progress summary, or digest for an intent.
 **Process health skill:** read `{FRAMEWORK_ROOT}/skills/process-health.md` when the engineer invokes it to audit how well the AI-DLC process is functioning.
 **New engineer induction skill:** read `{FRAMEWORK_ROOT}/skills/new-engineer-induction.md` when an engineer says they are new to the project or invokes it directly.
+**Product engineering essentials skill:** read `{FRAMEWORK_ROOT}/skills/product-engineering-essentials.md` when the engineer invokes it directly, or once as an optional offer at the end of onboarding (setup guide **Onboarding Completion**, item 4b). Never run automatically or on a schedule — it is a checklist, not a gate.
 **Knowledge promotion skill:** read `{FRAMEWORK_ROOT}/skills/knowledge-promotion.md` as Step 5 of the Post-Retro Improvement Workflow after all improvements are applied. A retro is not closed until every Applied improvement has a Knowledge Promotion status.
 **Process visualization skill:** offer to read `{FRAMEWORK_ROOT}/skills/process-visualization.md` at the start of every retro, before "What Went Well" is discussed. The engineer may accept, skip, or invoke it directly at any time. Never run it without the engineer's go-ahead.
 **Dependency audit skill:** read `{FRAMEWORK_ROOT}/skills/dependency-audit.md` when the engineer invokes it, or when the `Next dependency audit` date in Section 9 has been reached. Prompt at session start if the date is due.
@@ -964,6 +966,20 @@ Copy this file verbatim from `process-onboarding-agent/skills/new-engineer-induc
 **New engineer induction skill:** read `{FRAMEWORK_ROOT}/skills/new-engineer-induction.md` when an engineer says they are new to the project, or invokes it directly.
 ```
 
+### `skills/product-engineering-essentials.md`
+
+The product-engineering-essentials skill checks how much foundational product-engineering groundwork the repository actually has in place, across ten pillars: product vision & problem definition, user & domain understanding, product requirements & scope, UX/product design foundation, architecture & technical foundation, development standards & engineering practices, DevOps & environment foundation, quality engineering foundation, security/compliance & operational readiness, and the product delivery & feedback loop. For each item within scope it reads the actual repository (master rule file, `rules/`, `guidelines/`, intents, CI config, infra, test structure, etc.) and assigns In place / Partial / Missing / N/A with evidence — never inferring a status from a file's mere existence. It produces a checklist report, not a health score, because the pillars are not equally weighted or equally urgent for every project.
+
+**This is not a mandatory gate.** No pillar is required before build work begins; the skill exists purely to make gaps visible so a team can choose deliberately rather than by accident. It never runs automatically or on a schedule.
+
+Copy this file verbatim from `process-onboarding-agent/skills/product-engineering-essentials.md` to `{FRAMEWORK_ROOT}/skills/product-engineering-essentials.md`. No customization is needed.
+
+**Wire into the master rule file Section 6** by adding one routing line:
+
+```markdown
+**Product engineering essentials skill:** read `{FRAMEWORK_ROOT}/skills/product-engineering-essentials.md` when the engineer invokes it directly, or once as an optional offer at the end of onboarding. Never run automatically or on a schedule — it is a checklist, not a gate.
+```
+
 ### `skills/knowledge-promotion.md`
 
 The knowledge-promotion skill evaluates each applied improvement to determine whether it is generic (beneficial to all AI-DLC projects) or project-specific. For generic improvements, it drafts the exact change needed in the base repository — file path, current text, and proposed replacement — so the engineer can raise a PR against `ai-dlc-base` without having to reconstruct the context later. The promotion decision and draft are recorded in the improvement file.
@@ -1259,6 +1275,13 @@ Any ambiguity the agent encountered that the engineer must resolve — e.g., con
 
 ### 4. First Recommended Action
 One sentence: what the engineer should do next before starting the experience agent (e.g., "Review the domain glossary placeholders in Section 4 of the master rule file, then start a new session to begin the first mob elaboration.").
+
+### 4b. Optional Offer — Product Engineering Essentials Check
+Before the mandatory handoff (item 5), offer the engineer the essentials check once — do not run it, only offer it:
+
+> "One optional thing before you go: I can run a Product Engineering Essentials check — a ten-pillar checklist (vision, domain understanding, requirements, UX, architecture, engineering practices, DevOps, quality engineering, security/compliance, and the delivery feedback loop) showing what's already in place in this repo and what isn't. It's not a gate — nothing blocks on it — just a shared picture of the gaps. Want to run it now, or skip it? You can always run it later by saying 'run product engineering essentials.'"
+
+If the engineer wants it now, run `process-onboarding-agent/skills/product-engineering-essentials.md` before presenting item 5's handoff. If they decline or want to defer, do not offer again this session — proceed straight to item 5.
 
 ### 5. How to Start the Experience Agent
 

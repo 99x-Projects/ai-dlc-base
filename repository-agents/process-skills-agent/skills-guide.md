@@ -114,6 +114,17 @@ Generates a plain-language UAT demo script from a set of acceptance criteria, wa
 
 ---
 
+**Release Readiness Checklist** (`release-readiness-checklist.md`) `◆ Standalone`
+
+Walks the engineer through the UAT Release Checklist or the Production Release Checklist, one item at a time, before a release ships. Records **Confirmed / Not confirmed / N/A** for every item, captures a blocker note for anything not confirmed, and closes with a full readiness report. **Not an evidence audit** — unlike Product Engineering Essentials, it never inspects the repository, CI logs, or any other artifact; it is a pure self-attestation record. It never gates or authorizes the release either — that decision stays with whoever holds sign-off (technical owner, QA, security, product, operations, as applicable).
+
+- **When to invoke:** before deploying a build to a UAT environment, and again before a production release
+- **How to invoke:** `"Read [skill-path]/release-readiness-checklist.md and run the [UAT|Production] release checklist for [version/build]."`
+- **What you get:** a per-section Confirmed/Not confirmed/N/A report, a summary table, an "items requiring attention" list with blocker notes, and — on request — tracked follow-up items for anything not confirmed
+- **Adapts to your process:** works on any repository or process, with or without the full AI-DLC framework — the only "configuration" is telling it where to save the report if you want one kept
+
+---
+
 ### INCIDENT & ROOT CAUSE
 
 **Root Cause Analysis** (`root-cause-analysis.md`) `◆ Standalone`

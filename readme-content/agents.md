@@ -70,7 +70,7 @@ The output is a fully configured `intent-execution-framework/` folder (placed in
 
 The experience agent compounds in quality over time — every retro tightens the rules, every RCA surfaces deeper gaps, knowledge promotion propagates improvements across teams, and every bolt is safer than the last.
 
-**Entry point:** The master rule file at the repo root (`CLAUDE.md`, `.cursorrules`, or `.github/copilot-instructions.md`)
+**Entry point:** The master rule file at the repo root (`CLAUDE.md`, `.cursor/rules/project-rules.mdc` (or any `.mdc` under `.cursor/rules/`), `.cursorrules` (legacy), or `.github/copilot-instructions.md`)
 
 ---
 

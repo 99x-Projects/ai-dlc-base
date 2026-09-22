@@ -35,7 +35,7 @@ This guide uses the term **master rule file** to refer to the file that governs 
 | AI Tool | Master rule file | Location |
 |---|---|---|
 | **Claude Code** | `CLAUDE.md` | Repo root |
-| **Cursor** | `.cursorrules` | Repo root |
+| **Cursor** | `.cursor/rules/project-rules.mdc` | `.cursor/rules/` (with `alwaysApply: true`) |
 | **GitHub Copilot** | `copilot-instructions.md` | `.github/` folder |
 
 The content of the master rule file is identical across tools. The only differences are the file name, the location, and — for GitHub Copilot — internal links to `{FRAMEWORK_ROOT}/` files must use the prefix `../{FRAMEWORK_ROOT}/` since the file lives inside `.github/`.
@@ -1201,7 +1201,7 @@ This is the main onboarding document for every engineer. Sections:
 5. Phase 2 — Build (bolts, unit execution order, review before merge)
 6. Phase 3 — Operate (retros, incidents, improvements)
 7. The Three Non-Negotiables (quality gate, review checklist, prompt log)
-8. Using a different AI tool (Cursor → `.cursorrules`; GitHub Copilot → `.github/copilot-instructions.md`)
+8. Using a different AI tool (Cursor → `.cursor/rules/project-rules.mdc`; GitHub Copilot → `.github/copilot-instructions.md`)
 9. Common mistakes table
 10. Quick reference table (ceremony → what to say to the AI)
 
@@ -1216,7 +1216,7 @@ By this point your master rule file should exist at the correct path for your ch
 | Tool | Expected path | Loaded automatically? |
 |---|---|---|
 | Claude Code | `CLAUDE.md` at repo root | Yes — every session |
-| Cursor | `.cursorrules` at repo root | Yes — every session |
+| Cursor | `.cursor/rules/project-rules.mdc` (with `alwaysApply: true`) | Yes — every session |
 | GitHub Copilot | `.github/copilot-instructions.md` | Yes — every session |
 
 ### Supporting multiple tools in the same repo
@@ -1225,9 +1225,11 @@ If your team uses more than one AI tool, create copies of the master rule file f
 
 **Add Cursor support** (if your primary tool is Claude Code or Copilot):
 ```bash
-cp CLAUDE.md .cursorrules
+mkdir -p .cursor/rules
+printf -- '---\nalwaysApply: true\n---\n\n' > .cursor/rules/project-rules.mdc
+cat CLAUDE.md >> .cursor/rules/project-rules.mdc
 ```
-Open `.cursorrules` and update the opening line to reference Cursor.
+Open `.cursor/rules/project-rules.mdc` and, in the copied content below the `---` frontmatter block, update the opening line to reference Cursor.
 
 **Add GitHub Copilot support** (if your primary tool is Claude Code or Cursor):
 ```bash
@@ -1238,7 +1240,10 @@ Open `.github/copilot-instructions.md`, update the opening line to reference Git
 
 **Add Claude Code support** (if your primary tool is Cursor or Copilot):
 ```bash
-cp .cursorrules CLAUDE.md   # or copy from .github/copilot-instructions.md
+# From Cursor rule file — strip the YAML frontmatter before copying:
+tail -n +5 .cursor/rules/project-rules.mdc > CLAUDE.md
+# Or from Copilot:
+# cp .github/copilot-instructions.md CLAUDE.md
 ```
 Open `CLAUDE.md`, update the opening line to reference Claude Code, and if copying from Copilot change all `../{FRAMEWORK_ROOT}/` prefixes back to `{FRAMEWORK_ROOT}/`.
 

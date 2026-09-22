@@ -12,7 +12,7 @@ In the old methodology, a single `ai-dlc/` folder served as both the bootstrap a
 
 ```
 project-root/
-  CLAUDE.md (or .cursorrules / .github/copilot-instructions.md)
+  CLAUDE.md (or .cursor/rules/*.mdc / .cursorrules / .github/copilot-instructions.md)
   ai-dlc/
     onboard.md                 ← bootstrap trigger
     setup-guide.md             ← onboarding protocol
@@ -79,7 +79,7 @@ In the new methodology, the bootstrap agents and the installed framework are sep
 
 ```
 project-root/
-  CLAUDE.md (or .cursorrules / .github/copilot-instructions.md)
+  CLAUDE.md (or .cursor/rules/project-rules.mdc / .github/copilot-instructions.md)
   process-onboarding-agent/    ← bootstrap only; delete after use
   process-diagnostic-agent/   ← periodic audits; keep for duration of project
   {docs-folder}/
@@ -163,7 +163,7 @@ Before asking any questions or making any changes, scan the repository and repor
 - Any `intent-execution-framework/` folder anywhere in the repo
 
 **3. Master rule file:**
-- Look for `CLAUDE.md`, `.cursorrules`, or `.github/copilot-instructions.md` at the repo root
+- Look for `CLAUDE.md`, `.cursor/rules/project-rules.mdc` (or any `.mdc` under `.cursor/rules/`), `.cursorrules` (legacy), or `.github/copilot-instructions.md` at the repo root
 - Scan it for path patterns — confirm it contains `ai-dlc/rules/`, `ai-dlc/skills/`, `ai-dlc/guidelines/` references
 
 **4. Operational data:**
@@ -356,7 +356,7 @@ Update the `_template.md` files in the ops folder with the latest versions. Do n
 
 ### 3a — Read the master rule file
 
-Read the full master rule file (`CLAUDE.md`, `.cursorrules`, or `.github/copilot-instructions.md`). Identify every line that references an `ai-dlc/` path.
+Read the full master rule file (`CLAUDE.md`, `.cursor/rules/project-rules.mdc` (or any `.mdc` under `.cursor/rules/`), `.cursorrules` (legacy), or `.github/copilot-instructions.md`). Identify every line that references an `ai-dlc/` path.
 
 Patterns to find and replace:
 

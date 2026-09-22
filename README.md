@@ -32,7 +32,7 @@ AI-DLC works with any of the three AI coding assistants below. The framework con
 | AI Tool | Master rule file | Location in project repo |
 |---|---|---|
 | **Claude Code** | `CLAUDE.md` | Repo root |
-| **Cursor** | `.cursorrules` | Repo root |
+| **Cursor** | `.cursor/rules/project-rules.mdc` | `.cursor/rules/` |
 | **GitHub Copilot** | `copilot-instructions.md` | `.github/` folder |
 
 Each tool loads its master rule file automatically at the start of every session.

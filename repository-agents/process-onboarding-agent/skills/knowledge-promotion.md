@@ -58,7 +58,7 @@ For each improvement, determine whether it is **generic** (beneficial to all AI-
 | `process-onboarding-agent/guidelines/forbidden-zones.md` | Project-specific |
 | `process-onboarding-agent/guidelines/entry-points.md` | Project-specific |
 | `process-onboarding-agent/guidelines/acceptance-patterns.md` | Likely generic — evaluate content |
-| `CLAUDE.md` / `.cursorrules` / `copilot-instructions.md` | Project-specific |
+| `CLAUDE.md` / `.cursor/rules/project-rules.mdc` (or any `.mdc` under `.cursor/rules/`) / `.cursorrules` (legacy) / `copilot-instructions.md` | Project-specific |
 | New file being created | Evaluate by content |
 
 **For ambiguous cases, apply the content test:**

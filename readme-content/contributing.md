@@ -46,7 +46,7 @@ For each improvement, the skill classifies it as:
 | `process-onboarding-agent/guidelines/edge-cases.md` | Project-specific |
 | `process-onboarding-agent/guidelines/forbidden-zones.md` | Project-specific |
 | `process-onboarding-agent/guidelines/entry-points.md` | Project-specific |
-| `CLAUDE.md` / `.cursorrules` / `copilot-instructions.md` | Project-specific |
+| `CLAUDE.md` / `.cursor/rules/project-rules.mdc` (or any `.mdc` under `.cursor/rules/`) / `.cursorrules` (legacy) / `copilot-instructions.md` | Project-specific |
 
 For anything ambiguous, the skill applies one test: *if this improvement were applied to a totally different project, would it still be an improvement?* Yes → generic.
 

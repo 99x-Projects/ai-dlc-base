@@ -60,7 +60,7 @@ Not because some tools lack hooks — they all have them now. The layers answer 
 
 Use both. Neither substitutes for the other.
 
-One thing that still needs saying to Cursor and Copilot teams: **the routing line has to be in *their* rule file.** The lifecycle layer is driven by the master rule file, so the Section 6 routing line and Section 10 must exist in the mirror the tool actually loads — `.cursorrules` or `.github/copilot-instructions.md`, not just `CLAUDE.md`. A stale mirror silently disables the lifecycle layer for that tool.
+One thing that still needs saying to Cursor and Copilot teams: **the routing line has to be in *their* rule file.** The lifecycle layer is driven by the master rule file, so the Section 6 routing line and Section 10 must exist in the mirror the tool actually loads — `.cursor/rules/project-rules.mdc` (or any always-applied `.mdc` under `.cursor/rules/`, or legacy `.cursorrules`), or `.github/copilot-instructions.md`, not just `CLAUDE.md`. A stale mirror silently disables the lifecycle layer for that tool. New Cursor mirrors should be created only as `.cursor/rules/project-rules.mdc` — never as `.cursorrules`.
 
 Environment variables are often *easier* on these tools, because an interactive integrated terminal loads the shell profile. Do not rely on it: some agent integrations run commands through a non-interactive shell, which reads no startup file on bash and a different one on every platform. That is why Step 2 Option A (`scripts/notify.env`) is the recommended setup for every tool.
 

@@ -22,7 +22,7 @@ Skills are classified by dependency so teams can make informed choices:
 | **◈ Needs config** | Works after one small piece of information is provided at invocation (e.g. archive threshold, output path) |
 | **◇ Framework-only** | Requires the full AI-DLC framework to be installed first |
 
-**Standalone and needs-config skills** (usable immediately): Solution Shaping, Design Session, Risk Assessment, UAT Sign-off, Root Cause Analysis, Process Visualization, Progress Digest, Knowledge Promotion, Dependency Audit, Compact Docs, Process Health, Hotfix Workflow, Notifications, and AI Hub Metrics.
+**Standalone and needs-config skills** (usable immediately): Product Engineering Essentials, Solution Shaping, Design Session, Risk Assessment, UAT Sign-off, Release Readiness Checklist, Root Cause Analysis, Process Visualization, Progress Digest, Knowledge Promotion, Dependency Audit, Compact Docs, Process Health, Hotfix Workflow, Notifications, and AI Hub Metrics.
 
 **Framework-only skills** (Bug Bolt, NFR Bolt, New Engineer Induction) can be installed as reference material for future use if your team plans to adopt AI-DLC fully later.
 
@@ -47,7 +47,7 @@ Skills are classified by dependency so teams can make informed choices:
 
 **Step 1 — Process discovery interview.** Five questions about how your team currently works, where AI assistance already helps, common failure modes, stakeholder communication, and what gap you want to fill. The agent uses your answers to flag relevant skills with a ★ Recommended marker.
 
-**Step 2 — Skills catalogue.** The full catalogue of 17 skills, grouped by delivery moment (Planning & Design, Quality & Acceptance, Incident & Root Cause, Retrospective & Review, Communication & Reporting, Maintenance & Health, New Team Members, Workflow Shortcuts), with dependency classification for each.
+**Step 2 — Skills catalogue.** The full catalogue of 19 skills, grouped by delivery moment (Product & Engineering Foundations, Planning & Design, Quality & Acceptance, Incident & Root Cause, Retrospective & Review, Communication & Reporting, Observability & Metrics, Maintenance & Health, New Team Members, Workflow Shortcuts), with dependency classification for each.
 
 **Step 3 — Selection.** You choose which skills to install. The agent warns before installing any ◇ Framework-only skills.
 

@@ -276,6 +276,10 @@ Ask the following questions one at a time. Wait for each answer before continuin
 
    *Looking for:* `Next dependency audit` date set in Section 9 of the master rule file; dependency-audit.md skill has been run at least once; remediation bolts were created for high/critical findings.
 
+10. > "Before your last UAT or production release, did anyone go through a release readiness checklist — build integrity, test completion, security scans, rollback readiness, sign-offs? How was that recorded?"
+
+    *Looking for:* release-readiness-checklist.md skill run before the release; a saved report the engineer can point to; not-confirmed items from that run tracked as units rather than dropped.
+
 **Scoring:**
 
 | Score | Signal |
@@ -293,6 +297,7 @@ Ask the following questions one at a time. Wait for each answer before continuin
 - The circuit breaker in `engagement.md` has never fired — either output quality is consistently high, or failing units are being endlessly retried without escalation
 - Intents are marked Implemented without UAT — tests passing is treated as sufficient, but the user outcome was never verified
 - No dependency audit has been run and no date is set — the project's security posture is unknown
+- Releases go out without a recorded release readiness check — build/test/security/rollback state before a UAT or production release is never captured
 
 ---
 

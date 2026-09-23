@@ -124,6 +124,7 @@ Before migrating, understand which files are which:
 - `ai-dlc/skills/bolt-risk-assessment.md`
 - `ai-dlc/skills/progress-digest.md`
 - `ai-dlc/skills/uat.md`
+- `ai-dlc/skills/release-readiness-checklist.md`
 - `ai-dlc/skills/process-health.md`
 - `ai-dlc/skills/dependency-audit.md`
 - `ai-dlc/skills/knowledge-promotion.md`
@@ -305,6 +306,7 @@ Files to refresh:
 | `process-onboarding-agent/skills/bolt-risk-assessment.md` | `{NEW_FRAMEWORK_ROOT}/skills/bolt-risk-assessment.md` |
 | `process-onboarding-agent/skills/progress-digest.md` | `{NEW_FRAMEWORK_ROOT}/skills/progress-digest.md` |
 | `process-onboarding-agent/skills/uat.md` | `{NEW_FRAMEWORK_ROOT}/skills/uat.md` |
+| `process-onboarding-agent/skills/release-readiness-checklist.md` | `{NEW_FRAMEWORK_ROOT}/skills/release-readiness-checklist.md` |
 | `process-onboarding-agent/skills/process-health.md` | `{NEW_FRAMEWORK_ROOT}/skills/process-health.md` |
 | `process-onboarding-agent/skills/dependency-audit.md` | `{NEW_FRAMEWORK_ROOT}/skills/dependency-audit.md` |
 | `process-onboarding-agent/skills/knowledge-promotion.md` | `{NEW_FRAMEWORK_ROOT}/skills/knowledge-promotion.md` |

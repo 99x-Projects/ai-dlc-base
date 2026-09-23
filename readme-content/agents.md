@@ -120,7 +120,7 @@ The output is a comprehensive Review Report containing: a domain-by-domain score
 
 **How it works:**
 - Runs a five-question discovery interview about the team's current process, AI touchpoints, common failure modes, stakeholder communication, and capability gaps
-- Presents the full skills catalogue (17 skills grouped by delivery moment) with a dependency classification for each: **Standalone** (invoke directly), **Needs config** (one small configuration at invocation), or **Framework-only** (requires the full framework)
+- Presents the full skills catalogue (19 skills grouped by delivery moment) with a dependency classification for each: **Standalone** (invoke directly), **Needs config** (one small configuration at invocation), or **Framework-only** (requires the full framework)
 - Flags skills most relevant to the team's answers with a ★ Recommended marker
 - Engineer selects skills; agent warns before installing any Framework-only skills
 - Copies selected skill files to the team's chosen path

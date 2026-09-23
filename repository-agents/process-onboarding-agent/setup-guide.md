@@ -464,6 +464,7 @@ Create this directory tree at the root of your repository:
     notifications.md         ← Slack alerts at delivery moments that need a human
     ai-hub-metrics.md        ← pushes usage/activity events to 99x AI Hub
     product-engineering-essentials.md  ← optional ten-pillar checklist of product/engineering foundations
+    release-readiness-checklist.md     ← engineer-invoked, self-attestation UAT/production release checklist
   guidelines/
     domain-glossary.md       ← canonical business terms used in code and prompts
     edge-cases.md            ← known failure modes to check before generating code
@@ -617,6 +618,7 @@ If the engineer defers, ask for the new date and update Section 9 before continu
 **Process health skill:** read `{FRAMEWORK_ROOT}/skills/process-health.md` when the engineer invokes it to audit how well the AI-DLC process is functioning.
 **New engineer induction skill:** read `{FRAMEWORK_ROOT}/skills/new-engineer-induction.md` when an engineer says they are new to the project or invokes it directly.
 **Product engineering essentials skill:** read `{FRAMEWORK_ROOT}/skills/product-engineering-essentials.md` when the engineer invokes it directly, or once as an optional offer at the end of onboarding (setup guide **Onboarding Completion**, item 4b). Never run automatically or on a schedule — it is a checklist, not a gate.
+**Release readiness checklist skill:** read `{FRAMEWORK_ROOT}/skills/release-readiness-checklist.md` when the engineer invokes it directly before a UAT or production release ("run the release checklist", "check release readiness", "pre-release checklist for [version]"). Never run automatically or on a schedule — it is a self-attestation record, not a gate.
 **Knowledge promotion skill:** read `{FRAMEWORK_ROOT}/skills/knowledge-promotion.md` as Step 5 of the Post-Retro Improvement Workflow after all improvements are applied. A retro is not closed until every Applied improvement has a Knowledge Promotion status.
 **Process visualization skill:** offer to read `{FRAMEWORK_ROOT}/skills/process-visualization.md` at the start of every retro, before "What Went Well" is discussed. The engineer may accept, skip, or invoke it directly at any time. Never run it without the engineer's go-ahead.
 **Dependency audit skill:** read `{FRAMEWORK_ROOT}/skills/dependency-audit.md` when the engineer invokes it, or when the `Next dependency audit` date in Section 9 has been reached. Prompt at session start if the date is due.
@@ -978,6 +980,20 @@ Copy this file verbatim from `process-onboarding-agent/skills/product-engineerin
 
 ```markdown
 **Product engineering essentials skill:** read `{FRAMEWORK_ROOT}/skills/product-engineering-essentials.md` when the engineer invokes it directly, or once as an optional offer at the end of onboarding. Never run automatically or on a schedule — it is a checklist, not a gate.
+```
+
+### `skills/release-readiness-checklist.md`
+
+The release-readiness-checklist skill walks the engineer through the UAT Release Checklist or the Production Release Checklist, one item at a time, before a release goes out. Unlike product-engineering-essentials, it never inspects the repository for evidence — it is a pure self-attestation record: the engineer states Confirmed / Not confirmed / N/A for each item, the skill records the answer (and a blocker note for anything Not confirmed), and produces a report at the end. It is also distinct from `uat.md`: `uat.md` validates feature *behavior* against acceptance criteria with a stakeholder; this skill checks release *mechanics* — build, testing, security, database, deployment/rollback, environment readiness, and sign-offs.
+
+**This is not a gate.** The skill never authorizes or blocks a release; it surfaces the self-reported state so whoever holds sign-off (technical owner, QA, security, product, operations, as applicable) can decide with full information. It never runs automatically or on a schedule.
+
+Copy this file verbatim from `process-onboarding-agent/skills/release-readiness-checklist.md` to `{FRAMEWORK_ROOT}/skills/release-readiness-checklist.md`. No customization is needed.
+
+**Wire into the master rule file Section 6** by adding one routing line:
+
+```markdown
+**Release readiness checklist skill:** read `{FRAMEWORK_ROOT}/skills/release-readiness-checklist.md` when the engineer invokes it directly before a UAT or production release ("run the release checklist", "check release readiness", "pre-release checklist for [version]"). Never run automatically or on a schedule — it is a self-attestation record, not a gate.
 ```
 
 ### `skills/knowledge-promotion.md`

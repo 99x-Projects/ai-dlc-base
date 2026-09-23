@@ -17,8 +17,10 @@ This repo is the **base template** — the source of truth that gets copied into
 | `repository-agents/process-onboarding-agent/skills/solution-shaping.md` | Pre-elaboration solution shaping. Decides generic vs feature-specific scope, expected usage, the simplest viable approach, extend-vs-build-vs-buy, and reversibility before any design work; records the signed-off shape on the intent as binding context for the design session. |
 | `repository-agents/process-onboarding-agent/skills/design-session.md` | Phase 0 of mob elaboration. Runs at the start of every elaboration session to lock down API contracts, data models, and architectural patterns before unit decomposition begins. |
 | `repository-agents/process-onboarding-agent/skills/bolt-risk-assessment.md` | Pre-bolt risk assessment. Analyzes blast radius, cross-unit sequencing risks, rollback options, and feature flag requirements before the first unit executes. Mandatory for mature projects. |
+| `repository-agents/process-onboarding-agent/skills/product-engineering-essentials.md` | Optional ten-pillar checklist of product/engineering foundations (vision, domain understanding, requirements, UX, architecture, engineering practices, DevOps, quality engineering, security/compliance, delivery feedback loop). Reads the actual repository for evidence per item and reports In place / Partial / Missing / N/A — never a single score. Engineer-invoked only, never a gate. |
 | `repository-agents/process-onboarding-agent/skills/progress-digest.md` | Stakeholder communication artifact. Translates technical progress (units, bolts, statuses) into plain-language summaries for non-technical stakeholders. |
 | `repository-agents/process-onboarding-agent/skills/uat.md` | Acceptance testing protocol. Guides the engineer through UAT using the intent's ACs as the test script; records pass/fail/deferred outcomes; blocks intent from being marked Implemented without sign-off. |
+| `repository-agents/process-onboarding-agent/skills/release-readiness-checklist.md` | Self-attestation UAT/production release checklist. Walks the engineer through the checklist one item at a time (Confirmed / Not confirmed / N/A), records a blocker note for anything not confirmed, and produces a readiness report. Never inspects the repo for evidence and never gates the release — that decision stays with whoever holds sign-off. Engineer-invoked only. |
 | `repository-agents/process-onboarding-agent/skills/process-health.md` | Process health metrics. Computes four metrics (improvement adoption, quality gate failure rate, AC revision rate, bolt velocity) and surfaces decay signals; saves a dated health report automatically. |
 | `repository-agents/process-onboarding-agent/skills/dependency-audit.md` | Monthly dependency and security posture audit. Reads manifests, classifies findings by severity, and creates remediation bolts for high/critical issues. Scheduled via Section 9 of the master rule file. |
 | `repository-agents/process-onboarding-agent/skills/knowledge-promotion.md` | Cross-project learning protocol. Runs as the final step of every retro; classifies each improvement as generic (to be contributed back to this base repo) or project-specific. |
@@ -71,8 +73,10 @@ The onboarding agent first asks where your process documentation lives, then ins
         solution-shaping.md
         design-session.md
         bolt-risk-assessment.md
+        product-engineering-essentials.md
         progress-digest.md
         uat.md
+        release-readiness-checklist.md
         process-health.md
         dependency-audit.md
         knowledge-promotion.md

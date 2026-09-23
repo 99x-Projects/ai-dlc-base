@@ -124,6 +124,7 @@ Before migrating, understand which files are which:
 - `ai-dlc/skills/bolt-risk-assessment.md`
 - `ai-dlc/skills/progress-digest.md`
 - `ai-dlc/skills/uat.md`
+- `ai-dlc/skills/release-readiness-checklist.md`
 - `ai-dlc/skills/process-health.md`
 - `ai-dlc/skills/dependency-audit.md`
 - `ai-dlc/skills/knowledge-promotion.md`

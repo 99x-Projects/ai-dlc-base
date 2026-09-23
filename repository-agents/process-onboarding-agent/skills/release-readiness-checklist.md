@@ -21,7 +21,7 @@ Record:
 - Release version/build identifier
 - Target release date
 - Engineer running the checklist (and reviewer/approver name if different)
-- If AI-DLC is installed and this release maps to a specific intent or bolt, the intent/bolt name (optional — ask once, do not chase it if the engineer doesn't have one handy). When supplied, carry it into the Step 3 report header and the Step 4 save filename — it's captured here so it stays traceable, not just for record-keeping in this step.
+- If AI-DLC is installed and this release maps to a specific intent or bolt, the intent/bolt name (optional — ask once, do not chase it if the engineer doesn't have one handy). When supplied, carry it into the Step 3 report header (`Intent/Bolt:` line) — it's captured here so it stays traceable, not just for record-keeping in this step.
 
 ---
 

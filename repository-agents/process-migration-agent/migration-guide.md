@@ -305,6 +305,7 @@ Files to refresh:
 | `process-onboarding-agent/skills/bolt-risk-assessment.md` | `{NEW_FRAMEWORK_ROOT}/skills/bolt-risk-assessment.md` |
 | `process-onboarding-agent/skills/progress-digest.md` | `{NEW_FRAMEWORK_ROOT}/skills/progress-digest.md` |
 | `process-onboarding-agent/skills/uat.md` | `{NEW_FRAMEWORK_ROOT}/skills/uat.md` |
+| `process-onboarding-agent/skills/release-readiness-checklist.md` | `{NEW_FRAMEWORK_ROOT}/skills/release-readiness-checklist.md` |
 | `process-onboarding-agent/skills/process-health.md` | `{NEW_FRAMEWORK_ROOT}/skills/process-health.md` |
 | `process-onboarding-agent/skills/dependency-audit.md` | `{NEW_FRAMEWORK_ROOT}/skills/dependency-audit.md` |
 | `process-onboarding-agent/skills/knowledge-promotion.md` | `{NEW_FRAMEWORK_ROOT}/skills/knowledge-promotion.md` |

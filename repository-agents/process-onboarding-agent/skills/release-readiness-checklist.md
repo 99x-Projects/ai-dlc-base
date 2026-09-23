@@ -21,7 +21,7 @@ Record:
 - Release version/build identifier
 - Target release date
 - Engineer running the checklist (and reviewer/approver name if different)
-- If AI-DLC is installed and this release maps to a specific intent or bolt, the intent/bolt name (optional — ask once, do not chase it if the engineer doesn't have one handy)
+- If AI-DLC is installed and this release maps to a specific intent or bolt, the intent/bolt name (optional — ask once, do not chase it if the engineer doesn't have one handy). When supplied, carry it into the Step 3 report header and the Step 4 save filename — it's captured here so it stays traceable, not just for record-keeping in this step.
 
 ---
 
@@ -45,6 +45,8 @@ Then work through the checklist in **Reference Checklists** below, in order, sec
 ---
 
 ## Reference Checklists
+
+**Maintenance note:** several items appear word-for-word in both checklists below (e.g. "Unit tests passed", "Rollback procedure documented"). If you edit an item's wording or threshold, check whether the same item exists in the other checklist and update it there too — the two lists are intentionally separate (production has more sections) but shared items should stay in sync.
 
 ### UAT Release Checklist
 
@@ -193,10 +195,12 @@ Present the full report in the conversation:
 ```
 ─────────────────────────────────────────────────────
 [UAT | Production] Release Checklist
-Release:   [version/build]
-Date:      YYYY-MM-DD
-Engineer:  [name]
-Approver:  [name, if different]
+Release:       [version/build]
+Target date:   [target release date from Step 1]
+Checked on:    YYYY-MM-DD (date this checklist was run)
+Engineer:      [name]
+Approver:      [name, if different]
+Intent/Bolt:   [name, if supplied in Step 1 — omit line if not]
 ─────────────────────────────────────────────────────
 
 1. [SECTION NAME]                          [X confirmed / Y not confirmed / Z n/a]
@@ -240,8 +244,10 @@ Ask:
 
 > "Should I save this report, and would you like any 'Not confirmed' items turned into tracked units so they don't get lost before the release?"
 
-- If yes to saving: write the report to `{FRAMEWORK_ROOT}/ops/operate/release-checklist-[uat|prod]-YYYY-MM-DD.md` if AI-DLC is installed, or to a path the engineer names otherwise.
-- If yes to backlog items: for each Not-confirmed item the engineer selects, create a unit under `{FRAMEWORK_ROOT}/ops/build/units/` following the existing unit template, with the item and its blocker note as context — do not auto-create units for items the engineer didn't select.
+- If yes to saving: write the report to `{FRAMEWORK_ROOT}/ops/operate/release-checklist-[uat|prod]-YYYY-MM-DD-[version-slug].md` if AI-DLC is installed, or to a path the engineer names otherwise. `[version-slug]` is the release version/build identifier from Step 1, slugified (lowercase, non-alphanumerics replaced with `-`) — this keeps same-day reports for different releases (e.g. a morning UAT run and an afternoon hotfix) from overwriting each other.
+- If yes to backlog items: for each Not-confirmed item the engineer selects, create a unit with the item and its blocker note as context — do not auto-create units for items the engineer didn't select.
+  - If AI-DLC is installed: create it under `{FRAMEWORK_ROOT}/ops/build/units/` following the existing unit template.
+  - If AI-DLC is not installed: there is no unit template or backlog to target. Instead, append each selected item to the saved report (or to a path the engineer names) as a plain "Follow-up items" list with the item text and blocker note — do not invent a unit file structure.
 - If the engineer declines both, that's a complete and valid outcome — confirm the checklist run is done and move on.
 
 ---

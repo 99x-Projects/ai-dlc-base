@@ -30,6 +30,7 @@ project-root/
       bolt-risk-assessment.md  ← template (pre-built)
       progress-digest.md       ← template (pre-built)
       uat.md                   ← template (pre-built)
+      release-readiness-checklist.md ← template (pre-built)
       process-health.md        ← template (pre-built)
       dependency-audit.md      ← template (pre-built)
       knowledge-promotion.md   ← template (pre-built)
@@ -40,6 +41,7 @@ project-root/
       bug-bolt.md              ← template (pre-built)
       hotfix-bolt.md           ← template (pre-built)
       nfr-bolt.md              ← template (pre-built)
+      product-engineering-essentials.md ← template (pre-built)
       mob-elab-prompts.md      ← GENERATED — project-specific
       review-checklist.md      ← GENERATED — project-specific
     guidelines/

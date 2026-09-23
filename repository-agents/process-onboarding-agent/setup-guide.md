@@ -458,6 +458,7 @@ Create this directory tree at the root of your repository:
   skills/
     mob-elab-prompts.md      ← interactive protocol and prompts for elaboration sessions
     review-checklist.md      ← structured lens for reviewing AI output
+    unit-template.md         ← how to write a unit (reference doc)
     compact-docs.md          ← engineer-triggered skill to archive old operational documents
     root-cause-analysis.md   ← skill to analyse incidents and improvements for design, technology, and process gaps
     solution-shaping.md      ← decides generic-vs-specific, simplest-viable approach, and extend-vs-build-vs-buy before design begins

@@ -30,6 +30,7 @@ project-root/
       bolt-risk-assessment.md  ← template (pre-built)
       progress-digest.md       ← template (pre-built)
       uat.md                   ← template (pre-built)
+      release-readiness-checklist.md ← template (pre-built)
       process-health.md        ← template (pre-built)
       dependency-audit.md      ← template (pre-built)
       knowledge-promotion.md   ← template (pre-built)
@@ -40,6 +41,7 @@ project-root/
       bug-bolt.md              ← template (pre-built)
       hotfix-bolt.md           ← template (pre-built)
       nfr-bolt.md              ← template (pre-built)
+      product-engineering-essentials.md ← template (pre-built)
       mob-elab-prompts.md      ← GENERATED — project-specific
       review-checklist.md      ← GENERATED — project-specific
     guidelines/
@@ -135,6 +137,7 @@ Before migrating, understand which files are which:
 - `ai-dlc/skills/bug-bolt.md`
 - `ai-dlc/skills/hotfix-bolt.md`
 - `ai-dlc/skills/nfr-bolt.md`
+- `ai-dlc/skills/product-engineering-essentials.md`
 
 **Bootstrap-only — do not migrate (replaced by new `process-onboarding-agent/`):**
 - `ai-dlc/onboard.md`
@@ -317,6 +320,7 @@ Files to refresh:
 | `process-onboarding-agent/skills/bug-bolt.md` | `{NEW_FRAMEWORK_ROOT}/skills/bug-bolt.md` |
 | `process-onboarding-agent/skills/hotfix-bolt.md` | `{NEW_FRAMEWORK_ROOT}/skills/hotfix-bolt.md` |
 | `process-onboarding-agent/skills/nfr-bolt.md` | `{NEW_FRAMEWORK_ROOT}/skills/nfr-bolt.md` |
+| `process-onboarding-agent/skills/product-engineering-essentials.md` | `{NEW_FRAMEWORK_ROOT}/skills/product-engineering-essentials.md` |
 
 The table above lists the pre-built skills as of this guide's last update. Treat it as a checklist, not a closed set: refresh **every** `*.md` under `process-onboarding-agent/skills/` in the new base repo. If the base repo contains a skill the table does not mention, copy it across anyway and note it in the migration report — the base repo is the source of truth, not this list.
 

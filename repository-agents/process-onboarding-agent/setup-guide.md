@@ -461,8 +461,21 @@ Create this directory tree at the root of your repository:
     unit-template.md         ← how to write a unit (reference doc)
     compact-docs.md          ← engineer-triggered skill to archive old operational documents
     root-cause-analysis.md   ← skill to analyse incidents and improvements for design, technology, and process gaps
+    solution-shaping.md      ← decides generic-vs-specific, simplest-viable approach, and extend-vs-build-vs-buy before design begins
+    design-session.md        ← Phase 0 of elaboration — locks API contracts and data model decisions before units are proposed
+    bolt-risk-assessment.md  ← blast radius, rollback, and feature flag assessment before a bolt's first unit executes
+    progress-digest.md       ← plain-language stakeholder progress summary for a feature intent
+    uat.md                   ← acceptance testing protocol; blocks an intent from closing without sign-off
+    process-health.md        ← quantitative report on how well the AI-DLC process is functioning
+    dependency-audit.md      ← scheduled audit of third-party dependencies by severity
+    knowledge-promotion.md   ← classifies retro improvements as generic (promote to base repo) or project-specific
     notifications.md         ← Slack alerts at delivery moments that need a human
     ai-hub-metrics.md        ← pushes usage/activity events to 99x AI Hub
+    process-visualization.md ← reconstructs how a bolt actually got delivered as Mermaid diagrams
+    new-engineer-induction.md ← walks a new team member through the project's framework
+    bug-bolt.md               ← lightweight bolt workflow for fixing a specific, reproducible bug
+    hotfix-bolt.md            ← emergency bolt for production incidents
+    nfr-bolt.md               ← non-functional quality attribute bolt (performance, security, accessibility)
     product-engineering-essentials.md  ← optional ten-pillar checklist of product/engineering foundations
     release-readiness-checklist.md     ← engineer-invoked, self-attestation UAT/production release checklist
   guidelines/
@@ -622,7 +635,6 @@ If the engineer defers, ask for the new date and update Section 9 before continu
 **Knowledge promotion skill:** read `{FRAMEWORK_ROOT}/skills/knowledge-promotion.md` as Step 5 of the Post-Retro Improvement Workflow after all improvements are applied. A retro is not closed until every Applied improvement has a Knowledge Promotion status.
 **Process visualization skill:** offer to read `{FRAMEWORK_ROOT}/skills/process-visualization.md` at the start of every retro, before "What Went Well" is discussed. The engineer may accept, skip, or invoke it directly at any time. Never run it without the engineer's go-ahead.
 **Dependency audit skill:** read `{FRAMEWORK_ROOT}/skills/dependency-audit.md` when the engineer invokes it, or when the `Next dependency audit` date in Section 9 has been reached. Prompt at session start if the date is due.
-**Process health skill:** read `{FRAMEWORK_ROOT}/skills/process-health.md` when the engineer invokes it to audit how well the AI-DLC process is functioning.
 **Compact-docs skill:** read `{FRAMEWORK_ROOT}/skills/compact-docs.md` when the engineer invokes it.
 **Root-cause-analysis skill:** read `{FRAMEWORK_ROOT}/skills/root-cause-analysis.md` when the engineer invokes it, or when an incident is marked Resolved and no RCA has been run on it.
 **Notifications skill:** read `{FRAMEWORK_ROOT}/skills/notifications.md` when a lifecycle event in Section 10 is reached (elaboration sign-off required, bolt complete, UAT sign-off required, intent implemented, incident/hotfix started, circuit breaker tripped, dependency audit due), or when the engineer asks to send, configure, or silence notifications. Sending is best-effort — send and continue; never block a step on it. Skip if Section 10 is set to disabled or the engineer silenced notifications this session.

@@ -22,6 +22,7 @@ For everything else — fixing an unclear instruction, adding a new skill, corre
 
 - Skim [readme-content/repository-contents.md](readme-content/repository-contents.md) to see what already exists and where it lives. Most content is under `repository-agents/*/` — each agent's `skills/`, `rules/`, `ops/` templates, and its bootstrap `.md` entry point.
 - Check whether your change belongs here at all. The rule of thumb from the knowledge-promotion protocol applies here too: **if this would still be an improvement on a completely different project — different stack, domain, team size — it belongs in the base repo.** If it depends on one team's stack, domain, or conventions, it belongs in that project's generated `intent-execution-framework/`, not here.
+- Read [RULES.md](RULES.md) before editing a skill, rule, template, or agent file. This repo's catalogues, diagrams, and routing tables reference each other by exact path and phrase, so most changes are multi-file changes — RULES.md maps out exactly which files move together (its "Sync Sets") so your PR doesn't leave the repo self-contradictory.
 
 ### What you can contribute
 
@@ -32,6 +33,7 @@ For everything else — fixing an unclear instruction, adding a new skill, corre
 | Template change (intent, unit, bolt, retro, etc.) | `repository-agents/*/ops/**/_template.md` |
 | Onboarding, diagnostics, migration, skills, or estimation agent protocol | The relevant `repository-agents/process-*-agent/*.md` |
 | Documentation | `README.md`, `readme-content/*.md` |
+| Repository governance (cross-reference rules, PR review checklist) | `RULES.md`, `pr-review.md` |
 
 ### Style and conventions
 
@@ -55,6 +57,7 @@ There's no build or test suite — the content *is* the product, so validate it 
    - What the change is and why it generalizes (same bar as a knowledge-promotion draft, even if this isn't a promoted change).
    - What you tested it against (step 2 above).
 3. Request review as normal. Promoted changes and direct changes go through the same review bar — nothing is merged without review, since every project's framework install inherits it.
+4. Before requesting a human reviewer, run [pr-review.md](pr-review.md) against your own diff — it checks the mechanical parts of RULES.md (cross-reference sync, orphaned references, scope) so the human reviewer can focus on whether the change itself is good. Reviewers should run it too if the author hasn't.
 
 ---
 

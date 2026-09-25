@@ -32,10 +32,12 @@ AI-DLC works with any of the three AI coding assistants below. The framework con
 | AI Tool | Master rule file | Location in project repo |
 |---|---|---|
 | **Claude Code** | `CLAUDE.md` | Repo root |
-| **Cursor** | `.cursorrules` | Repo root |
+| **Cursor** | `.cursor/rules/project-rules.mdc` | `.cursor/rules/` |
 | **GitHub Copilot** | `copilot-instructions.md` | `.github/` folder |
 
 Each tool loads its master rule file automatically at the start of every session.
+
+> **This table describes what the onboarding agent generates in a *consumer* project.** `ai-dlc-base` has its own master rule files — `CLAUDE.md`, `.cursor/rules/ai-dlc-base-governance.mdc` (Cursor's current Project Rules format; the legacy single `.cursorrules` file is deprecated), and `.github/copilot-instructions.md` — distinct from the above, that route contributors to [RULES.md](RULES.md) and [pr-review.md](pr-review.md) when working on this repo itself.
 
 ---
 
@@ -133,6 +135,7 @@ Works with any project — no AI-DLC installation required. → [Full diagnostic
 - [Migrating from the old structure](readme-content/migrating-from-old-structure.md) — from `ai-dlc/` to the new methodology
 - [Contributing improvements back](readme-content/contributing.md) — how the base repo evolves through knowledge promotion
 - [Estimation guide](readme-content/estimation.md) — ballpark and delivery estimation modes, tier classifications, calibration from recorded hours
+- [Repository integrity rules](RULES.md) — the cross-reference "Sync Sets" that must move together when editing this repo, and the PR-review skill ([pr-review.md](pr-review.md)) that checks them
 
 ---
 

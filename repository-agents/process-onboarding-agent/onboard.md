@@ -80,7 +80,7 @@ Use `FRAMEWORK_ROOT` as the base path for every framework file created during th
 2. Check whether AI-DLC has already been set up in this repo by looking for files that are **only created during onboarding** — not files that ship with the base repo. The following are reliable indicators of an existing setup (check at `FRAMEWORK_ROOT`):
    - A master rule file at the repo root: `CLAUDE.md`, `.cursorrules`, or `.github/copilot-instructions.md`
    - Any of these generated rules files: `{FRAMEWORK_ROOT}/rules/prompt-quality-gate.md`, `{FRAMEWORK_ROOT}/rules/code-standards.md`, `{FRAMEWORK_ROOT}/rules/security.md`, `{FRAMEWORK_ROOT}/rules/architecture.md`
-   - Any of these generated skills files: `{FRAMEWORK_ROOT}/skills/mob-elab-prompts.md`, `{FRAMEWORK_ROOT}/skills/review-checklist.md`, `{FRAMEWORK_ROOT}/skills/unit-template.md`
+   - Any of these generated skills files: `{FRAMEWORK_ROOT}/skills/mob-elab-prompts.md`, `{FRAMEWORK_ROOT}/skills/review-checklist.md`
    - Any file inside `{FRAMEWORK_ROOT}/guidelines/`
    - `{FRAMEWORK_ROOT}/Instructions2FDE.md`
 

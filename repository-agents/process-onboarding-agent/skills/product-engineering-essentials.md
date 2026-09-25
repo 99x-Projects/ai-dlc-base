@@ -30,7 +30,7 @@ Read the repository before evaluating anything — do not score a pillar from me
 
 Read, if present:
 
-- The master rule file (`CLAUDE.md`, `.cursorrules`, or `.github/copilot-instructions.md`) — every section, not just the title
+- The master rule file (`CLAUDE.md`, `.cursor/rules/project-rules.mdc` (or any `.mdc` under `.cursor/rules/`), `.cursorrules` (legacy), or `.github/copilot-instructions.md`) — every section, not just the title
 - `{FRAMEWORK_ROOT}/rules/*.md` and `{FRAMEWORK_ROOT}/guidelines/*.md` if AI-DLC is installed
 - `{FRAMEWORK_ROOT}/ops/inception/intents/*.md` (a sample is enough for pattern-level items; read all of them for coverage items like MVP/roadmap)
 - Top-level repo docs: `README.md`, `CONTRIBUTING.md`, `SECURITY.md`, `ARCHITECTURE.md`, anything under `docs/`

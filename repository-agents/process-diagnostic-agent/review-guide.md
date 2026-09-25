@@ -62,7 +62,7 @@ Every finding must be classified before it goes into the report.
 
 ## Domain 1 — Foundation
 
-**What you are reviewing:** The master rule file (`CLAUDE.md`, `.cursorrules`, or `.github/copilot-instructions.md`)
+**What you are reviewing:** The master rule file (`CLAUDE.md`, `.cursor/rules/project-rules.mdc` (or any `.mdc` under `.cursor/rules/`), `.cursorrules` (legacy), or `.github/copilot-instructions.md`)
 
 **How to request it:**
 > "Please share your master rule file — the file your AI tool loads automatically at the start of every session."

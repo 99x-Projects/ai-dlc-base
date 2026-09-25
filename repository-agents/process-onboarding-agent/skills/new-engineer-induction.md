@@ -30,7 +30,7 @@ Wait for the engineer to confirm or request the quick tour before continuing.
 
 Before saying anything substantive, read the following without prompting:
 
-- The master rule file (`CLAUDE.md`, `.cursorrules`, or `.github/copilot-instructions.md`)
+- The master rule file (`CLAUDE.md`, `.cursor/rules/project-rules.mdc` (or any `.mdc` under `.cursor/rules/`), `.cursorrules` (legacy), or `.github/copilot-instructions.md`)
 - `process-onboarding-agent/guidelines/domain-glossary.md` (if it exists)
 - `process-onboarding-agent/rules/prompt-quality-gate.md`
 - `process-onboarding-agent/ops/build/backlog.md` (to understand current project state)
@@ -250,7 +250,7 @@ Full glossary: `process-onboarding-agent/guidelines/domain-glossary.md`
 
 | File | Purpose |
 |---|---|
-| `CLAUDE.md` (or `.cursorrules`) | Master rule file — governs every session |
+| `CLAUDE.md` (or `.cursor/rules/project-rules.mdc` / any `.mdc` under `.cursor/rules/` / `.cursorrules` legacy) | Master rule file — governs every session |
 | `process-onboarding-agent/ops/build/backlog.md` | All units by status |
 | `process-onboarding-agent/rules/prompt-quality-gate.md` | Quality gate definition |
 | `process-onboarding-agent/rules/code-standards.md` | Coding conventions for this project |

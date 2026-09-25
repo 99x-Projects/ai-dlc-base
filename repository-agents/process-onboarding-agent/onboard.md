@@ -42,7 +42,7 @@ Before asking any questions or taking any action, present the following overview
 >    - **Mature project:** A phased codebase archaeology (architecture mapping, pattern extraction, due diligence audit, debt classification) before generating a framework that inherits your existing conventions rather than overwriting them.
 >
 > **Expected outputs from this session:**
-> - A **master rule file** (`CLAUDE.md`, `.cursorrules`, or `.github/copilot-instructions.md`) at your repo root — loaded automatically by your AI tool at the start of every future session
+> - A **master rule file** (`CLAUDE.md`, `.cursor/rules/project-rules.mdc`, or `.github/copilot-instructions.md`) at your repo root — loaded automatically by your AI tool at the start of every future session
 > - A complete **`intent-execution-framework/`** folder installed at your chosen process documentation path, containing:
 >   - Rules files (prompt quality gate, code standards, security, architecture, engagement)
 >   - Skills files (elaboration prompts, review checklist, UAT, bolt risk assessment, and more)
@@ -78,7 +78,7 @@ Use `FRAMEWORK_ROOT` as the base path for every framework file created during th
 
 1. Read `process-onboarding-agent/setup-guide.md` from top to bottom before taking any action.
 2. Check whether AI-DLC has already been set up in this repo by looking for files that are **only created during onboarding** — not files that ship with the base repo. The following are reliable indicators of an existing setup (check at `FRAMEWORK_ROOT`):
-   - A master rule file at the repo root: `CLAUDE.md`, `.cursorrules`, or `.github/copilot-instructions.md`
+   - A master rule file at the repo root: `CLAUDE.md`, `.cursor/rules/project-rules.mdc` (or any `.mdc` under `.cursor/rules/`), `.cursorrules` (legacy), or `.github/copilot-instructions.md`
    - Any of these generated rules files: `{FRAMEWORK_ROOT}/rules/prompt-quality-gate.md`, `{FRAMEWORK_ROOT}/rules/code-standards.md`, `{FRAMEWORK_ROOT}/rules/security.md`, `{FRAMEWORK_ROOT}/rules/architecture.md`
    - Any of these generated skills files: `{FRAMEWORK_ROOT}/skills/mob-elab-prompts.md`, `{FRAMEWORK_ROOT}/skills/review-checklist.md`
    - Any file inside `{FRAMEWORK_ROOT}/guidelines/`

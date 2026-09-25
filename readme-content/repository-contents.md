@@ -52,7 +52,7 @@ The onboarding agent first asks where your process documentation lives, then ins
 
 ```
 <your-project>/
-  CLAUDE.md (or .cursorrules / .github/copilot-instructions.md)
+  CLAUDE.md (or .cursor/rules/project-rules.mdc / .github/copilot-instructions.md)
   process-onboarding-agent/        ← delete this after onboarding is complete
     onboard.md
     setup-guide.md

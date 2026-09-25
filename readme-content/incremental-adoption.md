@@ -54,7 +54,7 @@ By this phase, the team is running a recognizable version of the AI-DLC cycle. C
 | 14 | **Risk and blast-radius check** | Before a sizeable change, assesses impact on other components, rollback options, and whether a feature flag is needed. | Bolt risk assessment |
 | 15 | **Dependency and security audit** | Reads package manifests monthly, lists risky or outdated packages, and suggests remediation steps. | dependency-audit skill |
 | 16 | **New-joiner induction** | Walks a new engineer through the codebase and produces a personalized quick-reference card. | new-engineer-induction skill |
-| 17 | **Capture conventions as a prompt** | Seeds a `CLAUDE.md` or `.cursorrules` with the team's actual coding standards and domain terms — the first step of a real onboarding. | Master rule file → full framework adoption |
+| 17 | **Capture conventions as a prompt** | Seeds a `CLAUDE.md` or `.cursor/rules/project-rules.mdc` with the team's actual coding standards and domain terms — the first step of a real onboarding. | Master rule file → full framework adoption |
 
 ---
 

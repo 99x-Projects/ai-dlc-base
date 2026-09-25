@@ -27,7 +27,7 @@ Every file in this repo belongs to exactly one category. Before editing, confirm
 | Agent protocol/guide | `repository-agents/process-*-agent/*-guide.md` | The full protocol an entry point runs |
 | Top-level reference doc | `readme-content/*.md` | Human-facing documentation of what exists and how it fits together |
 | Root doc | `README.md`, `CONTRIBUTING.md`, `RULES.md`, `pr-review.md` | Entry points for a human landing on the repo |
-| Base repo's own master rule file | `CLAUDE.md`, `.cursor/rules/ai-dlc-base-governance.mdc`, `.github/copilot-instructions.md` | Auto-loaded routing into RULES.md/pr-review.md/CONTRIBUTING.md when working *on* ai-dlc-base itself — same routing content in all three, only name/location/frontmatter differs. **Not** the master rule file template the onboarding agent generates for consumer projects (that's `repository-agents/process-onboarding-agent/setup-guide.md`'s subject, a different artifact entirely). |
+| Base repo's own master rule file | `CLAUDE.md`, `.cursor/rules/ai-dlc-base-governance.mdc`, `.github/copilot-instructions.md` | Auto-loaded routing into RULES.md/pr-review.md/CONTRIBUTING.md when working *on* ai-dlc-base itself — all three must route an assistant to the same places and trigger the same behavior; name, location, frontmatter, and tool-specific wording may differ (see Sync Set E). **Not** the master rule file template the onboarding agent generates for consumer projects (that's `repository-agents/process-onboarding-agent/setup-guide.md`'s subject, a different artifact entirely). |
 
 If a change doesn't fit any row — you're proposing a new category. Say so explicitly in the PR description; don't force it into an existing folder.
 
@@ -74,7 +74,7 @@ Source: `repository-agents/*/ops/**/_template.md`
 
 Source: any of `CLAUDE.md`, `.cursor/rules/ai-dlc-base-governance.mdc`, `.github/copilot-instructions.md`
 
-These three must stay in sync: `CLAUDE.md` and `.github/copilot-instructions.md` byte-identical to each other; the `.mdc` file's body identical to both, with only its required Cursor frontmatter (`description`/`globs`/`alwaysApply`) and repo-root-relative links (`../../RULES.md` etc., since it lives under `.cursor/rules/`) added on top. Editing one without copying the change to the other two is a Blocking finding.
+These three must stay **behaviorally equivalent, not textually identical**: same sections, same triggers, same routing targets (RULES.md, pr-review.md, CONTRIBUTING.md, setup-guide.md), so that Claude, Cursor, and Copilot all send their assistant to the same place and the same next action when working on this repo. Byte-identical text is the easiest way to guarantee that and remains the default — keep it unless there's a concrete, tool-specific reason to diverge. The standing example of a legitimate reason is Cursor's: its required frontmatter (`description`/`globs`/`alwaysApply`) and its repo-root-relative links (`../../RULES.md` etc., since it lives under `.cursor/rules/`). A wording change that only suits how one tool's assistant parses instructions, without changing what it's told to do, is allowed. Editing one file's routing content — a section added or removed, a target changed, a trigger changed — without carrying the same change to the other two is a Blocking finding, regardless of whether the wording ends up identical.
 
 ### Sync Set D — Changing a rule file
 

@@ -7,16 +7,23 @@ This is a self-contained prompt protocol, in the same style as this repo's other
 **How to invoke:**
 > "Read `pr-review.md` and review PR #[N] against ai-dlc-base's structural rules."
 
+or, with a GitHub PR link instead of a number:
+> "Read `pr-review.md` and review https://github.com/[org]/[repo]/pull/[N] against ai-dlc-base's structural rules."
+
 or, for an uncommitted local diff:
 > "Read `pr-review.md` and review the current diff against ai-dlc-base's structural rules."
 
+A PR number and a GitHub PR link are the same target for every rule below — "PR target" means either form. Only a local/uncommitted diff (no PR to comment on) is the different case.
+
 This skill does not judge content quality on its own authority — a human still approves the PR. Its job is the thing humans reliably miss under review pressure: **did this change keep every cross-referenced file in sync — not just mentioning the same name, but still saying something true about it — and does the diff stay in scope.** Grep proves presence, not correctness; Step 5 exists because a passing grep and a broken repo are not mutually exclusive.
+
+**Default output — post, don't fix:** When the target is a PR (given as a number or as a GitHub PR link), the default outcome of running this skill is a comment posted on that PR (Step 10) — not an edit to any file. This skill never modifies the repo, creates commits, or opens branches to address its own findings, Blocking or Advisory, unless the reviewer explicitly asks for the fix to be applied in this same invocation or a follow-up one (e.g. "now fix the blocking finding" or "apply that"). Reviewing and fixing are two separate asks; don't collapse them because a finding looks quick to fix.
 
 ---
 
 ## Step 1 — Get the diff
 
-- For a PR number: fetch it (`gh pr diff [N]` if the `gh` CLI is available, or fetch the PR's file list and diff another way).
+- For a PR number or a GitHub PR link: fetch it (`gh pr diff [N or URL]` if the `gh` CLI is available, or fetch the PR's file list and diff another way). Either form is a "PR target" for every rule below.
 - For a local diff: `git diff main...HEAD` (or the appropriate base branch).
 
 If you cannot obtain a diff, stop and tell the reviewer — do not review from memory or assumption.
@@ -82,7 +89,7 @@ grep -rn "<rule-name>" repository-agents/process-onboarding-agent/setup-guide.md
 ```
 diff CLAUDE.md .github/copilot-instructions.md
 ```
-Any output here is a Blocking finding — these two must be byte-identical. Then read `.cursor/rules/ai-dlc-base-governance.mdc` and confirm its body (everything after the `---` frontmatter block) matches the other two section-for-section, modulo its required frontmatter and its `../../`-prefixed relative links. A content drift beyond that is Blocking.
+Read any diff output rather than treating it as automatically Blocking. `CLAUDE.md`, `.github/copilot-instructions.md`, and `.cursor/rules/ai-dlc-base-governance.mdc`'s body (everything after its `---` frontmatter block, modulo that frontmatter and its `../../`-prefixed relative links) must stay **behaviorally equivalent** — same sections, same triggers, same routing targets — not byte-identical. A tool-specific wording change that leaves the routing behavior unchanged is a Pass. A diff that adds, removes, or changes a section, a routing target, or a trigger in only one file is Blocking, even if the other two still read fine on their own — because the three tools would then behave differently on the same repo.
 
 Record each check's result in a table:
 
@@ -178,3 +185,15 @@ Required change: [specific file(s) and what to add/fix]
 ```
 
 **Verdict logic:** any Blocking finding → "Changes needed". Zero Blocking findings, regardless of Advisory count → "Ready to merge" (note the Advisory items for the author's discretion, don't gate on them).
+
+---
+
+## Step 10 — Post the review (default action for a PR target)
+
+If Step 1's target was a PR — whether given as a number or a GitHub PR link — and the `gh` CLI is available, post the Step 9 report as a comment on that PR by default — do not just print it and stop:
+```
+gh pr comment [N or URL] --body-file [path to the report]
+```
+Confirm to the reviewer that the comment was posted and link it. If `gh` is unavailable or the target was a local/uncommitted diff (nothing to comment on), print the report instead and say why no comment was posted.
+
+This step posts a *comment*, not a fix. Do not edit files, stage changes, or open a branch/PR to address any finding as part of this step — that only happens if separately, explicitly requested (see **Default output — post, don't fix** above).

@@ -38,7 +38,7 @@ This guide uses the term **master rule file** to refer to the file that governs 
 | **Cursor** | `.cursor/rules/project-rules.mdc` | `.cursor/rules/` (with `alwaysApply: true`) |
 | **GitHub Copilot** | `copilot-instructions.md` | `.github/` folder |
 
-The content of the master rule file is identical across tools. The only differences are the file name, the location, and — for GitHub Copilot — internal links to `{FRAMEWORK_ROOT}/` files must use the prefix `../{FRAMEWORK_ROOT}/` since the file lives inside `.github/`.
+The content of the master rule file is identical across tools. The only differences are the file name, the location, and: for Cursor, the body is wrapped in a `---\nalwaysApply: true\n---` YAML frontmatter block; for GitHub Copilot, internal links to `{FRAMEWORK_ROOT}/` files must use the prefix `../{FRAMEWORK_ROOT}/` since the file lives inside `.github/`.
 
 All subsequent steps in this guide refer to the "master rule file." Substitute the correct name and path for your chosen tool.
 
@@ -1221,7 +1221,7 @@ By this point your master rule file should exist at the correct path for your ch
 
 ### Supporting multiple tools in the same repo
 
-If your team uses more than one AI tool, create copies of the master rule file for each additional tool. The content is identical — only the file name, location, and internal link prefixes differ.
+If your team uses more than one AI tool, create copies of the master rule file for each additional tool. The content is identical — only the file name, location, internal link prefixes, and (for Cursor) a wrapping YAML frontmatter block differ.
 
 **Add Cursor support** (if your primary tool is Claude Code or Copilot):
 ```bash

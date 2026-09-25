@@ -27,7 +27,7 @@ Rules, skills, and guidelines are generated through conversation with your team 
 
 ## Supported AI Tools
 
-AI-DLC works with any of the three AI coding assistants below. The framework content is identical across all three — only the master rule file name and location differ.
+AI-DLC works with any of the three AI coding assistants below. The framework content is identical across all three — only the master rule file name, location, and (for Cursor and GitHub Copilot) a small tool-specific wrapper differ.
 
 | AI Tool | Master rule file | Location in project repo |
 |---|---|---|

@@ -70,7 +70,7 @@ Pause after this section and ask: "Any questions before we move to the quality g
 Explain the quality gate using a concrete example from the project's domain.
 
 **First, show a bad prompt:**
-> "The quality gate has four components: Context, Constraints, Acceptance Criteria, and Output Format. If any are missing, I stop and ask — I don't guess. Here's what a bad prompt looks like in this project:"
+> "The quality gate checks two things: it has four components — Context, Constraints, Acceptance Criteria, and Output Format — and it never contains sensitive information you didn't mean to share. If either check fails, I stop and ask — I don't guess. Here's what a bad prompt looks like in this project:"
 
 Write an example incomplete prompt using a plausible feature for this project's domain (derived from the intent files or backlog):
 
@@ -99,6 +99,20 @@ Output:     New file at [path]. Update [other file] to register it.
 ```
 
 > "If you send me the bad version, I'll stop and ask for what's missing — every time, no exceptions. The gate exists because incomplete prompts produce output that looks correct but isn't."
+
+**Then show the sensitive-data check:**
+
+```
+Prompt with exposed data:
+"Debug this failing webhook call: curl -H 'Authorization: Bearer sk_live_51Hxxxx...' https://api.example.com/charge"
+
+What I do:
+- Stop before using or repeating the key back
+- Name the category found ("this looks like a live API key")
+- Ask you to confirm it's intentional and safe to have in this conversation, or to redact it and resend
+```
+
+> "This check runs on every prompt, not just ones missing a component — even a fully-specified request gets paused if it contains something like a credential, a customer's personal details, or an internal secret. Nothing sensitive gets written into code, logs, or commit messages without you confirming it first."
 
 ---
 

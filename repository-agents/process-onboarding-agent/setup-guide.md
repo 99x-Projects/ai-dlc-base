@@ -543,13 +543,14 @@ State what the system is and its technology stack. Be specific — the AI needs 
 
 ### Section 2 — Prompt Quality Gate
 
-A two-line routing entry. Do not embed the gate definition — it lives in `rules/prompt-quality-gate.md`.
+A three-line routing entry. Do not embed the gate definition — it lives in `rules/prompt-quality-gate.md`.
 
 ```markdown
 ## 2. Prompt Quality Gate
 
 Before every code response: read and enforce `{FRAMEWORK_ROOT}/rules/prompt-quality-gate.md`.
 If any of the four components (Context · Constraints · Acceptance Criteria · Output Format) is missing, stop and ask for it. Do not generate code.
+Before every response, regardless of the four components: scan the request and any pasted content for sensitive information (credentials, secrets, personal data). If found, stop, name the category found without repeating the value back, and ask the engineer to confirm it's intentional or redact it before continuing.
 ```
 
 ### Section 3 — Code Rules
@@ -740,11 +741,14 @@ Add or remove events from the table to tune what the project reports to AI Hub. 
 
 ### `rules/prompt-quality-gate.md`
 
-Defines the four components in detail with examples of complete and incomplete requests. Include:
-- What each component means
+Defines the four components in detail with examples of complete and incomplete requests, plus the Sensitive Data Check that runs independently of them. Include:
+- What each of the four components means
 - The order to ask for missing components
 - An example of an incomplete request and the correct response
 - An example of a complete request
+- What counts as sensitive information for this project — credentials/API keys/tokens/connection strings, personal data (names plus contact info, government IDs, financial or health details), and internal infrastructure details (internal hostnames, IPs, non-public endpoints). Ask the team during the setup interview which categories apply to their domain and regulatory context, and add any project-specific categories they name.
+- What to do when it's detected: stop before using the value, name the category found without repeating the sensitive value back, and ask the engineer to confirm it's intentional or to redact/replace it with a placeholder before continuing. Never write the raw value into a generated file, log, commit message, or artifact.
+- This check runs on every request, independent of the four components above — it can fire on an otherwise fully-specified prompt, and a request can fail it even when Context, Constraints, ACs, and Output Format are all present.
 
 ### `rules/code-standards.md`
 

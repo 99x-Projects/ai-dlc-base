@@ -104,6 +104,17 @@ Runs a structured risk assessment before a batch of work executes. Interrogates 
 
 ### QUALITY & ACCEPTANCE
 
+**Test Plan** (`test-plan.md`) `◆ Standalone`
+
+Binds each acceptance criterion to one test level — unit, integration, system, acceptance, or exploratory — and stores the project's existing command for unit, integration, and system. Acceptance rows point at `uat.md`. Stops before any test is run. A missing level blocks code generation.
+
+- **When to invoke:** after elaboration sign-off and bolt risk assessment, before the first code response for a unit
+- **How to invoke:** `"Read [skill-path]/test-plan.md and write the test plan for [unit]."`
+- **What you get:** a Test Plan table on the unit, one row per acceptance criterion, status `planned`. No tests are run.
+- **Adapts to your process:** without the framework, paste the acceptance criteria and say where to write the markdown file
+
+---
+
 **UAT Sign-off** (`uat.md`) `◆ Standalone`
 
 Generates a plain-language UAT demo script from a set of acceptance criteria, walks the engineer through each step, and records pass/fail/deferred outcomes. Blocks closure of a feature until a sign-off status is recorded.

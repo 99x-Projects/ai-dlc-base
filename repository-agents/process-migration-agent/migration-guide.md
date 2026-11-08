@@ -29,6 +29,7 @@ project-root/
       design-session.md        ← template (pre-built)
       bolt-risk-assessment.md  ← template (pre-built)
       progress-digest.md       ← template (pre-built)
+      test-plan.md             ← template (pre-built)
       uat.md                   ← template (pre-built)
       release-readiness-checklist.md ← template (pre-built)
       process-health.md        ← template (pre-built)
@@ -125,6 +126,7 @@ Before migrating, understand which files are which:
 - `ai-dlc/skills/design-session.md`
 - `ai-dlc/skills/bolt-risk-assessment.md`
 - `ai-dlc/skills/progress-digest.md`
+- `ai-dlc/skills/test-plan.md`
 - `ai-dlc/skills/uat.md`
 - `ai-dlc/skills/release-readiness-checklist.md`
 - `ai-dlc/skills/process-health.md`
@@ -308,6 +310,7 @@ Files to refresh:
 | `process-onboarding-agent/skills/design-session.md` | `{NEW_FRAMEWORK_ROOT}/skills/design-session.md` |
 | `process-onboarding-agent/skills/bolt-risk-assessment.md` | `{NEW_FRAMEWORK_ROOT}/skills/bolt-risk-assessment.md` |
 | `process-onboarding-agent/skills/progress-digest.md` | `{NEW_FRAMEWORK_ROOT}/skills/progress-digest.md` |
+| `process-onboarding-agent/skills/test-plan.md` | `{NEW_FRAMEWORK_ROOT}/skills/test-plan.md` |
 | `process-onboarding-agent/skills/uat.md` | `{NEW_FRAMEWORK_ROOT}/skills/uat.md` |
 | `process-onboarding-agent/skills/release-readiness-checklist.md` | `{NEW_FRAMEWORK_ROOT}/skills/release-readiness-checklist.md` |
 | `process-onboarding-agent/skills/process-health.md` | `{NEW_FRAMEWORK_ROOT}/skills/process-health.md` |

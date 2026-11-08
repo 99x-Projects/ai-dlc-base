@@ -116,11 +116,11 @@ The output is a comprehensive Review Report containing: a domain-by-domain score
 
 **Mode:** Push — the agent interviews the team, presents a curated skills catalogue with dependency classifications, and copies the selected skills to a location of the team's choosing.
 
-**When to use:** When a team has a working AI-assisted delivery process and wants to add specific framework capabilities — design sessions, risk assessments, UAT, root cause analysis — without adopting the full governance layer.
+**When to use:** When a team has a working AI-assisted delivery process and wants to add specific framework capabilities — design sessions, risk assessments, test plans (`test-plan.md`), UAT, root cause analysis — without adopting the full governance layer.
 
 **How it works:**
 - Runs a five-question discovery interview about the team's current process, AI touchpoints, common failure modes, stakeholder communication, and capability gaps
-- Presents the full skills catalogue (19 skills grouped by delivery moment) with a dependency classification for each: **Standalone** (invoke directly), **Needs config** (one small configuration at invocation), or **Framework-only** (requires the full framework)
+- Presents the full skills catalogue (20 skills grouped by delivery moment) with a dependency classification for each: **Standalone** (invoke directly), **Needs config** (one small configuration at invocation), or **Framework-only** (requires the full framework)
 - Flags skills most relevant to the team's answers with a ★ Recommended marker
 - Engineer selects skills; agent warns before installing any Framework-only skills
 - Copies selected skill files to the team's chosen path

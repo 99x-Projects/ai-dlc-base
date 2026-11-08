@@ -46,7 +46,7 @@ When this changes, check every one of these:
 1. `readme-content/repository-contents.md` — the file/folder reference table (one row per skill)
 2. `readme-content/repository-contents.md` — the "What the Agent Creates" tree (`skills/` listing)
 3. `repository-agents/process-skills-agent/skills-guide.md` — the full catalogue entry (name, invoke phrase, dependency classification `◆`/`◈`/`◇`, "what you get")
-4. `readme-content/skills-for-bespoke-processes.md` — the skill count (currently "19 skills") and the classification lists (Standalone / Needs config / Framework-only)
+4. `readme-content/skills-for-bespoke-processes.md` — the skill count (currently "20 skills") and the classification lists (Standalone / Needs config / Framework-only)
 5. `readme-content/agents.md` — the skill count reference and, if the skill changes agent flow, the Mermaid diagrams
 6. `repository-agents/process-onboarding-agent/setup-guide.md` — the Section 6 reference-map entry (`**X skill:** read `{FRAMEWORK_ROOT}/skills/x.md` when...`) and the per-skill installation instructions (`Copy this file verbatim from process-onboarding-agent/skills/x.md to {FRAMEWORK_ROOT}/skills/x.md`)
 7. CONTRIBUTING.md's "What you can contribute" table — only if this is a new *category* of skill, not a routine addition

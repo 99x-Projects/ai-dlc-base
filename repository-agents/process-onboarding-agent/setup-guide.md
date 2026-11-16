@@ -688,7 +688,7 @@ The question of whether the team wants notifications is asked in Step 4, when th
 ## 10. Notifications
 
 **Status:** Enabled / Disabled
-**Endpoint:** Slack incoming webhook, read from the `SLACK_WEBHOOK_URL` environment variable — never commit a webhook URL. Per engineer, not per project: each teammate has their own channel and their own webhook on their own machine, so this section says the events fire, not who receives them. A teammate who has not set the variable simply gets nothing.
+**Endpoint:** Slack incoming webhook, read from `SLACK_WEBHOOK_URL` — the environment or a gitignored `scripts/notify.env` — never commit a webhook URL. Per engineer, not per project: each teammate has their own channel and their own webhook on their own machine, so this section says the events fire, not who receives them. A teammate who has not supplied the URL simply gets nothing.
 **Harness hooks:** installed by default — turn-ended and needs-attention. Record the tool and its config file: Claude Code `.claude/settings.json` (`Stop`, `Notification`), Cursor `.cursor/hooks.json` (`stop`, `beforeShellExecution`), Copilot `.github/hooks/notify.json` (`agentStop`, `permissionRequest`). If that config directory is gitignored in this project, note that hooks are per engineer rather than shared.
 **Send command:** `scripts/notify.sh '<message>'` — run from the repository root, single-quoted argument, approved in the AI tool's command allowlist so sends do not prompt. The script takes raw text and builds the JSON itself.
 
@@ -865,7 +865,7 @@ Copy this file verbatim from `process-onboarding-agent/skills/root-cause-analysi
 
 ### `skills/notifications.md`
 
-The notifications skill sends Slack alerts at the delivery moments that need a human, on two layers: deterministic tool hooks for turn-ended and needs-attention pings (Claude Code, Cursor and Copilot all support these, with different event names and config files), and agent-driven, event-specific notifications for framework moments (elaboration sign-off, bolt complete, UAT sign-off, incident/hotfix, circuit breaker, dependency audit due). The incoming-webhook URL is read from the `SLACK_WEBHOOK_URL` environment variable — no webhook URL is ever written into a committed file. Sending is best-effort and never blocks a step.
+The notifications skill sends Slack alerts at the delivery moments that need a human, on two layers: deterministic tool hooks for turn-ended and needs-attention pings (Claude Code, Cursor and Copilot all support these, with different event names and config files), and agent-driven, event-specific notifications for framework moments (elaboration sign-off, bolt complete, UAT sign-off, incident/hotfix, circuit breaker, dependency audit due). The incoming-webhook URL is read from `SLACK_WEBHOOK_URL`, from the environment or a gitignored `scripts/notify.env` — no webhook URL is ever written into a committed file. Sending is best-effort and never blocks a step.
 
 Copy this file verbatim from `process-onboarding-agent/skills/notifications.md` to `{FRAMEWORK_ROOT}/skills/notifications.md`. No customization of the skill file is needed — per-project settings (event set, enabled/disabled) live in the master rule file Notifications section, and the endpoint lives in an environment variable.
 

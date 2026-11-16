@@ -161,7 +161,7 @@ Then hand them the steps — do not attempt any of it yourself, do not ask them 
 
 The webhook is a personal credential, like an SSH key — teammates never swap them. Two people on one webhook means one person's session noise lands in the other's channel.
 
-Point them at `{FRAMEWORK_ROOT}/skills/notifications.md` for the full detail, including the GUI-launch caveat if they start their AI tool from the Dock or Start menu rather than a terminal.
+Point them at `{FRAMEWORK_ROOT}/skills/notifications.md` for the full detail, including Step 2 Option B if they prefer an environment variable to the env file — it covers what a GUI-launched AI tool (started from the Dock or Start menu rather than a terminal) will and will not see.
 
 Record the outcome on the quick-reference card: either "notifications configured and tested" or "notifications not yet configured — see `skills/notifications.md`", so an unfinished setup is visible rather than forgotten.
 

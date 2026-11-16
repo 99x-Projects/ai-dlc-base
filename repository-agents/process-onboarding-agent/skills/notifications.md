@@ -7,28 +7,28 @@
 
 Use the harness layer for "attention/done" pings and the lifecycle layer for "this delivery moment needs you." Both send through the same script and resolve the same endpoint — no credentials are ever written into a committed file.
 
-**Trigger:** The harness layer fires automatically once installed. The lifecycle layer fires automatically from the master rule file routing lines (see *Lifecycle events* below). An engineer can also say "send a notification that …" to fire an ad-hoc one, or "turn notifications off for this session" to suppress both layers until the session ends.
+**Trigger:** The harness layer fires automatically once installed. The lifecycle layer fires automatically from the master rule file routing lines (see *Lifecycle events* below). An engineer can also say "send a notification that …" to fire an ad-hoc one, or "turn notifications off for this session" to suppress lifecycle sends until the session ends (harness hooks keep firing — see *Turning it off*).
 
 **Dependency classification:** Needs config — the send command and hooks work as-is, but each engineer must supply their own endpoint (Step 2) before anything is sent.
 
 ---
 
-## Invariants
+## Non-negotiables
 
-Anyone editing this file — human or AI — must keep all six of these true. They are the things earlier revisions got wrong, and each one fails silently when broken:
+Whatever else this skill does, the agent keeps all six of these true. Each one fails silently when broken:
 
 1. **One webhook per engineer, pointing at their own channel.** No shared URL, no shared secret store, no project-wide endpoint. The single exception is a CI/cron runner, which gets its own webhook on a team channel (Step 4).
 2. **The AI never touches Slack.** It does not create apps, call the Slack API, ask for the URL, or gate on whether the engineer may install apps. It presents instructions and waits.
 3. **`Status: Disabled` is an exact token.** `new-engineer-induction.md` string-matches it. Never write "Notifications: disabled" or any other spelling.
 4. **`.gitignore` before the URL exists.** `scripts/notify.env`, `.envrc` and `.claude/settings.local.json` are gitignored by the AI up front — these are the only files that may ever hold the URL, and the only remaining path by which it could be committed.
-5. **The script escapes, the caller does not.** `scripts/notify.sh` takes raw text and builds the JSON itself. Never reintroduce hand-escaping rules for the agent to follow.
+5. **The script escapes, the caller does not.** `scripts/notify.sh` takes raw text and builds the JSON itself. Never hand-escape a message for JSON, and never add instructions telling anyone to.
 6. **Every send exits 0.** An unset variable, an empty message, a missing `jq`/`python3`, a failed or timed-out request — all are silent no-ops. A notification must never break the step it reports on.
 
 ---
 
 ## What each AI tool gets
 
-**All three supported tools have lifecycle hooks.** Claude Code has had them longest; Cursor added them in 1.7 and GitHub Copilot's are in preview, so treat the two newer ones as more likely to move — *verified September 2026, re-check before relying on an exact event name.*
+**All three supported tools have lifecycle hooks.** Claude Code's are the longest established; Cursor's and GitHub Copilot's are newer and more likely to change, so re-check the tool's current docs before relying on an exact event name.
 
 The event names and config files differ; the role does not. All three call the same `scripts/notify.sh`, which is why the send script is deliberately tool-neutral and not under `.claude/`.
 
@@ -50,19 +50,7 @@ Per-tool gotchas:
 - **Copilot takes separate commands per platform** — a hook entry has both `bash` and `powershell` keys. That makes it the only one of the three with cross-platform dispatch built into the format.
 - **Copilot's cloud agent reads only `.github/hooks/*.json`** from the cloned repo, not user-level config.
 - **Copilot needs agent mode** for the lifecycle layer at all; completions and plain inline chat cannot run a command.
-
-### Why there are still two layers
-
-Not because some tools lack hooks — they all have them now. The layers answer different questions:
-
-- **The harness layer is deterministic but semantically blind.** The tool fires it, so it cannot be forgotten; but a hook has no idea what a *bolt* is. It knows a turn ended, not that a bolt closed and a retro is due.
-- **The lifecycle layer is semantic but best-effort.** It knows exactly which delivery moment was reached, because the agent reached it — which is also why it depends on the agent noticing the routing line.
-
-Use both. Neither substitutes for the other.
-
-One thing that still needs saying to Cursor and Copilot teams: **the routing line has to be in *their* rule file.** The lifecycle layer is driven by the master rule file, so the Section 6 routing line and Section 10 must exist in the mirror the tool actually loads — `.cursor/rules/project-rules.mdc` (or any always-applied `.mdc` under `.cursor/rules/`, or legacy `.cursorrules`), or `.github/copilot-instructions.md`, not just `CLAUDE.md`. A stale mirror silently disables the lifecycle layer for that tool. New Cursor mirrors should be created only as `.cursor/rules/project-rules.mdc` — never as `.cursorrules`.
-
-Environment variables are often *easier* on these tools, because an interactive integrated terminal loads the shell profile. Do not rely on it: some agent integrations run commands through a non-interactive shell, which reads no startup file on bash and a different one on every platform. That is why Step 2 Option A (`scripts/notify.env`) is the recommended setup for every tool.
+- **Cursor and Copilot read their own rule file, not `CLAUDE.md`.** The lifecycle layer is driven by the master rule file, so the Section 6 routing line and Section 10 must exist in the mirror the tool actually loads — `.cursor/rules/project-rules.mdc` (or any always-applied `.mdc` under `.cursor/rules/`, or legacy `.cursorrules`), or `.github/copilot-instructions.md`. A stale mirror silently disables the lifecycle layer for that tool. New Cursor mirrors should be created only as `.cursor/rules/project-rules.mdc` — never as `.cursorrules`.
 
 ---
 
@@ -75,10 +63,10 @@ Notifications are sent to whatever endpoint is present in the environment. **Not
 | `SLACK_WEBHOOK_URL` | Slack incoming webhook | `https://hooks.slack.com/services/<WORKSPACE_ID>/<WEBHOOK_ID>/<TOKEN>` |
 
 Rules:
-- **This is per engineer, per machine.** Each person points their own webhook at their own Slack channel and sets the variable locally (shell profile or `.envrc`). There is no project-wide endpoint, no shared URL, and nothing to distribute — a teammate who never sets the variable simply gets no notifications. A CI or cron runner is the one exception, and it gets its own webhook rather than borrowing anyone's (Step 4).
-- Leave the variable unset and notifications become a silent no-op — safe by default.
+- **This is per engineer, per machine.** Each person points their own webhook at their own Slack channel and supplies it locally. There is no project-wide endpoint, no shared URL, and nothing to distribute — a teammate who never supplies one simply gets no notifications. A CI or cron runner is the one exception, and it gets its own webhook rather than borrowing anyone's (Step 4).
+- **The normal home is a gitignored `scripts/notify.env`**, which the send script reads directly — the only setup that behaves identically on macOS, Windows and Linux. An environment variable takes precedence over the file when both are present, which is how CI supplies it (Step 2).
+- Leave it unset and notifications become a silent no-op — safe by default.
 - Never echo the full webhook URL back to the engineer or into any artifact. Refer to it as "the configured Slack webhook."
-- The endpoint is normally kept in a gitignored `scripts/notify.env`, which the send script reads directly — this is the only setup that behaves identically on macOS, Windows and Linux. An environment variable takes precedence over the file when both are present, which is how CI supplies it.
 
 ---
 
@@ -211,19 +199,9 @@ Because that channel does have an audience, the sensitive-detail rule under *Mes
 
 ### New teammates joining later
 
-This is a **personal, per-machine setup, not a team channel.** Each engineer has their own Slack channel and their own webhook pointing at it, so the notifications they get are about the work in *their* session, on *their* machine. Nobody shares a webhook URL, and nothing about it is committed or centrally configured.
+A new engineer gets no notifications until they run Steps 1–3 themselves, and because a missing endpoint is a deliberate silent no-op, **nothing warns them**. The `new-engineer-induction` skill prompts for it, so a joiner is asked rather than left to discover it.
 
-That has one consequence worth stating up front: a new engineer gets no notifications until they set this up themselves, and because an unset variable is a deliberate silent no-op, **nothing warns them**. Their sessions simply never notify, and they have no reason to suspect the feature exists.
-
-So a joining engineer runs the **full sequence from Step 1**, exactly as the first engineer did:
-
-1. Create their own channel to be notified in — a private channel, or a channel with just them in it. Naming it for themselves (`#ai-dlc-alice`) keeps it obvious.
-2. Create their own Slack app and incoming webhook pointing at that channel (Step 1 above).
-3. Set `SLACK_WEBHOOK_URL` on their own machine (Step 2), and confirm with a test send (Step 3).
-
-**Never hand a webhook URL to a teammate**, and never ask one for theirs. It is a personal credential like an SSH key: if two people share it, one person's session noise lands in the other's channel, and revoking it cuts off both. There is no shared secret store to keep, because there is no shared secret.
-
-The `new-engineer-induction` skill prompts for this automatically, so a joining engineer is asked rather than left to discover it.
+**Never hand a webhook URL to a teammate**, and never ask one for theirs. It is a personal credential like an SSH key: if two people share it, one person's session noise lands in the other's channel, and revoking it cuts off both.
 
 ---
 
@@ -297,7 +275,7 @@ Sending is best-effort and must never interrupt the workflow: send the notificat
 
 Delete the lifecycle sign-off events and you keep only the ping that does not say why. Delete the turn-ended hook and you depend on the agent remembering. Neither is worth the saving of one Slack line.
 
-The attention hook (`Notification` / `beforeShellExecution` / `permissionRequest`) is different again — it fires on a permission request or an idle prompt, not when a question is asked, so it rarely doubles up with anything.
+The attention hook (`Notification` / `permissionRequest`) is different again — it fires on a permission request or an idle prompt, not when a question is asked, so it rarely doubles up with anything. Cursor is the exception: its `beforeShellExecution` fires before *every* agent shell command, including the lifecycle sends themselves, so on Cursor it is the noisiest hook rather than the quietest (see the Cursor note under onboarding step 6).
 
 ---
 
@@ -430,7 +408,8 @@ Use the config file for the team's tool (see *What each AI tool gets*). Prefix e
 Notes:
 
 - **Merge, never overwrite.** If the tool's config file already exists, add these keys to what is there. For Claude Code, step 4 and step 6 both touch `.claude/settings.json`; for Cursor and Copilot the file may already hold unrelated hooks.
-- **Turn-ended fires on every turn.** That is the intent — it is the event that replaces watching the session — but say the number out loud during onboarding: a forty-turn session is forty messages. If the team finds it too much, drop the turn-ended hook and keep the attention hook, which fires only when the agent is actually blocked on them.
+- **Turn-ended fires on every turn.** That is the intent — it is the event that replaces watching the session — but say the number out loud during onboarding: a forty-turn session is forty messages. If the team finds it too much, drop the turn-ended hook and keep the attention hook, which on Claude Code and Copilot fires only when the agent is actually blocked on them.
+- **Cursor's attention hook is `beforeShellExecution`, and it is not a permission event.** It fires before every shell command the agent runs — tests, builds, and `scripts/notify.sh` lifecycle sends included — so on Cursor it is the noisiest of the two, not the quietest. Say so during onboarding; if the team finds it too chatty, drop it from the Cursor config and keep `stop`, which is the hook that replaces watching the session.
 - **Claude Code needs `$CLAUDE_PROJECT_DIR`; the others take a repo-relative path.** Hook commands have no guaranteed working directory, and Claude Code is the one with an explicit variable for the project root. Cursor resolves a project hook's relative path from the project root; Copilot accepts a `cwd` key if you need to pin it. Get this wrong and the hook dies with "No such file or directory" — silently, because hook failures are swallowed.
 - **Hooks are not governed by the send-command allowlist.** `permissions.allow` (or the equivalent) covers the agent's own shell tool, not the harness. That is why the hook path and the call-site path are spelled differently on purpose.
 - Hooks call the same `scripts/notify.sh`, so they inherit the timeout, the payload encoding, and the silent-no-op behaviour. Step 3 must have run first.
@@ -451,6 +430,6 @@ Ask the engineer to confirm the message arrived in the Slack channel and that it
 
 ## Turning it off
 
-- **Per session:** the engineer says "turn notifications off for this session" — the agent suppresses both layers (skips lifecycle sends) until the session ends.
-- **Just for you:** unset `SLACK_WEBHOOK_URL` in your shell profile. Nobody else is affected — the endpoint is per engineer.
-- **For the whole project:** set Section 10 to **`Status: Disabled`** (that exact token) so the lifecycle events stop firing for everyone, and remove the `.claude/settings.json` hooks.
+- **Per session:** the engineer says "turn notifications off for this session" — the agent skips lifecycle sends until the session ends. This silences only the lifecycle layer: harness hooks run in the tool itself, outside the agent's control, so the turn-ended and attention pings keep firing. To silence those too, empty `scripts/notify.env` for the duration (every send becomes a silent no-op) and restore it afterwards.
+- **Just for you:** delete or empty `scripts/notify.env`, or unset `SLACK_WEBHOOK_URL` wherever Step 2 Option B put it. Nobody else is affected — the endpoint is per engineer.
+- **For the whole project:** set Section 10 to **`Status: Disabled`** (that exact token) so the lifecycle events stop firing for everyone, and remove the hook entries from the tool's config file — `.claude/settings.json` (Claude Code), `.cursor/hooks.json` (Cursor) or `.github/hooks/notify.json` (Copilot).
